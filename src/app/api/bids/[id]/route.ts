@@ -48,10 +48,10 @@ export async function PUT(request: Request) {
 
     // If a bid is accepted, reject all other bids for the same collection
     if (status === 'accepted') {
-      const collectionId = updatedBid.collection_id;
+      const collectionId = updatedBid.collectionId;
       for (let i = 0; i < updatedBids.length; i++) {
         if (
-          updatedBids[i].collection_id === collectionId &&
+          updatedBids[i].collectionId === collectionId &&
           bidId &&
           updatedBids[i].id !== Number(bidId)
         ) {

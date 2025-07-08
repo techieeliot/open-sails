@@ -1,9 +1,17 @@
 import bidsData from '@/db/bids.json';
 import { writeFile } from 'fs/promises';
+import { NextRequest } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const collectionId = searchParams.get('collection_id');
+
   try {
-    return new Response(JSON.stringify(bidsData), {
+    let bids = bidsData;
+    if (collectionId) {
+      bids = bidsData.filter((b) => b.collectionId === Number(collectionId));
+    }
+    return new Response(JSON.stringify(bids), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {

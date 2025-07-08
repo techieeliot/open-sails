@@ -1,15 +1,35 @@
 import RowItem from '@/components/row-item';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 
-export const BidsIndex = ({ isOwner = true }) => {
-  // This is a placeholder for the bids data.
-  const bids = [
-    { id: 1, amount: 100 },
-    { id: 2, amount: 200 },
-  ];
+interface Bid {
+  id: number;
+  amount: number;
+  collectionId: number;
+}
+
+export const BidsIndex = ({
+  isOwner = true,
+  collectionId,
+}: {
+  isOwner?: boolean;
+  collectionId: number;
+}) => {
+  const [bids, setBids] = useState<Bid[]>([]);
+
+  useEffect(() => {
+    if (collectionId) {
+      const fetchBids = async () => {
+        const response = await fetch(`/api/bids?collection_id=${collectionId}`);
+        const data = await response.json();
+        setBids(data);
+      };
+      fetchBids();
+    }
+  }, [collectionId]);
 
   return (
-    <div>
+    <div className="pl-10 w-full">
       {bids.length === 0 ? (
         <div className="text-center text-muted-foreground">No bids found.</div>
       ) : (

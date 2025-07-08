@@ -1,32 +1,1502 @@
 [
   {
     "id": 1,
-    "name": "Antminer S19 Pro Fleet (10 Units)",
-    "descriptions": "A fleet of 10 Antminer S19 Pro miners, offering a combined hashrate of 1.1 PH/s. Lightly used for 6 months.",
-    "price": 30000,
-    "stocks": 10,
+    "name": "Antminer S19 Pro",
+    "descriptions": "High-efficiency air-cooled miner with a hashrate of 110 TH/s and power consumption of 3250W.",
+    "price": 1800,
+    "stocks": 15,
     "status": "open",
     "createdAt": "2025-07-08T10:00:00Z",
     "updatedAt": "2025-07-08T10:00:00Z"
   },
   {
     "id": 2,
-    "name": "Whatsminer M30S++ Bulk Order (50 Units)",
-    "descriptions": "50 units of Whatsminer M30S++, perfect for scaling up a mid-size mining operation. Total hashrate of 5.5 PH/s.",
-    "price": 140000,
-    "stocks": 20,
+    "name": "Whatsminer M30S++",
+    "descriptions": "A robust miner delivering 112 TH/s with an efficiency of 31 J/TH. Known for its stability and longevity.",
+    "price": 1950,
+    "stocks": 10,
     "status": "open",
     "createdAt": "2025-07-08T11:00:00Z",
     "updatedAt": "2025-07-08T11:00:00Z"
   },
   {
     "id": 3,
-    "name": "1 PH/s Hashrate Contract (12-Month)",
-    "descriptions": "A 12-month contract for 1 PH/s of hashrate from a Tier-1 data center. All-in price, includes electricity and maintenance.",
-    "price": 25000,
-    "stocks": 30,
+    "name": "Canaan AvalonMiner 1246",
+    "descriptions": "Offers 90 TH/s hashrate with a power consumption of 3420W. A reliable choice for various mining operations.",
+    "price": 1500,
+    "stocks": 25,
     "status": "closed",
     "createdAt": "2025-07-07T09:00:00Z",
     "updatedAt": "2025-07-07T14:00:00Z"
+  },
+  {
+    "id": 4,
+    "name": "Antminer S21",
+    "descriptions": "Next-generation miner with 200 TH/s hashrate and superior power efficiency at 17.5 J/TH.",
+    "price": 3500,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-07-09T10:00:00Z",
+    "updatedAt": "2025-07-09T10:00:00Z"
+  },
+  {
+    "id": 5,
+    "name": "Whatsminer M50S",
+    "descriptions": "Liquid-cooled miner pushing 126 TH/s at 26 J/TH, designed for high-performance data centers.",
+    "price": 2800,
+    "stocks": 8,
+    "status": "open",
+    "createdAt": "2025-07-09T11:00:00Z",
+    "updatedAt": "2025-07-09T11:00:00Z"
+  },
+  {
+    "id": 6,
+    "name": "Jasminer X16-Q",
+    "descriptions": "High-throughput EtHash ASIC with 1950 MH/s and a quiet design, consuming only 620W.",
+    "price": 2200,
+    "stocks": 12,
+    "status": "open",
+    "createdAt": "2025-07-10T10:00:00Z",
+    "updatedAt": "2025-07-10T10:00:00Z"
+  },
+  {
+    "id": 7,
+    "name": "iBeLink BM-K3",
+    "descriptions": "Kadena miner with a massive 70 TH/s hashrate and a power consumption of 3300W.",
+    "price": 9500,
+    "stocks": 3,
+    "status": "closed",
+    "createdAt": "2025-07-01T10:00:00Z",
+    "updatedAt": "2025-07-05T12:00:00Z"
+  },
+  {
+    "id": 8,
+    "name": "Antminer L7",
+    "descriptions": "Top-tier Scrypt miner for Litecoin/Dogecoin, offering 9500 MH/s at 3425W.",
+    "price": 5500,
+    "stocks": 7,
+    "status": "open",
+    "createdAt": "2025-07-11T10:00:00Z",
+    "updatedAt": "2025-07-11T10:00:00Z"
+  },
+  {
+    "id": 9,
+    "name": "Goldshell KD-BOX II",
+    "descriptions": "Compact and quiet Kadena miner, 4.8 TH/s at 400W. Ideal for home or office use.",
+    "price": 1200,
+    "stocks": 30,
+    "status": "open",
+    "createdAt": "2025-07-12T10:00:00Z",
+    "updatedAt": "2025-07-12T10:00:00Z"
+  },
+  {
+    "id": 10,
+    "name": "Antminer E9 Pro",
+    "descriptions": "Powerful EtHash miner with 3680 MH/s at 2200W, a successor to the legendary E9.",
+    "price": 3800,
+    "stocks": 9,
+    "status": "open",
+    "createdAt": "2025-07-13T10:00:00Z",
+    "updatedAt": "2025-07-13T10:00:00Z"
+  },
+  {
+    "id": 11,
+    "name": "Antminer S19 Pro (Refurbished)",
+    "descriptions": "Certified refurbished Antminer S19 Pro, 110 TH/s, 3250W. Comes with a 6-month warranty.",
+    "price": 1500,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-07-14T10:00:00Z",
+    "updatedAt": "2025-07-14T10:00:00Z"
+  },
+  {
+    "id": 12,
+    "name": "Whatsminer M30S++ (Bulk - 10 Units)",
+    "descriptions": "A pack of 10 Whatsminer M30S++ units. Total hashrate of 1.12 PH/s.",
+    "price": 19000,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-07-15T10:00:00Z",
+    "updatedAt": "2025-07-15T10:00:00Z"
+  },
+  {
+    "id": 13,
+    "name": "Canaan AvalonMiner 1246 (Used)",
+    "descriptions": "Used AvalonMiner 1246, 90 TH/s. Tested and fully functional. Sold as-is.",
+    "price": 1100,
+    "stocks": 40,
+    "status": "open",
+    "createdAt": "2025-07-16T10:00:00Z",
+    "updatedAt": "2025-07-16T10:00:00Z"
+  },
+  {
+    "id": 14,
+    "name": "Antminer S21 (Pre-order)",
+    "descriptions": "Secure your Antminer S21 from the next batch. Expected delivery in Q4 2025.",
+    "price": 3400,
+    "stocks": 100,
+    "status": "open",
+    "createdAt": "2025-07-17T10:00:00Z",
+    "updatedAt": "2025-07-17T10:00:00Z"
+  },
+  {
+    "id": 15,
+    "name": "Whatsminer M50S (Slightly Used)",
+    "descriptions": "Liquid-cooled M50S with 3 months of use. 126 TH/s at 26 J/TH. Includes cooling components.",
+    "price": 2500,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-07-18T10:00:00Z",
+    "updatedAt": "2025-07-18T10:00:00Z"
+  },
+  {
+    "id": 16,
+    "name": "Jasminer X16-Q (Bulk - 5 Units)",
+    "descriptions": "A lot of 5 Jasminer X16-Q units. Total 9750 MH/s at 3100W.",
+    "price": 10500,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-07-19T10:00:00Z",
+    "updatedAt": "2025-07-19T10:00:00Z"
+  },
+  {
+    "id": 17,
+    "name": "iBeLink BM-K3 (New)",
+    "descriptions": "Brand new iBeLink BM-K3 Kadena miner, 70 TH/s. Factory sealed.",
+    "price": 9800,
+    "stocks": 2,
+    "status": "open",
+    "createdAt": "2025-07-20T10:00:00Z",
+    "updatedAt": "2025-07-20T10:00:00Z"
+  },
+  {
+    "id": 18,
+    "name": "Antminer L7 (9050 MH/s version)",
+    "descriptions": "Slightly lower hashrate version of the L7, 9050 MH/s at 3260W. Great value.",
+    "price": 5000,
+    "stocks": 11,
+    "status": "open",
+    "createdAt": "2025-07-21T10:00:00Z",
+    "updatedAt": "2025-07-21T10:00:00Z"
+  },
+  {
+    "id": 19,
+    "name": "Goldshell KD-BOX II (Used)",
+    "descriptions": "Used KD-BOX II, 4.8 TH/s. Perfect for testing the Kadena network.",
+    "price": 950,
+    "stocks": 15,
+    "status": "closed",
+    "createdAt": "2025-06-22T10:00:00Z",
+    "updatedAt": "2025-06-28T10:00:00Z"
+  },
+  {
+    "id": 20,
+    "name": "Antminer E9 Pro (Refurbished)",
+    "descriptions": "Refurbished E9 Pro, 3680 MH/s. Fully tested and operational.",
+    "price": 3200,
+    "stocks": 6,
+    "status": "open",
+    "createdAt": "2025-07-23T10:00:00Z",
+    "updatedAt": "2025-07-23T10:00:00Z"
+  },
+  {
+    "id": 21,
+    "name": "Antminer S19j Pro",
+    "descriptions": "A variation of the S19 series, offering 104 TH/s at 3068W.",
+    "price": 1700,
+    "stocks": 30,
+    "status": "open",
+    "createdAt": "2025-07-24T10:00:00Z",
+    "updatedAt": "2025-07-24T10:00:00Z"
+  },
+  {
+    "id": 22,
+    "name": "Whatsminer M31S+",
+    "descriptions": "Air-cooled miner with 82 TH/s at 42 J/TH. A workhorse model.",
+    "price": 1300,
+    "stocks": 50,
+    "status": "open",
+    "createdAt": "2025-07-25T10:00:00Z",
+    "updatedAt": "2025-07-25T10:00:00Z"
+  },
+  {
+    "id": 23,
+    "name": "Canaan Avalon A1166 Pro",
+    "descriptions": "Delivers 81 TH/s with a power consumption of 3400W.",
+    "price": 1400,
+    "stocks": 18,
+    "status": "open",
+    "createdAt": "2025-07-26T10:00:00Z",
+    "updatedAt": "2025-07-26T10:00:00Z"
+  },
+  {
+    "id": 24,
+    "name": "Antminer T19",
+    "descriptions": "A more budget-friendly option from Bitmain, 84 TH/s at 3150W.",
+    "price": 1200,
+    "stocks": 22,
+    "status": "closed",
+    "createdAt": "2025-06-01T10:00:00Z",
+    "updatedAt": "2025-06-10T10:00:00Z"
+  },
+  {
+    "id": 25,
+    "name": "Whatsminer M53",
+    "descriptions": "Hydro-cooling miner with 226 TH/s at 29 J/TH. High performance.",
+    "price": 4500,
+    "stocks": 7,
+    "status": "open",
+    "createdAt": "2025-07-27T10:00:00Z",
+    "updatedAt": "2025-07-27T10:00:00Z"
+  },
+  {
+    "id": 26,
+    "name": "Goldshell KD-LITE",
+    "descriptions": "Kadena miner with 16.2 TH/s at 1330W. Efficient and compact.",
+    "price": 3200,
+    "stocks": 14,
+    "status": "open",
+    "createdAt": "2025-07-28T10:00:00Z",
+    "updatedAt": "2025-07-28T10:00:00Z"
+  },
+  {
+    "id": 27,
+    "name": "iBeLink BM-N3",
+    "descriptions": "Nervos CKB miner with 25 TH/s at 3300W.",
+    "price": 7000,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-07-29T10:00:00Z",
+    "updatedAt": "2025-07-29T10:00:00Z"
+  },
+  {
+    "id": 28,
+    "name": "Antminer Z15",
+    "descriptions": "Equihash miner for Zcash, 420 KSol/s at 1510W.",
+    "price": 2800,
+    "stocks": 9,
+    "status": "open",
+    "createdAt": "2025-07-30T10:00:00Z",
+    "updatedAt": "2025-07-30T10:00:00Z"
+  },
+  {
+    "id": 29,
+    "name": "Goldshell HS-BOX",
+    "descriptions": "Handshake miner, 470 GH/s at 230W. Small form factor.",
+    "price": 800,
+    "stocks": 25,
+    "status": "open",
+    "createdAt": "2025-07-31T10:00:00Z",
+    "updatedAt": "2025-07-31T10:00:00Z"
+  },
+  {
+    "id": 30,
+    "name": "Antminer S19 Pro+ Hyd",
+    "descriptions": "Hydro-cooling version of the S19 Pro, 198 TH/s at 5445W.",
+    "price": 3800,
+    "stocks": 6,
+    "status": "open",
+    "createdAt": "2025-08-01T10:00:00Z",
+    "updatedAt": "2025-08-01T10:00:00Z"
+  },
+  {
+    "id": 31,
+    "name": "Antminer S19 Pro (100 TH/s)",
+    "descriptions": "A 100 TH/s version of the popular S19 Pro model.",
+    "price": 1650,
+    "stocks": 18,
+    "status": "open",
+    "createdAt": "2025-08-02T10:00:00Z",
+    "updatedAt": "2025-08-02T10:00:00Z"
+  },
+  {
+    "id": 32,
+    "name": "Whatsminer M30S (88 TH/s)",
+    "descriptions": "The base M30S model, delivering 88 TH/s at 38 J/TH.",
+    "price": 1450,
+    "stocks": 25,
+    "status": "open",
+    "createdAt": "2025-08-03T10:00:00Z",
+    "updatedAt": "2025-08-03T10:00:00Z"
+  },
+  {
+    "id": 33,
+    "name": "Canaan AvalonMiner 1346",
+    "descriptions": "Features 110 TH/s with an efficiency of 30 J/TH.",
+    "price": 1800,
+    "stocks": 12,
+    "status": "open",
+    "createdAt": "2025-08-04T10:00:00Z",
+    "updatedAt": "2025-08-04T10:00:00Z"
+  },
+  {
+    "id": 34,
+    "name": "Antminer S19 (95 TH/s)",
+    "descriptions": "The standard S19 model, 95 TH/s at 3250W.",
+    "price": 1550,
+    "stocks": 30,
+    "status": "closed",
+    "createdAt": "2025-07-01T11:00:00Z",
+    "updatedAt": "2025-07-10T11:00:00Z"
+  },
+  {
+    "id": 35,
+    "name": "Whatsminer M32",
+    "descriptions": "An older generation model, 66 TH/s at 50 J/TH. Budget friendly.",
+    "price": 900,
+    "stocks": 40,
+    "status": "open",
+    "createdAt": "2025-08-05T10:00:00Z",
+    "updatedAt": "2025-08-05T10:00:00Z"
+  },
+  {
+    "id": 36,
+    "name": "Goldshell KD6",
+    "descriptions": "Kadena miner with 29.2 TH/s at 2630W.",
+    "price": 6000,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-08-06T10:00:00Z",
+    "updatedAt": "2025-08-06T10:00:00Z"
+  },
+  {
+    "id": 37,
+    "name": "iBeLink BM-K1+",
+    "descriptions": "Kadena miner with 15 TH/s at 2250W.",
+    "price": 3500,
+    "stocks": 8,
+    "status": "open",
+    "createdAt": "2025-08-07T10:00:00Z",
+    "updatedAt": "2025-08-07T10:00:00Z"
+  },
+  {
+    "id": 38,
+    "name": "Antminer DR5",
+    "descriptions": "Decred miner, 35 TH/s at 1610W.",
+    "price": 1800,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-08-08T10:00:00Z",
+    "updatedAt": "2025-08-08T10:00:00Z"
+  },
+  {
+    "id": 39,
+    "name": "Goldshell CK-BOX",
+    "descriptions": "Nervos CKB miner, 1.05 TH/s at 215W. For home miners.",
+    "price": 500,
+    "stocks": 50,
+    "status": "open",
+    "createdAt": "2025-08-09T10:00:00Z",
+    "updatedAt": "2025-08-09T10:00:00Z"
+  },
+  {
+    "id": 40,
+    "name": "Antminer B7",
+    "descriptions": "Tensority miner for Bytom, 96 KSol/s at 528W.",
+    "price": 1100,
+    "stocks": 13,
+    "status": "open",
+    "createdAt": "2025-08-10T10:00:00Z",
+    "updatedAt": "2025-08-10T10:00:00Z"
+  },
+  {
+    "id": 41,
+    "name": "Antminer S17+",
+    "descriptions": "An older generation SHA-256 miner, 73 TH/s at 2920W.",
+    "price": 1000,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-08-11T10:00:00Z",
+    "updatedAt": "2025-08-11T10:00:00Z"
+  },
+  {
+    "id": 42,
+    "name": "Whatsminer M20S",
+    "descriptions": "A classic model, 68 TH/s at 3360W.",
+    "price": 950,
+    "stocks": 35,
+    "status": "open",
+    "createdAt": "2025-08-12T10:00:00Z",
+    "updatedAt": "2025-08-12T10:00:00Z"
+  },
+  {
+    "id": 43,
+    "name": "Canaan AvalonMiner 1066",
+    "descriptions": "50 TH/s with a power consumption of 3250W.",
+    "price": 800,
+    "stocks": 45,
+    "status": "open",
+    "createdAt": "2025-08-13T10:00:00Z",
+    "updatedAt": "2025-08-13T10:00:00Z"
+  },
+  {
+    "id": 44,
+    "name": "Antminer S9 (Classic)",
+    "descriptions": "The legendary S9, 13.5 TH/s at 1323W. A piece of history.",
+    "price": 150,
+    "stocks": 100,
+    "status": "closed",
+    "createdAt": "2025-05-01T10:00:00Z",
+    "updatedAt": "2025-05-20T10:00:00Z"
+  },
+  {
+    "id": 45,
+    "name": "Whatsminer M63S",
+    "descriptions": "Immersion cooling miner, 334 TH/s at 19.5 J/TH.",
+    "price": 6500,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-08-14T10:00:00Z",
+    "updatedAt": "2025-08-14T10:00:00Z"
+  },
+  {
+    "id": 46,
+    "name": "Goldshell LT6",
+    "descriptions": "Scrypt miner with 3.35 GH/s at 3200W.",
+    "price": 4800,
+    "stocks": 7,
+    "status": "open",
+    "createdAt": "2025-08-15T10:00:00Z",
+    "updatedAt": "2025-08-15T10:00:00Z"
+  },
+  {
+    "id": 47,
+    "name": "iBeLink BM-S1",
+    "descriptions": "Siacoin miner with 6 TH/s at 2100W.",
+    "price": 1500,
+    "stocks": 11,
+    "status": "open",
+    "createdAt": "2025-08-16T10:00:00Z",
+    "updatedAt": "2025-08-16T10:00:00Z"
+  },
+  {
+    "id": 48,
+    "name": "Antminer K7",
+    "descriptions": "Eaglesong miner for Nervos, 63.5 TH/s at 3080W.",
+    "price": 9000,
+    "stocks": 2,
+    "status": "open",
+    "createdAt": "2025-08-17T10:00:00Z",
+    "updatedAt": "2025-08-17T10:00:00Z"
+  },
+  {
+    "id": 49,
+    "name": "Goldshell ST-BOX",
+    "descriptions": "Starcoin miner, 135 GH/s at 65W. Very quiet.",
+    "price": 400,
+    "stocks": 30,
+    "status": "open",
+    "createdAt": "2025-08-18T10:00:00Z",
+    "updatedAt": "2025-08-18T10:00:00Z"
+  },
+  {
+    "id": 50,
+    "name": "Antminer S19 XP",
+    "descriptions": "High-performance SHA-256 miner, 141 TH/s at 3010W.",
+    "price": 2500,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-08-19T10:00:00Z",
+    "updatedAt": "2025-08-19T10:00:00Z"
+  },
+  {
+    "id": 51,
+    "name": "Antminer S19 Pro (88 TH/s)",
+    "descriptions": "A lower-binned S19 Pro, 88 TH/s.",
+    "price": 1300,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-08-20T10:00:00Z",
+    "updatedAt": "2025-08-20T10:00:00Z"
+  },
+  {
+    "id": 52,
+    "name": "Whatsminer M30S+ (100 TH/s)",
+    "descriptions": "M30S+ model with 100 TH/s at 3400W.",
+    "price": 1600,
+    "stocks": 15,
+    "status": "open",
+    "createdAt": "2025-08-21T10:00:00Z",
+    "updatedAt": "2025-08-21T10:00:00Z"
+  },
+  {
+    "id": 53,
+    "name": "Canaan AvalonMiner A1366",
+    "descriptions": "130 TH/s with an efficiency of 25 J/TH.",
+    "price": 2200,
+    "stocks": 8,
+    "status": "open",
+    "createdAt": "2025-08-22T10:00:00Z",
+    "updatedAt": "2025-08-22T10:00:00Z"
+  },
+  {
+    "id": 54,
+    "name": "Antminer S19j Pro+ (122 TH/s)",
+    "descriptions": "An upgraded S19j Pro+, 122 TH/s at 3355W.",
+    "price": 2000,
+    "stocks": 12,
+    "status": "closed",
+    "createdAt": "2025-07-15T12:00:00Z",
+    "updatedAt": "2025-07-25T12:00:00Z"
+  },
+  {
+    "id": 55,
+    "name": "Whatsminer M33S++",
+    "descriptions": "Immersion cooling, 220 TH/s at 31 J/TH.",
+    "price": 4000,
+    "stocks": 6,
+    "status": "open",
+    "createdAt": "2025-08-23T10:00:00Z",
+    "updatedAt": "2025-08-23T10:00:00Z"
+  },
+  {
+    "id": 56,
+    "name": "Goldshell KD-MAX",
+    "descriptions": "Kadena miner with 40.2 TH/s at 3350W.",
+    "price": 8000,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-08-24T10:00:00Z",
+    "updatedAt": "2025-08-24T10:00:00Z"
+  },
+  {
+    "id": 57,
+    "name": "iBeLink BM-K3 MAX",
+    "descriptions": "Top-tier Kadena miner, 90 TH/s at 3400W.",
+    "price": 12000,
+    "stocks": 1,
+    "status": "open",
+    "createdAt": "2025-08-25T10:00:00Z",
+    "updatedAt": "2025-08-25T10:00:00Z"
+  },
+  {
+    "id": 58,
+    "name": "Antminer L7 (8800 MH/s)",
+    "descriptions": "A slightly lower-binned L7, 8800 MH/s.",
+    "price": 4800,
+    "stocks": 9,
+    "status": "open",
+    "createdAt": "2025-08-26T10:00:00Z",
+    "updatedAt": "2025-08-26T10:00:00Z"
+  },
+  {
+    "id": 59,
+    "name": "Goldshell LB-BOX",
+    "descriptions": "LBRY Credit miner, 175 GH/s at 160W.",
+    "price": 600,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-08-27T10:00:00Z",
+    "updatedAt": "2025-08-27T10:00:00Z"
+  },
+  {
+    "id": 60,
+    "name": "Antminer S19 XP Hyd",
+    "descriptions": "Hydro-cooling S19 XP, 255 TH/s at 5304W.",
+    "price": 5500,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-08-28T10:00:00Z",
+    "updatedAt": "2025-08-28T10:00:00Z"
+  },
+  {
+    "id": 61,
+    "name": "Antminer S19 (90 TH/s, Used)",
+    "descriptions": "Used S19, 90 TH/s. Good condition.",
+    "price": 1100,
+    "stocks": 25,
+    "status": "open",
+    "createdAt": "2025-08-29T10:00:00Z",
+    "updatedAt": "2025-08-29T10:00:00Z"
+  },
+  {
+    "id": 62,
+    "name": "Whatsminer M21S",
+    "descriptions": "An older but reliable model, 56 TH/s at 3360W.",
+    "price": 850,
+    "stocks": 30,
+    "status": "open",
+    "createdAt": "2025-08-30T10:00:00Z",
+    "updatedAt": "2025-08-30T10:00:00Z"
+  },
+  {
+    "id": 63,
+    "name": "Canaan AvalonMiner 1126 Pro",
+    "descriptions": "68 TH/s with a power consumption of 3420W.",
+    "price": 1000,
+    "stocks": 15,
+    "status": "open",
+    "createdAt": "2025-08-31T10:00:00Z",
+    "updatedAt": "2025-08-31T10:00:00Z"
+  },
+  {
+    "id": 64,
+    "name": "Antminer T17+",
+    "descriptions": "64 TH/s at 3200W. Budget-friendly.",
+    "price": 900,
+    "stocks": 18,
+    "status": "closed",
+    "createdAt": "2025-06-15T10:00:00Z",
+    "updatedAt": "2025-06-25T10:00:00Z"
+  },
+  {
+    "id": 65,
+    "name": "Whatsminer M50",
+    "descriptions": "118 TH/s at 29 J/TH. Air-cooled.",
+    "price": 2300,
+    "stocks": 9,
+    "status": "open",
+    "createdAt": "2025-09-01T10:00:00Z",
+    "updatedAt": "2025-09-01T10:00:00Z"
+  },
+  {
+    "id": 66,
+    "name": "Goldshell CK6",
+    "descriptions": "Nervos CKB miner, 19.3 TH/s at 3300W.",
+    "price": 6500,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-09-02T10:00:00Z",
+    "updatedAt": "2025-09-02T10:00:00Z"
+  },
+  {
+    "id": 67,
+    "name": "iBeLink BM-X11",
+    "descriptions": "Grin miner with 1.1 GPS at 2400W.",
+    "price": 4000,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-09-03T10:00:00Z",
+    "updatedAt": "2025-09-03T10:00:00Z"
+  },
+  {
+    "id": 68,
+    "name": "Antminer Z11",
+    "descriptions": "Equihash miner, 135 KSol/s at 1418W.",
+    "price": 1500,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-09-04T10:00:00Z",
+    "updatedAt": "2025-09-04T10:00:00Z"
+  },
+  {
+    "id": 69,
+    "name": "Goldshell HS-LITE",
+    "descriptions": "Handshake miner, 2.7 TH/s at 1300W.",
+    "price": 2800,
+    "stocks": 6,
+    "status": "open",
+    "createdAt": "2025-09-05T10:00:00Z",
+    "updatedAt": "2025-09-05T10:00:00Z"
+  },
+  {
+    "id": 70,
+    "name": "Antminer S19k Pro",
+    "descriptions": "120 TH/s at 2760W. A newer, more efficient S19 model.",
+    "price": 2100,
+    "stocks": 14,
+    "status": "open",
+    "createdAt": "2025-09-06T10:00:00Z",
+    "updatedAt": "2025-09-06T10:00:00Z"
+  },
+  {
+    "id": 71,
+    "name": "Antminer S19 Pro (Bulk - 20 Units)",
+    "descriptions": "A lot of 20 S19 Pro miners, 110 TH/s each.",
+    "price": 35000,
+    "stocks": 2,
+    "status": "open",
+    "createdAt": "2025-09-07T10:00:00Z",
+    "updatedAt": "2025-09-07T10:00:00Z"
+  },
+  {
+    "id": 72,
+    "name": "Whatsminer M30S++ (Used, 1-year)",
+    "descriptions": "Used M30S++, 112 TH/s. Maintained in a professional facility.",
+    "price": 1600,
+    "stocks": 15,
+    "status": "open",
+    "createdAt": "2025-09-08T10:00:00Z",
+    "updatedAt": "2025-09-08T10:00:00Z"
+  },
+  {
+    "id": 73,
+    "name": "Canaan AvalonMiner 1246 (Bulk - 10 Units)",
+    "descriptions": "10 units of AvalonMiner 1246, 90 TH/s each.",
+    "price": 14500,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-09-09T10:00:00Z",
+    "updatedAt": "2025-09-09T10:00:00Z"
+  },
+  {
+    "id": 74,
+    "name": "Antminer S21 (Used, 3-months)",
+    "descriptions": "Lightly used S21, 200 TH/s. Almost new.",
+    "price": 3200,
+    "stocks": 2,
+    "status": "closed",
+    "createdAt": "2025-08-01T12:00:00Z",
+    "updatedAt": "2025-08-10T12:00:00Z"
+  },
+  {
+    "id": 75,
+    "name": "Whatsminer M50S (Bulk - 5 Units)",
+    "descriptions": "A lot of 5 liquid-cooled M50S miners.",
+    "price": 13500,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-09-10T10:00:00Z",
+    "updatedAt": "2025-09-10T10:00:00Z"
+  },
+  {
+    "id": 76,
+    "name": "Jasminer X16-Q (New, factory sealed)",
+    "descriptions": "Brand new Jasminer X16-Q, 1950 MH/s.",
+    "price": 2300,
+    "stocks": 8,
+    "status": "open",
+    "createdAt": "2025-09-11T10:00:00Z",
+    "updatedAt": "2025-09-11T10:00:00Z"
+  },
+  {
+    "id": 77,
+    "name": "iBeLink BM-K3 (Refurbished)",
+    "descriptions": "Refurbished BM-K3, 70 TH/s. 3-month warranty.",
+    "price": 8500,
+    "stocks": 1,
+    "status": "open",
+    "createdAt": "2025-09-12T10:00:00Z",
+    "updatedAt": "2025-09-12T10:00:00Z"
+  },
+  {
+    "id": 78,
+    "name": "Antminer L7 (Bulk - 5 Units)",
+    "descriptions": "A lot of 5 Antminer L7s, 9500 MH/s each.",
+    "price": 27000,
+    "stocks": 2,
+    "status": "open",
+    "createdAt": "2025-09-13T10:00:00Z",
+    "updatedAt": "2025-09-13T10:00:00Z"
+  },
+  {
+    "id": 79,
+    "name": "Goldshell KD-BOX II (Bulk - 10 Units)",
+    "descriptions": "10 units of the compact KD-BOX II.",
+    "price": 11500,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-09-14T10:00:00Z",
+    "updatedAt": "2025-09-14T10:00:00Z"
+  },
+  {
+    "id": 80,
+    "name": "Antminer E9 Pro (Bulk - 3 Units)",
+    "descriptions": "A lot of 3 E9 Pro miners.",
+    "price": 11000,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-09-15T10:00:00Z",
+    "updatedAt": "2025-09-15T10:00:00Z"
+  },
+  {
+    "id": 81,
+    "name": "Antminer S19j Pro (Bulk - 10 Units)",
+    "descriptions": "10 units of S19j Pro, 104 TH/s each.",
+    "price": 16500,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-09-16T10:00:00Z",
+    "updatedAt": "2025-09-16T10:00:00Z"
+  },
+  {
+    "id": 82,
+    "name": "Whatsminer M31S+ (Bulk - 10 Units)",
+    "descriptions": "10 units of M31S+, 82 TH/s each.",
+    "price": 12500,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-09-17T10:00:00Z",
+    "updatedAt": "2025-09-17T10:00:00Z"
+  },
+  {
+    "id": 83,
+    "name": "Canaan Avalon A1166 Pro (Used)",
+    "descriptions": "Used A1166 Pro, 81 TH/s. Good working condition.",
+    "price": 1200,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-09-18T10:00:00Z",
+    "updatedAt": "2025-09-18T10:00:00Z"
+  },
+  {
+    "id": 84,
+    "name": "Antminer T19 (Refurbished)",
+    "descriptions": "Refurbished T19, 84 TH/s. 6-month warranty.",
+    "price": 1000,
+    "stocks": 15,
+    "status": "closed",
+    "createdAt": "2025-07-20T14:00:00Z",
+    "updatedAt": "2025-07-30T14:00:00Z"
+  },
+  {
+    "id": 85,
+    "name": "Whatsminer M53 (Used)",
+    "descriptions": "Used M53 hydro-cooling miner, 226 TH/s.",
+    "price": 4000,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-09-19T10:00:00Z",
+    "updatedAt": "2025-09-19T10:00:00Z"
+  },
+  {
+    "id": 86,
+    "name": "Goldshell KD-LITE (Bulk - 3 Units)",
+    "descriptions": "A lot of 3 KD-LITE miners.",
+    "price": 9300,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-09-20T10:00:00Z",
+    "updatedAt": "2025-09-20T10:00:00Z"
+  },
+  {
+    "id": 87,
+    "name": "iBeLink BM-N3 (Used)",
+    "descriptions": "Used BM-N3 Nervos miner.",
+    "price": 6000,
+    "stocks": 2,
+    "status": "open",
+    "createdAt": "2025-09-21T10:00:00Z",
+    "updatedAt": "2025-09-21T10:00:00Z"
+  },
+  {
+    "id": 88,
+    "name": "Antminer Z15 (Used)",
+    "descriptions": "Used Z15 Zcash miner.",
+    "price": 2400,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-09-22T10:00:00Z",
+    "updatedAt": "2025-09-22T10:00:00Z"
+  },
+  {
+    "id": 89,
+    "name": "Goldshell HS-BOX (Bulk - 10 Units)",
+    "descriptions": "10 units of HS-BOX Handshake miners.",
+    "price": 7500,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-09-23T10:00:00Z",
+    "updatedAt": "2025-09-23T10:00:00Z"
+  },
+  {
+    "id": 90,
+    "name": "Antminer S19 Pro+ Hyd (Used)",
+    "descriptions": "Used S19 Pro+ Hyd, 198 TH/s.",
+    "price": 3200,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-09-24T10:00:00Z",
+    "updatedAt": "2025-09-24T10:00:00Z"
+  },
+  {
+    "id": 91,
+    "name": "Antminer S17+ (Refurbished)",
+    "descriptions": "Refurbished S17+, 73 TH/s. 6-month warranty.",
+    "price": 850,
+    "stocks": 15,
+    "status": "open",
+    "createdAt": "2025-09-25T10:00:00Z",
+    "updatedAt": "2025-09-25T10:00:00Z"
+  },
+  {
+    "id": 92,
+    "name": "Whatsminer M20S (Bulk - 10 Units)",
+    "descriptions": "10 units of M20S, 68 TH/s each.",
+    "price": 9000,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-09-26T10:00:00Z",
+    "updatedAt": "2025-09-26T10:00:00Z"
+  },
+  {
+    "id": 93,
+    "name": "Canaan AvalonMiner 1066 (Used)",
+    "descriptions": "Used AvalonMiner 1066, 50 TH/s.",
+    "price": 600,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-09-27T10:00:00Z",
+    "updatedAt": "2025-09-27T10:00:00Z"
+  },
+  {
+    "id": 94,
+    "name": "Antminer S9 (New Old Stock)",
+    "descriptions": "Brand new, never used Antminer S9s found in warehouse.",
+    "price": 250,
+    "stocks": 50,
+    "status": "closed",
+    "createdAt": "2025-08-15T15:00:00Z",
+    "updatedAt": "2025-08-25T15:00:00Z"
+  },
+  {
+    "id": 95,
+    "name": "Whatsminer M63S (Bulk - 2 Units)",
+    "descriptions": "A lot of 2 M63S immersion miners.",
+    "price": 12800,
+    "stocks": 2,
+    "status": "open",
+    "createdAt": "2025-09-28T10:00:00Z",
+    "updatedAt": "2025-09-28T10:00:00Z"
+  },
+  {
+    "id": 96,
+    "name": "Goldshell LT6 (Used)",
+    "descriptions": "Used LT6 Scrypt miner, 3.35 GH/s.",
+    "price": 4200,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-09-29T10:00:00Z",
+    "updatedAt": "2025-09-29T10:00:00Z"
+  },
+  {
+    "id": 97,
+    "name": "iBeLink BM-S1 (Used)",
+    "descriptions": "Used BM-S1 Siacoin miner.",
+    "price": 1200,
+    "stocks": 6,
+    "status": "open",
+    "createdAt": "2025-09-30T10:00:00Z",
+    "updatedAt": "2025-09-30T10:00:00Z"
+  },
+  {
+    "id": 98,
+    "name": "Antminer K7 (Used)",
+    "descriptions": "Used K7 Eaglesong miner.",
+    "price": 8000,
+    "stocks": 1,
+    "status": "open",
+    "createdAt": "2025-10-01T10:00:00Z",
+    "updatedAt": "2025-10-01T10:00:00Z"
+  },
+  {
+    "id": 99,
+    "name": "Goldshell ST-BOX (Bulk - 5 Units)",
+    "descriptions": "A lot of 5 ST-BOX Starcoin miners.",
+    "price": 1800,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-10-02T10:00:00Z",
+    "updatedAt": "2025-10-02T10:00:00Z"
+  },
+  {
+    "id": 100,
+    "name": "Antminer S19 XP (Bulk - 5 Units)",
+    "descriptions": "5 units of S19 XP, 141 TH/s each.",
+    "price": 12000,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-10-03T10:00:00Z",
+    "updatedAt": "2025-10-03T10:00:00Z"
+  },
+  {
+    "id": 101,
+    "name": "Goldshell KA-BOX (Bulk - 10 Units)",
+    "descriptions": "10 units of the Goldshell KA-BOX. A bulk - 10 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 14630.7,
+    "stocks": 13,
+    "status": "open",
+    "createdAt": "2025-07-01T20:57:17.362Z",
+    "updatedAt": "2025-07-01T20:57:17.362Z"
+  },
+  {
+    "id": 102,
+    "name": "Goldshell CK-STAR (Refurbished)",
+    "descriptions": "A refurbished Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W. Comes with a 6-month warranty.",
+    "price": 5784.76,
+    "stocks": 49,
+    "status": "open",
+    "createdAt": "2025-06-28T21:29:20.926Z",
+    "updatedAt": "2025-06-28T21:29:20.926Z"
+  },
+  {
+    "id": 103,
+    "name": "Whatsminer M66S (Bulk - 10 Units)",
+    "descriptions": "10 units of the Whatsminer M66S. A bulk - 10 units Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W.",
+    "price": 52267.07,
+    "stocks": 47,
+    "status": "open",
+    "createdAt": "2025-06-21T10:09:20.352Z",
+    "updatedAt": "2025-06-21T10:09:20.352Z"
+  },
+  {
+    "id": 104,
+    "name": "iBeLink BM-K5 (Refurbished)",
+    "descriptions": "A refurbished iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W. Comes with a 6-month warranty.",
+    "price": 8138.42,
+    "stocks": 30,
+    "status": "closed",
+    "createdAt": "2025-07-03T13:05:17.157Z",
+    "updatedAt": "2025-07-03T13:05:17.157Z"
+  },
+  {
+    "id": 105,
+    "name": "Goldshell KA-BOX (Bulk - 10 Units)",
+    "descriptions": "10 units of the Goldshell KA-BOX. A bulk - 10 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 16425.59,
+    "stocks": 22,
+    "status": "open",
+    "createdAt": "2025-06-13T18:57:40.951Z",
+    "updatedAt": "2025-06-13T18:57:40.951Z"
+  },
+  {
+    "id": 106,
+    "name": "Antminer E11 (Refurbished)",
+    "descriptions": "A refurbished Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W. Comes with a 6-month warranty.",
+    "price": 3677.59,
+    "stocks": 22,
+    "status": "open",
+    "createdAt": "2025-06-09T21:24:32.185Z",
+    "updatedAt": "2025-06-09T21:24:32.185Z"
+  },
+  {
+    "id": 107,
+    "name": "Antminer L9 (Bulk - 5 Units)",
+    "descriptions": "5 units of the Antminer L9. A bulk - 5 units Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W.",
+    "price": 32871.67,
+    "stocks": 25,
+    "status": "open",
+    "createdAt": "2025-06-25T22:41:06.755Z",
+    "updatedAt": "2025-06-25T22:41:06.755Z"
+  },
+  {
+    "id": 108,
+    "name": "Antminer L9 (Used)",
+    "descriptions": "A used Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W. Tested and fully functional. Sold as-is.",
+    "price": 4019.38,
+    "stocks": 25,
+    "status": "open",
+    "createdAt": "2025-06-20T14:09:09.885Z",
+    "updatedAt": "2025-06-20T14:09:09.885Z"
+  },
+  {
+    "id": 109,
+    "name": "Whatsminer M60 (Bulk - 5 Units)",
+    "descriptions": "5 units of the Whatsminer M60. A bulk - 5 units Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W.",
+    "price": 19813.82,
+    "stocks": 46,
+    "status": "open",
+    "createdAt": "2025-06-15T00:06:31.975Z",
+    "updatedAt": "2025-06-15T00:06:31.975Z"
+  },
+  {
+    "id": 110,
+    "name": "Goldshell KA-BOX (New)",
+    "descriptions": "A new Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 1650.72,
+    "stocks": 38,
+    "status": "open",
+    "createdAt": "2025-07-03T23:12:34.037Z",
+    "updatedAt": "2025-07-03T23:12:34.037Z"
+  },
+  {
+    "id": 111,
+    "name": "Goldshell CK-STAR (Used)",
+    "descriptions": "A used Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W. Tested and fully functional. Sold as-is.",
+    "price": 5008.34,
+    "stocks": 40,
+    "status": "open",
+    "createdAt": "2025-06-23T04:37:38.582Z",
+    "updatedAt": "2025-06-23T04:37:38.582Z"
+  },
+  {
+    "id": 112,
+    "name": "iBeLink BM-K5 (Bulk - 10 Units)",
+    "descriptions": "10 units of the iBeLink BM-K5. A bulk - 10 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 110374.21,
+    "stocks": 19,
+    "status": "closed",
+    "createdAt": "2025-07-06T19:50:09.246Z",
+    "updatedAt": "2025-07-06T19:50:09.246Z"
+  },
+  {
+    "id": 113,
+    "name": "Antminer S21 Pro (New)",
+    "descriptions": "A new Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W.",
+    "price": 4100.84,
+    "stocks": 50,
+    "status": "open",
+    "createdAt": "2025-06-26T15:38:23.830Z",
+    "updatedAt": "2025-06-26T15:38:23.830Z"
+  },
+  {
+    "id": 114,
+    "name": "Antminer S21 Pro (Used)",
+    "descriptions": "A used Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Tested and fully functional. Sold as-is.",
+    "price": 2762.53,
+    "stocks": 43,
+    "status": "open",
+    "createdAt": "2025-06-24T10:25:36.977Z",
+    "updatedAt": "2025-06-24T10:25:36.977Z"
+  },
+  {
+    "id": 115,
+    "name": "Jasminer X44-Q (Refurbished)",
+    "descriptions": "A refurbished Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W. Comes with a 6-month warranty.",
+    "price": 2013.1,
+    "stocks": 37,
+    "status": "open",
+    "createdAt": "2025-06-11T18:30:50.258Z",
+    "updatedAt": "2025-06-11T18:30:50.258Z"
+  },
+  {
+    "id": 116,
+    "name": "Antminer L9 (New)",
+    "descriptions": "A new Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W.",
+    "price": 6790.44,
+    "stocks": 26,
+    "status": "open",
+    "createdAt": "2025-06-26T01:38:13.067Z",
+    "updatedAt": "2025-06-26T01:38:13.067Z"
+  },
+  {
+    "id": 117,
+    "name": "Whatsminer M66S (Bulk - 5 Units)",
+    "descriptions": "5 units of the Whatsminer M66S. A bulk - 5 units Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W.",
+    "price": 28129.62,
+    "stocks": 7,
+    "status": "open",
+    "createdAt": "2025-06-09T03:39:48.668Z",
+    "updatedAt": "2025-06-09T03:39:48.668Z"
+  },
+  {
+    "id": 118,
+    "name": "iBeLink BM-K5 (Refurbished)",
+    "descriptions": "A refurbished iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W. Comes with a 6-month warranty.",
+    "price": 8258.37,
+    "stocks": 7,
+    "status": "closed",
+    "createdAt": "2025-07-07T07:34:13.949Z",
+    "updatedAt": "2025-07-07T07:34:13.949Z"
+  },
+  {
+    "id": 119,
+    "name": "Antminer E11 (Bulk - 5 Units)",
+    "descriptions": "5 units of the Antminer E11. A bulk - 5 units Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W.",
+    "price": 23077.5,
+    "stocks": 4,
+    "status": "closed",
+    "createdAt": "2025-07-07T15:16:07.899Z",
+    "updatedAt": "2025-07-07T15:16:07.899Z"
+  },
+  {
+    "id": 120,
+    "name": "Canaan Avalon A1466 (Used)",
+    "descriptions": "A used Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W. Tested and fully functional. Sold as-is.",
+    "price": 2076.07,
+    "stocks": 26,
+    "status": "open",
+    "createdAt": "2025-06-14T22:05:59.111Z",
+    "updatedAt": "2025-06-14T22:05:59.111Z"
+  },
+  {
+    "id": 121,
+    "name": "Antminer S21 Pro (Refurbished)",
+    "descriptions": "A refurbished Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Comes with a 6-month warranty.",
+    "price": 3602.06,
+    "stocks": 7,
+    "status": "open",
+    "createdAt": "2025-06-18T02:35:30.065Z",
+    "updatedAt": "2025-06-18T02:35:30.065Z"
+  },
+  {
+    "id": 122,
+    "name": "iBeLink BM-K5 (Bulk - 10 Units)",
+    "descriptions": "10 units of the iBeLink BM-K5. A bulk - 10 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 107832.75,
+    "stocks": 9,
+    "status": "open",
+    "createdAt": "2025-06-10T20:34:06.568Z",
+    "updatedAt": "2025-06-10T20:34:06.568Z"
+  },
+  {
+    "id": 123,
+    "name": "Whatsminer M60 (Bulk - 10 Units)",
+    "descriptions": "10 units of the Whatsminer M60. A bulk - 10 units Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W.",
+    "price": 38045.56,
+    "stocks": 49,
+    "status": "open",
+    "createdAt": "2025-06-14T06:11:04.091Z",
+    "updatedAt": "2025-06-14T06:11:04.091Z"
+  },
+  {
+    "id": 124,
+    "name": "Goldshell CK-STAR (New)",
+    "descriptions": "A new Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W.",
+    "price": 7027.98,
+    "stocks": 37,
+    "status": "open",
+    "createdAt": "2025-06-17T21:30:44.505Z",
+    "updatedAt": "2025-06-17T21:30:44.505Z"
+  },
+  {
+    "id": 125,
+    "name": "Whatsminer M66S (Used)",
+    "descriptions": "A used Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W. Tested and fully functional. Sold as-is.",
+    "price": 3729.91,
+    "stocks": 45,
+    "status": "closed",
+    "createdAt": "2025-06-17T17:15:48.617Z",
+    "updatedAt": "2025-06-17T17:15:48.617Z"
+  },
+  {
+    "id": 126,
+    "name": "iBeLink BM-K5 (Bulk - 10 Units)",
+    "descriptions": "10 units of the iBeLink BM-K5. A bulk - 10 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 94852.72,
+    "stocks": 46,
+    "status": "closed",
+    "createdAt": "2025-07-05T01:55:41.881Z",
+    "updatedAt": "2025-07-05T01:55:41.881Z"
+  },
+  {
+    "id": 127,
+    "name": "Canaan Avalon A1466 (Bulk - 10 Units)",
+    "descriptions": "10 units of the Canaan Avalon A1466. A bulk - 10 units Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W.",
+    "price": 29807.59,
+    "stocks": 13,
+    "status": "open",
+    "createdAt": "2025-06-11T21:13:39.175Z",
+    "updatedAt": "2025-06-11T21:13:39.175Z"
+  },
+  {
+    "id": 128,
+    "name": "Jasminer X44-Q (Bulk - 5 Units)",
+    "descriptions": "5 units of the Jasminer X44-Q. A bulk - 5 units Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W.",
+    "price": 13921.61,
+    "stocks": 39,
+    "status": "open",
+    "createdAt": "2025-06-12T14:04:21.048Z",
+    "updatedAt": "2025-06-12T14:04:21.048Z"
+  },
+  {
+    "id": 129,
+    "name": "Antminer S21 Pro (Used)",
+    "descriptions": "A used Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Tested and fully functional. Sold as-is.",
+    "price": 2848.02,
+    "stocks": 12,
+    "status": "open",
+    "createdAt": "2025-06-28T11:11:02.824Z",
+    "updatedAt": "2025-06-28T11:11:02.824Z"
+  },
+  {
+    "id": 130,
+    "name": "Antminer E11 (Bulk - 5 Units)",
+    "descriptions": "5 units of the Antminer E11. A bulk - 5 units Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W.",
+    "price": 21476.78,
+    "stocks": 27,
+    "status": "open",
+    "createdAt": "2025-06-29T21:21:03.282Z",
+    "updatedAt": "2025-06-29T21:21:03.282Z"
+  },
+  {
+    "id": 131,
+    "name": "Canaan Avalon A1466 (Used)",
+    "descriptions": "A used Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W. Tested and fully functional. Sold as-is.",
+    "price": 2160.49,
+    "stocks": 28,
+    "status": "open",
+    "createdAt": "2025-06-21T02:35:36.803Z",
+    "updatedAt": "2025-06-21T02:35:36.803Z"
+  },
+  {
+    "id": 132,
+    "name": "Whatsminer M60 (Used)",
+    "descriptions": "A used Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W. Tested and fully functional. Sold as-is.",
+    "price": 2439.83,
+    "stocks": 3,
+    "status": "open",
+    "createdAt": "2025-06-09T23:49:59.670Z",
+    "updatedAt": "2025-06-09T23:49:59.670Z"
+  },
+  {
+    "id": 133,
+    "name": "Whatsminer M60 (Used)",
+    "descriptions": "A used Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W. Tested and fully functional. Sold as-is.",
+    "price": 2584.67,
+    "stocks": 36,
+    "status": "open",
+    "createdAt": "2025-06-29T18:13:37.320Z",
+    "updatedAt": "2025-06-29T18:13:37.320Z"
+  },
+  {
+    "id": 134,
+    "name": "Whatsminer M60 (Refurbished)",
+    "descriptions": "A refurbished Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W. Comes with a 6-month warranty.",
+    "price": 3528.68,
+    "stocks": 27,
+    "status": "open",
+    "createdAt": "2025-06-28T23:46:36.959Z",
+    "updatedAt": "2025-06-28T23:46:36.959Z"
+  },
+  {
+    "id": 135,
+    "name": "Jasminer X44-Q (New)",
+    "descriptions": "A new Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W.",
+    "price": 2771.4,
+    "stocks": 9,
+    "status": "open",
+    "createdAt": "2025-07-06T12:56:21.236Z",
+    "updatedAt": "2025-07-06T12:56:21.236Z"
+  },
+  {
+    "id": 136,
+    "name": "Canaan Avalon A1466 (New)",
+    "descriptions": "A new Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W.",
+    "price": 3284.69,
+    "stocks": 33,
+    "status": "open",
+    "createdAt": "2025-07-01T09:11:03.017Z",
+    "updatedAt": "2025-07-01T09:11:03.017Z"
+  },
+  {
+    "id": 137,
+    "name": "Whatsminer M60 (Refurbished)",
+    "descriptions": "A refurbished Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W. Comes with a 6-month warranty.",
+    "price": 3391.33,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-06-21T19:55:40.976Z",
+    "updatedAt": "2025-06-21T19:55:40.976Z"
+  },
+  {
+    "id": 138,
+    "name": "Jasminer X44-Q (Refurbished)",
+    "descriptions": "A refurbished Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W. Comes with a 6-month warranty.",
+    "price": 2161.35,
+    "stocks": 8,
+    "status": "open",
+    "createdAt": "2025-07-04T20:54:25.126Z",
+    "updatedAt": "2025-07-04T20:54:25.126Z"
+  },
+  {
+    "id": 139,
+    "name": "Canaan Avalon A1466 (Bulk - 5 Units)",
+    "descriptions": "5 units of the Canaan Avalon A1466. A bulk - 5 units Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W.",
+    "price": 16132.21,
+    "stocks": 47,
+    "status": "closed",
+    "createdAt": "2025-07-05T09:36:32.452Z",
+    "updatedAt": "2025-07-05T09:36:32.452Z"
+  },
+  {
+    "id": 140,
+    "name": "Antminer L9 (Used)",
+    "descriptions": "A used Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W. Tested and fully functional. Sold as-is.",
+    "price": 4144.75,
+    "stocks": 13,
+    "status": "open",
+    "createdAt": "2025-06-22T21:11:29.291Z",
+    "updatedAt": "2025-06-22T21:11:29.291Z"
+  },
+  {
+    "id": 141,
+    "name": "Antminer L9 (Bulk - 10 Units)",
+    "descriptions": "10 units of the Antminer L9. A bulk - 10 units Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W.",
+    "price": 62491.41,
+    "stocks": 8,
+    "status": "closed",
+    "createdAt": "2025-06-12T23:21:02.264Z",
+    "updatedAt": "2025-06-12T23:21:02.264Z"
+  },
+  {
+    "id": 142,
+    "name": "Goldshell KA-BOX (Used)",
+    "descriptions": "A used Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W. Tested and fully functional. Sold as-is.",
+    "price": 1091.62,
+    "stocks": 30,
+    "status": "closed",
+    "createdAt": "2025-07-04T09:13:14.275Z",
+    "updatedAt": "2025-07-04T09:13:14.275Z"
+  },
+  {
+    "id": 143,
+    "name": "Antminer E11 (New)",
+    "descriptions": "A new Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W.",
+    "price": 4767.8,
+    "stocks": 41,
+    "status": "closed",
+    "createdAt": "2025-07-03T02:22:42.649Z",
+    "updatedAt": "2025-07-03T02:22:42.649Z"
+  },
+  {
+    "id": 144,
+    "name": "Antminer S21 Pro (Refurbished)",
+    "descriptions": "A refurbished Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Comes with a 6-month warranty.",
+    "price": 3725.12,
+    "stocks": 28,
+    "status": "open",
+    "createdAt": "2025-07-03T03:59:51.180Z",
+    "updatedAt": "2025-07-03T03:59:51.180Z"
+  },
+  {
+    "id": 145,
+    "name": "iBeLink BM-K5 (Refurbished)",
+    "descriptions": "A refurbished iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W. Comes with a 6-month warranty.",
+    "price": 9233.88,
+    "stocks": 38,
+    "status": "closed",
+    "createdAt": "2025-07-01T22:29:00.027Z",
+    "updatedAt": "2025-07-01T22:29:00.027Z"
+  },
+  {
+    "id": 146,
+    "name": "Whatsminer M66S (Refurbished)",
+    "descriptions": "A refurbished Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W. Comes with a 6-month warranty.",
+    "price": 4790.52,
+    "stocks": 1,
+    "status": "open",
+    "createdAt": "2025-06-21T11:43:31.279Z",
+    "updatedAt": "2025-06-21T11:43:31.279Z"
+  },
+  {
+    "id": 147,
+    "name": "Whatsminer M66S (Bulk - 10 Units)",
+    "descriptions": "10 units of the Whatsminer M66S. A bulk - 10 units Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W.",
+    "price": 58720.7,
+    "stocks": 23,
+    "status": "open",
+    "createdAt": "2025-07-06T22:56:02.682Z",
+    "updatedAt": "2025-07-06T22:56:02.682Z"
+  },
+  {
+    "id": 148,
+    "name": "Goldshell CK-STAR (Refurbished)",
+    "descriptions": "A refurbished Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W. Comes with a 6-month warranty.",
+    "price": 5772.56,
+    "stocks": 43,
+    "status": "open",
+    "createdAt": "2025-06-30T14:35:54.687Z",
+    "updatedAt": "2025-06-30T14:35:54.687Z"
+  },
+  {
+    "id": 149,
+    "name": "Jasminer X44-Q (New)",
+    "descriptions": "A new Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W.",
+    "price": 2520.16,
+    "stocks": 48,
+    "status": "open",
+    "createdAt": "2025-07-06T23:54:30.881Z",
+    "updatedAt": "2025-07-06T23:54:30.881Z"
+  },
+  {
+    "id": 150,
+    "name": "Antminer S21 Pro (Refurbished)",
+    "descriptions": "A refurbished Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Comes with a 6-month warranty.",
+    "price": 3221.8,
+    "stocks": 3,
+    "status": "closed",
+    "createdAt": "2025-07-02T18:16:22.681Z",
+    "updatedAt": "2025-07-02T18:16:22.681Z"
   }
 ]
