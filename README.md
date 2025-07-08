@@ -1,6 +1,12 @@
+# Document how to run the code (on the README)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
+
+- How would you monitor the application to ensure it is running smoothly?
+- How would you address scalability and performance?
+- Trade-offs you had to choose when doing this challenge (the things you would do different with more time and resources)
 
 First, run the development server:
 

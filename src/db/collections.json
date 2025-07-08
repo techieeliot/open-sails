@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Electronics",
+    "description": "Latest gadgets and devices",
+    "stocks": 150,
+    "price": 299.99
+  },
+  {
+    "id": 2,
+    "name": "Books",
+    "description": "Wide range of genres and authors",
+    "stocks": 300,
+    "price": 19.99
+  },
+  {
+    "id": 3,
+    "name": "Clothing",
+    "description": "Fashionable apparel for all ages",
+    "stocks": 200,
+    "price": 49.99
+  },
+  {
+    "id": 4,
+    "name": "Home Appliances",
+    "description": "Essential appliances for your home",
+    "stocks": 100,
+    "price": 399.99
+  },
+  {
+    "id": 5,
+    "name": "Sports Equipment",
+    "description": "Gear for all your sporting needs",
+    "stocks": 80,
+    "price": 89.99
+  }
+]
