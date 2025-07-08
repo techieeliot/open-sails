@@ -16,4 +16,6 @@
 
 1. decided to build out the ui
 
-1. turned attention to
+1. turned attention committing layout and creating issues
+
+1. ...

@@ -9,12 +9,6 @@ export default function DashboardPage() {
       <section className="flex flex-col items-center gap-8 min-w-lg">
         {/* Placeholder for collections and bids table */}
         <div className="flex w-full justify-end max-w-8xl p-4 rounded-lg shadow-md">
-          {/* add search bar */}
-          {/* <input
-            type="text"
-            placeholder="Search collections..."
-            className="border border-gray-300 rounded-md p-2"
-          /> */}
           <Button type="button" variant="outline">
             Create
           </Button>
