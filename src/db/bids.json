@@ -1,42 +1,56 @@
 [
   {
-    "id": "1",
-    "collection": "Art",
-    "item": "Painting",
-    "bidAmount": 500,
-    "bidder": "Alice",
-    "timestamp": "2023-10-01T12:00:00Z"
+    "id": 1,
+    "collection_id": 1,
+    "user_id": 1,
+    "price": 30500,
+    "status": "pending",
+    "createdAt": "2025-07-08T10:05:00Z",
+    "updatedAt": "2025-07-08T10:05:00Z"
   },
   {
-    "id": "2",
-    "collection": "Art",
-    "item": "Sculpture",
-    "bidAmount": 750,
-    "bidder": "Bob",
-    "timestamp": "2023-10-01T12:05:00Z"
+    "id": 2,
+    "collection_id": 1,
+    "user_id": 2,
+    "price": 31000,
+    "status": "pending",
+    "createdAt": "2025-07-08T10:10:00Z",
+    "updatedAt": "2025-07-08T10:10:00Z"
   },
   {
-    "id": "3",
-    "collection": "Art",
-    "item": "Photography",
-    "bidAmount": 300,
-    "bidder": "Charlie",
-    "timestamp": "2023-10-01T12:10:00Z"
+    "id": 3,
+    "collection_id": 2,
+    "user_id": 3,
+    "price": 142000,
+    "status": "pending",
+    "createdAt": "2025-07-08T11:05:00Z",
+    "updatedAt": "2025-07-08T11:05:00Z"
   },
   {
-    "id": "4",
-    "collection": "Art",
-    "item": "Digital Art",
-    "bidAmount": 600,
-    "bidder": "David",
-    "timestamp": "2023-10-01T12:15:00Z"
+    "id": 4,
+    "collection_id": 3,
+    "user_id": 4,
+    "price": 25500,
+    "status": "accepted",
+    "createdAt": "2025-07-07T09:30:00Z",
+    "updatedAt": "2025-07-07T14:00:00Z"
   },
   {
-    "id": "5",
-    "collection": "Art",
-    "item": "Mixed Media",
-    "bidAmount": 400,
-    "bidder": "Eve",
-    "timestamp": "2023-10-01T12:20:00Z"
+    "id": 5,
+    "collection_id": 3,
+    "user_id": 5,
+    "price": 25200,
+    "status": "rejected",
+    "createdAt": "2025-07-07T09:25:00Z",
+    "updatedAt": "2025-07-07T14:00:00Z"
+  },
+  {
+    "'id": 6,
+    "collection_id": 1,
+    "user_id": 6,
+    "price": 30000,
+    "status": "pending",
+    "createdAt": "2025-07-08T10:15:00Z",
+    "updatedAt": "2025-07-08T10:15:00Z"
   }
 ]

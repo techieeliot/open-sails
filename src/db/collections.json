@@ -1,37 +1,32 @@
 [
   {
     "id": 1,
-    "name": "Electronics",
-    "description": "Latest gadgets and devices",
-    "stocks": 150,
-    "price": 299.99
+    "name": "Antminer S19 Pro Fleet (10 Units)",
+    "descriptions": "A fleet of 10 Antminer S19 Pro miners, offering a combined hashrate of 1.1 PH/s. Lightly used for 6 months.",
+    "price": 30000,
+    "stocks": 10,
+    "status": "open",
+    "createdAt": "2025-07-08T10:00:00Z",
+    "updatedAt": "2025-07-08T10:00:00Z"
   },
   {
     "id": 2,
-    "name": "Books",
-    "description": "Wide range of genres and authors",
-    "stocks": 300,
-    "price": 19.99
+    "name": "Whatsminer M30S++ Bulk Order (50 Units)",
+    "descriptions": "50 units of Whatsminer M30S++, perfect for scaling up a mid-size mining operation. Total hashrate of 5.5 PH/s.",
+    "price": 140000,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-07-08T11:00:00Z",
+    "updatedAt": "2025-07-08T11:00:00Z"
   },
   {
     "id": 3,
-    "name": "Clothing",
-    "description": "Fashionable apparel for all ages",
-    "stocks": 200,
-    "price": 49.99
-  },
-  {
-    "id": 4,
-    "name": "Home Appliances",
-    "description": "Essential appliances for your home",
-    "stocks": 100,
-    "price": 399.99
-  },
-  {
-    "id": 5,
-    "name": "Sports Equipment",
-    "description": "Gear for all your sporting needs",
-    "stocks": 80,
-    "price": 89.99
+    "name": "1 PH/s Hashrate Contract (12-Month)",
+    "descriptions": "A 12-month contract for 1 PH/s of hashrate from a Tier-1 data center. All-in price, includes electricity and maintenance.",
+    "price": 25000,
+    "stocks": 30,
+    "status": "closed",
+    "createdAt": "2025-07-07T09:00:00Z",
+    "updatedAt": "2025-07-07T14:00:00Z"
   }
 ]
