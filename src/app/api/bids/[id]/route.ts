@@ -1,15 +1,16 @@
-import { fetchMiningMetrics } from '@/lib/utils';
+import bidsData from '@/db/bids.json';
 
 export async function GET(request: Request) {
+  const bidId = request.url.split('/').pop() || 'defaultBid';
   try {
-    // Simulate fetching mining data
-    const data = {
-      id: '12345',
-    };
-
-    console.log('Fetched mining data:', data);
-    return Response.json({ data });
+    const bid = bidsData.find((b) => b.id === bidId);
+    if (!bid) {
+      return Response.json({ error: 'Bid not found' }, { status: 404 });
+    }
+    return new Response(JSON.stringify(bid), {
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch metrics' }, { status: 500 });
+    return Response.json({ error: 'Failed to fetch bids' }, { status: 500 });
   }
 }

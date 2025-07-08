@@ -1,11 +1,10 @@
-import { fetchMiningMetrics } from "@/lib/utils";
-
+import collectionsData from '@/db/collections.json';
 export async function GET(request: Request) {
   try {
-    // Simulate fetching mining data
-    const data = await fetchMiningMetrics();
-    return Response.json({ data });
+    return new Response(JSON.stringify(collectionsData), {
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    return Response.json({ error: "Failed to fetch metrics" }, { status: 500 });
+    return Response.json({ error: 'Failed to fetch collections' }, { status: 500 });
   }
 }

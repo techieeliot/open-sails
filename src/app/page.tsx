@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import PageWrapper from "@/components/page-wrapper";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import PageWrapper from '@/components/page-wrapper';
+import Link from 'next/link';
 
 export default function Home() {
   interface MinerMetrics {
@@ -42,7 +42,7 @@ export default function Home() {
       ) : (
         <section className="flex flex-col items-center gap-8">
           <Link href="/dashboard" className="text-lg font-semibold">
-            Go to bids
+            Go to dashboard
           </Link>
         </section>
       )}
