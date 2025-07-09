@@ -1,19 +1,16 @@
 'use client';
 
-import { BidList } from '@/components/bids-index';
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
-import RowItem from '@/components/row-item';
 import { Button } from '@/components/ui/button';
 import { Collection } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { useAtomValue } from 'jotai';
-import { userSessionAtom } from '@/lib/atoms';
-import { ConfirmationDialog } from '@/components/confirmation-dialog';
+import { useAtom, useAtomValue } from 'jotai';
+import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { CollectionOverview } from './collection-overview,';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collections, setCollections] = useAtom(collectionsAtom);
   const [expandedCollection, setExpandedCollection] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(25);
 
@@ -21,11 +18,15 @@ export default function CollectionsIndex() {
     const response = await fetch('/api/collections');
     const collectionData: Collection[] = await response.json();
     setCollections(collectionData);
-  }, []);
+  }, [setCollections]);
 
   useEffect(() => {
     fetchCollections();
   }, [fetchCollections]);
+
+  const handleCollectionCreated = (newCollection: Collection) => {
+    setCollections((prev) => [...prev, newCollection]);
+  };
 
   return (
     <div className="flex flex-col gap-4 w-full h-full max-w-8xl items-end justify-end">
@@ -39,6 +40,7 @@ export default function CollectionsIndex() {
             description="Fill out the form to create a new collection."
             modalCategory="collection"
             method="POST"
+            onSuccess={fetchCollections}
           />
         </div>
         {collections.length === 0 ? (
@@ -52,7 +54,9 @@ export default function CollectionsIndex() {
               <CollectionOverview
                 key={collection.id}
                 isOwner={isOwner}
-                setCollectionActiveState={setExpandedCollection}
+                setCollectionActiveState={() =>
+                  setExpandedCollection(expandedCollection === collection.id ? null : collection.id)
+                }
                 fetchCollections={fetchCollections}
                 activeCollectionId={expandedCollection}
                 {...collection}

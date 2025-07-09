@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { Collection, User } from '@/types';
+import { Bid, Collection, User } from '@/types';
 
 interface UserSession {
   user: User | null;
@@ -12,3 +12,4 @@ export const userSessionAtom = atom<UserSession>({
 });
 
 export const collectionsAtom = atom<Collection[]>([]);
+export const bidsAtom = atom<Bid[]>([]);

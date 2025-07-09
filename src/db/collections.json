@@ -1,12 +1,12 @@
 [
   {
-    "name": "test bob",
-    "descriptions": "iouyiuy",
-    "price": 87,
-    "stocks": 87,
-    "updatedAt": "2025-07-09T13:13:52.953Z",
+    "name": "888",
+    "descriptions": "888",
+    "price": 888,
+    "stocks": 888,
+    "updatedAt": "2025-07-09T13:48:50.060Z",
     "ownerId": 2,
-    "createdAt": "2025-07-09T13:13:52.953Z",
+    "createdAt": "2025-07-09T13:48:50.060Z",
     "id": 167,
     "status": "open"
   },
@@ -1508,5 +1508,505 @@
     "createdAt": "2025-07-09T08:11:15.040Z",
     "id": 159,
     "status": "open"
+  },
+  {
+    "id": 168,
+    "name": "Antminer S21 Pro (Bulk - 5 Units)",
+    "descriptions": "5 units of the Antminer S21 Pro. A bulk - 5 units Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W.",
+    "price": 20798.03,
+    "stocks": 18,
+    "status": "open",
+    "createdAt": "2025-07-06T22:07:19.642Z",
+    "updatedAt": "2025-07-06T22:07:19.642Z"
+  },
+  {
+    "id": 169,
+    "name": "iBeLink BM-K5 (Used)",
+    "descriptions": "A used iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W. Tested and fully functional. Sold as-is.",
+    "price": 7027.22,
+    "stocks": 2,
+    "status": "closed",
+    "createdAt": "2025-06-23T18:35:26.108Z",
+    "updatedAt": "2025-06-23T18:35:26.108Z"
+  },
+  {
+    "id": 170,
+    "name": "Goldshell KA-BOX (Bulk - 5 Units)",
+    "descriptions": "5 units of the Goldshell KA-BOX. A bulk - 5 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 7086.6,
+    "stocks": 32,
+    "status": "open",
+    "createdAt": "2025-06-30T10:27:17.380Z",
+    "updatedAt": "2025-06-30T10:27:17.380Z"
+  },
+  {
+    "id": 171,
+    "name": "Canaan Avalon A1466 (Refurbished)",
+    "descriptions": "A refurbished Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W. Comes with a 6-month warranty.",
+    "price": 2537.29,
+    "stocks": 21,
+    "status": "closed",
+    "createdAt": "2025-06-17T13:24:15.806Z",
+    "updatedAt": "2025-06-17T13:24:15.806Z"
+  },
+  {
+    "id": 172,
+    "name": "iBeLink BM-K5 (New)",
+    "descriptions": "A new iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 11222.42,
+    "stocks": 16,
+    "status": "closed",
+    "createdAt": "2025-06-18T21:23:47.232Z",
+    "updatedAt": "2025-06-18T21:23:47.232Z"
+  },
+  {
+    "id": 173,
+    "name": "Whatsminer M66S (Used)",
+    "descriptions": "A used Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W. Tested and fully functional. Sold as-is.",
+    "price": 4093.06,
+    "stocks": 29,
+    "status": "open",
+    "createdAt": "2025-06-17T17:31:35.012Z",
+    "updatedAt": "2025-06-17T17:31:35.012Z"
+  },
+  {
+    "id": 174,
+    "name": "Whatsminer M66S (Bulk - 5 Units)",
+    "descriptions": "5 units of the Whatsminer M66S. A bulk - 5 units Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W.",
+    "price": 26923.1,
+    "stocks": 11,
+    "status": "open",
+    "createdAt": "2025-06-10T08:09:31.201Z",
+    "updatedAt": "2025-06-10T08:09:31.201Z"
+  },
+  {
+    "id": 175,
+    "name": "Goldshell KA-BOX (Bulk - 10 Units)",
+    "descriptions": "10 units of the Goldshell KA-BOX. A bulk - 10 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 14231.48,
+    "stocks": 12,
+    "status": "open",
+    "createdAt": "2025-06-25T20:24:14.162Z",
+    "updatedAt": "2025-06-25T20:24:14.162Z"
+  },
+  {
+    "id": 176,
+    "name": "Antminer L9 (Used)",
+    "descriptions": "A used Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W. Tested and fully functional. Sold as-is.",
+    "price": 4414.82,
+    "stocks": 38,
+    "status": "open",
+    "createdAt": "2025-07-02T02:47:10.227Z",
+    "updatedAt": "2025-07-02T02:47:10.227Z"
+  },
+  {
+    "id": 177,
+    "name": "Antminer S21 Pro (Used)",
+    "descriptions": "A used Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Tested and fully functional. Sold as-is.",
+    "price": 3019.06,
+    "stocks": 28,
+    "status": "open",
+    "createdAt": "2025-07-06T23:57:40.466Z",
+    "updatedAt": "2025-07-06T23:57:40.466Z"
+  },
+  {
+    "id": 178,
+    "name": "Antminer L9 (Refurbished)",
+    "descriptions": "A refurbished Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W. Comes with a 6-month warranty.",
+    "price": 5543.9,
+    "stocks": 42,
+    "status": "closed",
+    "createdAt": "2025-07-01T01:05:01.929Z",
+    "updatedAt": "2025-07-01T01:05:01.929Z"
+  },
+  {
+    "id": 179,
+    "name": "iBeLink BM-K5 (Bulk - 10 Units)",
+    "descriptions": "10 units of the iBeLink BM-K5. A bulk - 10 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 103137.59,
+    "stocks": 22,
+    "status": "open",
+    "createdAt": "2025-07-06T04:40:01.899Z",
+    "updatedAt": "2025-07-06T04:40:01.899Z"
+  },
+  {
+    "id": 180,
+    "name": "iBeLink BM-K5 (Bulk - 10 Units)",
+    "descriptions": "10 units of the iBeLink BM-K5. A bulk - 10 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 96009.66,
+    "stocks": 19,
+    "status": "open",
+    "createdAt": "2025-06-30T00:43:33.912Z",
+    "updatedAt": "2025-06-30T00:43:33.912Z"
+  },
+  {
+    "id": 181,
+    "name": "iBeLink BM-K5 (New)",
+    "descriptions": "A new iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 11505.09,
+    "stocks": 43,
+    "status": "open",
+    "createdAt": "2025-07-09T13:01:37.542Z",
+    "updatedAt": "2025-07-09T13:01:37.542Z"
+  },
+  {
+    "id": 182,
+    "name": "Whatsminer M60 (Bulk - 10 Units)",
+    "descriptions": "10 units of the Whatsminer M60. A bulk - 10 units Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W.",
+    "price": 37369.04,
+    "stocks": 46,
+    "status": "open",
+    "createdAt": "2025-07-02T15:21:05.860Z",
+    "updatedAt": "2025-07-02T15:21:05.860Z"
+  },
+  {
+    "id": 183,
+    "name": "Antminer S21 Pro (Used)",
+    "descriptions": "A used Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Tested and fully functional. Sold as-is.",
+    "price": 2715.22,
+    "stocks": 46,
+    "status": "open",
+    "createdAt": "2025-06-26T13:09:38.385Z",
+    "updatedAt": "2025-06-26T13:09:38.385Z"
+  },
+  {
+    "id": 184,
+    "name": "Whatsminer M60 (Used)",
+    "descriptions": "A used Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W. Tested and fully functional. Sold as-is.",
+    "price": 2732.69,
+    "stocks": 34,
+    "status": "open",
+    "createdAt": "2025-07-09T11:35:19.562Z",
+    "updatedAt": "2025-07-09T11:35:19.562Z"
+  },
+  {
+    "id": 185,
+    "name": "Whatsminer M60 (Used)",
+    "descriptions": "A used Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W. Tested and fully functional. Sold as-is.",
+    "price": 2757.46,
+    "stocks": 38,
+    "status": "open",
+    "createdAt": "2025-06-10T03:24:50.633Z",
+    "updatedAt": "2025-06-10T03:24:50.633Z"
+  },
+  {
+    "id": 186,
+    "name": "Goldshell KA-BOX (Bulk - 5 Units)",
+    "descriptions": "5 units of the Goldshell KA-BOX. A bulk - 5 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 8271,
+    "stocks": 37,
+    "status": "open",
+    "createdAt": "2025-06-24T00:27:49.601Z",
+    "updatedAt": "2025-06-24T00:27:49.601Z"
+  },
+  {
+    "id": 187,
+    "name": "Whatsminer M60 (New)",
+    "descriptions": "A new Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W.",
+    "price": 4173.95,
+    "stocks": 42,
+    "status": "open",
+    "createdAt": "2025-07-07T13:58:09.377Z",
+    "updatedAt": "2025-07-07T13:58:09.377Z"
+  },
+  {
+    "id": 188,
+    "name": "Canaan Avalon A1466 (Used)",
+    "descriptions": "A used Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W. Tested and fully functional. Sold as-is.",
+    "price": 2204.76,
+    "stocks": 12,
+    "status": "open",
+    "createdAt": "2025-06-20T03:52:59.342Z",
+    "updatedAt": "2025-06-20T03:52:59.342Z"
+  },
+  {
+    "id": 189,
+    "name": "Antminer S21 Pro (New)",
+    "descriptions": "A new Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W.",
+    "price": 4238.34,
+    "stocks": 17,
+    "status": "closed",
+    "createdAt": "2025-06-13T13:01:38.701Z",
+    "updatedAt": "2025-06-13T13:01:38.701Z"
+  },
+  {
+    "id": 190,
+    "name": "iBeLink BM-K5 (Bulk - 5 Units)",
+    "descriptions": "5 units of the iBeLink BM-K5. A bulk - 5 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 55471.36,
+    "stocks": 28,
+    "status": "open",
+    "createdAt": "2025-06-11T09:48:20.031Z",
+    "updatedAt": "2025-06-11T09:48:20.031Z"
+  },
+  {
+    "id": 191,
+    "name": "Jasminer X44-Q (Refurbished)",
+    "descriptions": "A refurbished Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W. Comes with a 6-month warranty.",
+    "price": 2119.89,
+    "stocks": 42,
+    "status": "open",
+    "createdAt": "2025-06-27T12:07:28.417Z",
+    "updatedAt": "2025-06-27T12:07:28.417Z"
+  },
+  {
+    "id": 192,
+    "name": "Goldshell KA-BOX (New)",
+    "descriptions": "A new Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 1674.75,
+    "stocks": 43,
+    "status": "open",
+    "createdAt": "2025-06-18T18:22:19.022Z",
+    "updatedAt": "2025-06-18T18:22:19.022Z"
+  },
+  {
+    "id": 193,
+    "name": "Canaan Avalon A1466 (Refurbished)",
+    "descriptions": "A refurbished Canaan Avalon A1466. Delivers a hashrate of 150 TH/s with an efficiency of 21.5 J/TH. Power consumption is approximately 3230W. Comes with a 6-month warranty.",
+    "price": 2938.92,
+    "stocks": 36,
+    "status": "open",
+    "createdAt": "2025-06-17T20:44:51.166Z",
+    "updatedAt": "2025-06-17T20:44:51.166Z"
+  },
+  {
+    "id": 194,
+    "name": "Whatsminer M66S (Bulk - 10 Units)",
+    "descriptions": "10 units of the Whatsminer M66S. A bulk - 10 units Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W.",
+    "price": 61034.82,
+    "stocks": 4,
+    "status": "open",
+    "createdAt": "2025-06-13T12:38:52.013Z",
+    "updatedAt": "2025-06-13T12:38:52.013Z"
+  },
+  {
+    "id": 195,
+    "name": "Whatsminer M60 (Bulk - 10 Units)",
+    "descriptions": "10 units of the Whatsminer M60. A bulk - 10 units Whatsminer M60. Delivers a hashrate of 186 TH/s with an efficiency of 18.5 J/TH. Power consumption is approximately 3441W.",
+    "price": 37533.3,
+    "stocks": 15,
+    "status": "open",
+    "createdAt": "2025-06-20T23:10:51.884Z",
+    "updatedAt": "2025-06-20T23:10:51.884Z"
+  },
+  {
+    "id": 196,
+    "name": "Goldshell CK-STAR (Refurbished)",
+    "descriptions": "A refurbished Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W. Comes with a 6-month warranty.",
+    "price": 6106.44,
+    "stocks": 38,
+    "status": "open",
+    "createdAt": "2025-06-25T03:29:36.315Z",
+    "updatedAt": "2025-06-25T03:29:36.315Z"
+  },
+  {
+    "id": 197,
+    "name": "Jasminer X44-Q (Refurbished)",
+    "descriptions": "A refurbished Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W. Comes with a 6-month warranty.",
+    "price": 2354.27,
+    "stocks": 7,
+    "status": "closed",
+    "createdAt": "2025-07-08T02:16:50.654Z",
+    "updatedAt": "2025-07-08T02:16:50.654Z"
+  },
+  {
+    "id": 198,
+    "name": "Antminer L9 (New)",
+    "descriptions": "A new Antminer L9. Delivers a hashrate of 12 GH/s with an efficiency of 0.28 J/MH. Power consumption is approximately 3360W.",
+    "price": 7041.17,
+    "stocks": 43,
+    "status": "open",
+    "createdAt": "2025-06-15T15:52:08.699Z",
+    "updatedAt": "2025-06-15T15:52:08.699Z"
+  },
+  {
+    "id": 199,
+    "name": "Whatsminer M66S (Used)",
+    "descriptions": "A used Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W. Tested and fully functional. Sold as-is.",
+    "price": 4176.84,
+    "stocks": 34,
+    "status": "closed",
+    "createdAt": "2025-06-29T23:27:38.195Z",
+    "updatedAt": "2025-06-29T23:27:38.195Z"
+  },
+  {
+    "id": 200,
+    "name": "iBeLink BM-K5 (Bulk - 10 Units)",
+    "descriptions": "10 units of the iBeLink BM-K5. A bulk - 10 units iBeLink BM-K5. Delivers a hashrate of 120 TH/s with an efficiency of 27.5 J/TH. Power consumption is approximately 3300W.",
+    "price": 98715.87,
+    "stocks": 26,
+    "status": "open",
+    "createdAt": "2025-06-10T18:22:25.445Z",
+    "updatedAt": "2025-06-10T18:22:25.445Z"
+  },
+  {
+    "id": 201,
+    "name": "Antminer E11 (Refurbished)",
+    "descriptions": "A refurbished Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W. Comes with a 6-month warranty.",
+    "price": 3605.95,
+    "stocks": 28,
+    "status": "open",
+    "createdAt": "2025-06-17T22:15:59.519Z",
+    "updatedAt": "2025-06-17T22:15:59.519Z"
+  },
+  {
+    "id": 202,
+    "name": "Goldshell KA-BOX (Bulk - 10 Units)",
+    "descriptions": "10 units of the Goldshell KA-BOX. A bulk - 10 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 15573.73,
+    "stocks": 16,
+    "status": "closed",
+    "createdAt": "2025-06-18T07:32:06.017Z",
+    "updatedAt": "2025-06-18T07:32:06.017Z"
+  },
+  {
+    "id": 203,
+    "name": "Whatsminer M66S (Refurbished)",
+    "descriptions": "A refurbished Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W. Comes with a 6-month warranty.",
+    "price": 5096.57,
+    "stocks": 19,
+    "status": "open",
+    "createdAt": "2025-06-22T08:31:57.887Z",
+    "updatedAt": "2025-06-22T08:31:57.887Z"
+  },
+  {
+    "id": 204,
+    "name": "Antminer S21 Pro (Used)",
+    "descriptions": "A used Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W. Tested and fully functional. Sold as-is.",
+    "price": 2574.77,
+    "stocks": 20,
+    "status": "open",
+    "createdAt": "2025-06-21T07:43:50.507Z",
+    "updatedAt": "2025-06-21T07:43:50.507Z"
+  },
+  {
+    "id": 205,
+    "name": "Antminer S21 Pro (New)",
+    "descriptions": "A new Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W.",
+    "price": 4594.27,
+    "stocks": 5,
+    "status": "open",
+    "createdAt": "2025-07-06T21:04:26.134Z",
+    "updatedAt": "2025-07-06T21:04:26.134Z"
+  },
+  {
+    "id": 206,
+    "name": "Antminer E11 (Used)",
+    "descriptions": "A used Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W. Tested and fully functional. Sold as-is.",
+    "price": 3174.95,
+    "stocks": 6,
+    "status": "open",
+    "createdAt": "2025-07-04T20:13:07.245Z",
+    "updatedAt": "2025-07-04T20:13:07.245Z"
+  },
+  {
+    "id": 207,
+    "name": "Goldshell CK-STAR (New)",
+    "descriptions": "A new Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W.",
+    "price": 6963.92,
+    "stocks": 11,
+    "status": "open",
+    "createdAt": "2025-06-28T22:34:35.855Z",
+    "updatedAt": "2025-06-28T22:34:35.855Z"
+  },
+  {
+    "id": 208,
+    "name": "Jasminer X44-Q (Bulk - 5 Units)",
+    "descriptions": "5 units of the Jasminer X44-Q. A bulk - 5 units Jasminer X44-Q. Delivers a hashrate of 2500 MH/s with an efficiency of 0.34 J/MH. Power consumption is approximately 840W.",
+    "price": 12015.95,
+    "stocks": 23,
+    "status": "open",
+    "createdAt": "2025-06-28T20:08:45.529Z",
+    "updatedAt": "2025-06-28T20:08:45.529Z"
+  },
+  {
+    "id": 209,
+    "name": "Goldshell CK-STAR (Refurbished)",
+    "descriptions": "A refurbished Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W. Comes with a 6-month warranty.",
+    "price": 5772.62,
+    "stocks": 34,
+    "status": "open",
+    "createdAt": "2025-06-11T10:19:42.244Z",
+    "updatedAt": "2025-06-11T10:19:42.244Z"
+  },
+  {
+    "id": 210,
+    "name": "Whatsminer M66S (Bulk - 5 Units)",
+    "descriptions": "5 units of the Whatsminer M66S. A bulk - 5 units Whatsminer M66S. Delivers a hashrate of 298 TH/s with an efficiency of 18.7 J/TH. Power consumption is approximately 5570W.",
+    "price": 30366.39,
+    "stocks": 46,
+    "status": "open",
+    "createdAt": "2025-06-11T21:02:33.988Z",
+    "updatedAt": "2025-06-11T21:02:33.988Z"
+  },
+  {
+    "id": 211,
+    "name": "Antminer S21 Pro (Bulk - 5 Units)",
+    "descriptions": "5 units of the Antminer S21 Pro. A bulk - 5 units Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W.",
+    "price": 18718.67,
+    "stocks": 46,
+    "status": "open",
+    "createdAt": "2025-06-16T03:04:16.621Z",
+    "updatedAt": "2025-06-16T03:04:16.621Z"
+  },
+  {
+    "id": 212,
+    "name": "Goldshell CK-STAR (Bulk - 10 Units)",
+    "descriptions": "10 units of the Goldshell CK-STAR. A bulk - 10 units Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W.",
+    "price": 74800.06,
+    "stocks": 17,
+    "status": "open",
+    "createdAt": "2025-07-06T15:22:20.180Z",
+    "updatedAt": "2025-07-06T15:22:20.180Z"
+  },
+  {
+    "id": 213,
+    "name": "Goldshell KA-BOX (Bulk - 5 Units)",
+    "descriptions": "5 units of the Goldshell KA-BOX. A bulk - 5 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 7331.89,
+    "stocks": 35,
+    "status": "open",
+    "createdAt": "2025-07-07T06:47:32.188Z",
+    "updatedAt": "2025-07-07T06:47:32.188Z"
+  },
+  {
+    "id": 214,
+    "name": "Goldshell KA-BOX (Bulk - 5 Units)",
+    "descriptions": "5 units of the Goldshell KA-BOX. A bulk - 5 units Goldshell KA-BOX. Delivers a hashrate of 1.18 TH/s with an efficiency of 338 J/TH. Power consumption is approximately 400W.",
+    "price": 7446.54,
+    "stocks": 32,
+    "status": "open",
+    "createdAt": "2025-07-01T06:11:00.087Z",
+    "updatedAt": "2025-07-01T06:11:00.087Z"
+  },
+  {
+    "id": 215,
+    "name": "Antminer S21 Pro (Bulk - 5 Units)",
+    "descriptions": "5 units of the Antminer S21 Pro. A bulk - 5 units Antminer S21 Pro. Delivers a hashrate of 234 TH/s with an efficiency of 15 J/TH. Power consumption is approximately 3510W.",
+    "price": 21883.14,
+    "stocks": 39,
+    "status": "closed",
+    "createdAt": "2025-07-07T13:54:39.064Z",
+    "updatedAt": "2025-07-07T13:54:39.064Z"
+  },
+  {
+    "id": 216,
+    "name": "Goldshell CK-STAR (Bulk - 10 Units)",
+    "descriptions": "10 units of the Goldshell CK-STAR. A bulk - 10 units Goldshell CK-STAR. Delivers a hashrate of 25 TH/s with an efficiency of 124 J/TH. Power consumption is approximately 3100W.",
+    "price": 71198.82,
+    "stocks": 12,
+    "status": "open",
+    "createdAt": "2025-06-17T16:39:46.678Z",
+    "updatedAt": "2025-06-17T16:39:46.678Z"
+  },
+  {
+    "id": 217,
+    "name": "Antminer E11 (Bulk - 10 Units)",
+    "descriptions": "10 units of the Antminer E11. A bulk - 10 units Antminer E11. Delivers a hashrate of 4200 MH/s with an efficiency of 0.57 J/MH. Power consumption is approximately 2400W.",
+    "price": 43287.2,
+    "stocks": 17,
+    "status": "open",
+    "createdAt": "2025-06-11T15:32:19.348Z",
+    "updatedAt": "2025-06-11T15:32:19.348Z"
   }
 ]

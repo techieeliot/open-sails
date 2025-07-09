@@ -1,13 +1,33 @@
 'use client';
 
-import { FormProps, InteractiveForm } from '@/components/interactive-form';
-import { userSessionAtom } from '@/lib/atoms';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { Collection } from '@/types';
-import { useAtomValue } from 'jotai';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 
-export interface CollectionFormProps extends Pick<FormProps, 'method'> {
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  descriptions: z.string().min(1, 'Description is required'),
+  price: z.coerce.number().min(0, 'Price must be a positive number'),
+  stocks: z.coerce.number().int().min(0, 'Stocks must be a positive integer'),
+});
+
+export interface CollectionFormProps {
+  method: 'POST' | 'PUT';
   collectionId?: number;
   onSuccess?: () => void;
   closeDialog?: () => void;
@@ -19,67 +39,45 @@ export const CollectionForm = ({
   onSuccess,
   closeDialog,
 }: CollectionFormProps) => {
-  const router = useRouter();
   const { user } = useAtomValue(userSessionAtom);
-  const formTitle = method === 'POST' ? 'Create a new collection' : 'Edit collection';
-  const triggerText = method === 'POST' ? 'Create Collection' : 'Save Changes';
+  const setCollections = useSetAtom(collectionsAtom);
 
-  let formData: Partial<Collection> = {
-    name: '',
-    descriptions: '',
-    price: 0,
-    stocks: 0,
-    updatedAt: new Date().toISOString(),
-  };
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      descriptions: '',
+      price: 0,
+      stocks: 0,
+    },
+  });
 
-  // fetch initial data if method is PUT
-  if (method === 'PUT' && collectionId) {
-    // Fetch the collection data to pre-fill the form
-    // This could be done with a useEffect hook or similar, but for simplicity,
-    // we will assume the data is fetched and available in the form.
-    // You would typically fetch the data here and set it in the form fields.
-    // Example:
-    const fetchCollectionData = async () => {
-      const response = await fetch(`/api/collections/${collectionId}`);
-      const data: Collection = await response.json();
-      formData = {
-        ...data,
-        price: Number(data.price),
-        stocks: Number(data.stocks),
-        updatedAt: new Date().toISOString(),
+  useEffect(() => {
+    if (method === 'PUT' && collectionId) {
+      const fetchCollectionData = async () => {
+        const response = await fetch(`/api/collections/${collectionId}`);
+        if (response.ok) {
+          const data: Collection = await response.json();
+          form.reset(data);
+        }
       };
-    };
-
-    useEffect(() => {
       fetchCollectionData();
-    }, [collectionId]);
-  }
+    }
+  }, [collectionId, method, form]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formValues = Object.fromEntries(formData.entries());
-
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     let data: Partial<Collection> = {
-      ...formValues,
-      price: Number(formValues.price),
-      stocks: Number(formValues.stocks),
+      ...values,
       updatedAt: new Date().toISOString(),
     };
 
     if (method === 'POST') {
-      data = {
-        ...data,
-        ownerId: user?.id,
-        createdAt: new Date().toISOString(),
-      };
-    }
-
-    if (method === 'PUT') {
-      data = {
-        ...data,
-        id: collectionId,
-      };
+      if (user) {
+        data.ownerId = user.id;
+      }
+      data.createdAt = new Date().toISOString();
+    } else if (method === 'PUT') {
+      data.id = collectionId;
     }
 
     const response = await fetch('/api/collections', {
@@ -90,81 +88,80 @@ export const CollectionForm = ({
       body: JSON.stringify(data),
     });
 
-    console.log('Response status:', response.status);
     if (response.ok) {
-      alert('Collection processed successfully');
-      if (onSuccess) {
-        onSuccess();
-      }
-      if (closeDialog) {
-        closeDialog();
-      }
-
+      const updatedItem = await response.json();
       if (method === 'POST') {
-        const data = await response.json();
-        router.push(`/collections/${data.id}`);
+        setCollections((prev) => [...prev, updatedItem]);
+      } else {
+        setCollections((prev) => prev.map((c) => (c.id === collectionId ? updatedItem : c)));
       }
-      console.log('Collection action successful');
+      if (onSuccess) onSuccess();
+      if (closeDialog) closeDialog();
     } else {
-      // Handle error
       console.error('Failed to process collection');
+      alert('Failed to process collection. Check console for details.');
     }
   };
 
   return (
-    <InteractiveForm
-      formTitle={formTitle}
-      triggerText={triggerText}
-      method={method}
-      onSubmit={handleSubmit}
-    >
-      <label htmlFor="name" className="text-sm font-medium">
-        Name
-      </label>
-      <input
-        id="name"
-        name="name"
-        type="text"
-        placeholder="Enter collection name"
-        className="input input-bordered w-full"
-        defaultValue={formData.name || ''}
-        required
-      />
-      <label htmlFor="descriptions" className="text-sm font-medium">
-        Description
-      </label>
-      <textarea
-        id="descriptions"
-        name="descriptions"
-        placeholder="Enter collection description"
-        className="textarea textarea-bordered w-full"
-        defaultValue={formData.descriptions || ''}
-        required
-      />
-      <label htmlFor="price" className="text-sm font-medium">
-        Price
-      </label>
-      <input
-        id="price"
-        name="price"
-        type="number"
-        placeholder="Enter price"
-        className="input input-bordered w-full"
-        defaultValue={formData.price || ''}
-        required
-      />
-      <label htmlFor="stocks" className="text-sm font-medium">
-        Stock
-      </label>
-      <input
-        id="stocks"
-        name="stocks"
-        type="number"
-        placeholder="Enter stock quantity"
-        className="input input-bordered w-full"
-        defaultValue={formData.stocks || ''}
-        required
-      />
-    </InteractiveForm>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 p-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter collection name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="descriptions"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Enter collection description" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="Enter price" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="stocks"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Stocks</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="Enter stock quantity" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full">
+          {method === 'POST' ? 'Create Collection' : 'Save Changes'}
+        </Button>
+      </form>
+    </Form>
   );
 };
