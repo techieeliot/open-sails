@@ -1,22 +1,19 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 
-export default function RowItem({
-  title,
-  children,
-  onClick,
-}: {
-  title: string;
-  children: ReactNode;
+export interface RowItemProps {
+  rowTitle: string;
   onClick?: () => void;
-}) {
+}
+
+export default function RowItem({ rowTitle, children, onClick }: PropsWithChildren<RowItemProps>) {
   return (
     <div
       className="w-full max-w-8xl min-w-sm p-4 rounded-lg shadow-md flex items-center justify-between cursor-pointer"
       onClick={onClick}
     >
-      <div>{title}</div>
+      <div>{rowTitle}</div>
       <div className="flex items-center gap-2">{children}</div>
     </div>
   );

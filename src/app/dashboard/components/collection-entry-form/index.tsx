@@ -1,9 +1,9 @@
 'use client';
 
-import { Form } from '@/components/form';
+import { FormProps, InteractiveForm } from '@/components/interactive-form';
 import { useRouter } from 'next/navigation';
 
-export const CollectionForm = ({ method }: { method: 'POST' | 'PUT' }) => {
+export const CollectionEntryForm = ({ method }: { method: FormProps['method'] }) => {
   const router = useRouter();
   const formTitle = method === 'POST' ? 'Create a new collection' : 'Edit collection';
   const triggerText = method === 'POST' ? 'Create Collection' : 'Save Changes';
@@ -14,12 +14,14 @@ export const CollectionForm = ({ method }: { method: 'POST' | 'PUT' }) => {
     const data = Object.fromEntries(formData.entries());
 
     const response = await fetch('/api/collections', {
-      method: 'POST',
+      method,
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         ...data,
+        name: data.name,
+        descriptions: data.descriptions,
         price: Number(data.price),
         stocks: Number(data.stocks),
       }),
@@ -35,7 +37,12 @@ export const CollectionForm = ({ method }: { method: 'POST' | 'PUT' }) => {
   };
 
   return (
-    <Form formTitle={formTitle} triggerText={triggerText} method={method} onSubmit={handleSubmit}>
+    <InteractiveForm
+      formTitle={formTitle}
+      triggerText={triggerText}
+      method={method}
+      onSubmit={handleSubmit}
+    >
       <label htmlFor="name" className="text-sm font-medium">
         Name
       </label>
@@ -79,6 +86,6 @@ export const CollectionForm = ({ method }: { method: 'POST' | 'PUT' }) => {
         className="input input-bordered w-full"
         required
       />
-    </Form>
+    </InteractiveForm>
   );
 };

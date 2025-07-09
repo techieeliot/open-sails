@@ -1,27 +1,22 @@
+import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import RowItem from '@/components/row-item';
 import { Button } from '@/components/ui/button';
+import { Bid } from '@/types';
 import { useEffect, useState } from 'react';
 
-interface Bid {
-  id: number;
-  amount: number;
+export interface BidIndexProps {
+  isOwner?: boolean;
   collectionId: number;
 }
 
-export const BidsIndex = ({
-  isOwner = true,
-  collectionId,
-}: {
-  isOwner?: boolean;
-  collectionId: number;
-}) => {
+export const BidList = ({ isOwner = true, collectionId }: BidIndexProps) => {
   const [bids, setBids] = useState<Bid[]>([]);
 
   useEffect(() => {
     if (collectionId) {
       const fetchBids = async () => {
         const response = await fetch(`/api/bids?collection_id=${collectionId}`);
-        const data = await response.json();
+        const data: Bid[] = await response.json();
         setBids(data);
       };
       fetchBids();
@@ -34,31 +29,27 @@ export const BidsIndex = ({
         <div className="text-center text-muted-foreground">No bids found.</div>
       ) : (
         bids.map((bid, index) => (
-          <RowItem key={bid.id} title={`Bid ${index + 1}`}>
+          <RowItem key={bid.id} rowTitle={`Bid ${index + 1}`}>
             <div className="flex items-center gap-2">
               {/* Placeholder for bid details */}
-              <span>Bid amount: {bid.amount}</span>
+              <span>price: {bid.amount.toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-2">
               {/* If collection owner, show an icon/button to accept bid */}
               {isOwner ? (
                 <>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => console.log('Accept Bid clicked')}
-                  >
-                    {/* icon */}
-                    Accept
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => console.log('Reject Bid clicked')}
-                  >
-                    {/* icon */}
-                    Reject/Cancel
-                  </Button>
+                  <ConfirmationDialog
+                    triggerText="Accept"
+                    dialogTitle="Accept Bid"
+                    description="Are you sure you want to accept this bid?"
+                    onConfirm={() => console.log('Bid accepted')}
+                  />
+                  <ConfirmationDialog
+                    triggerText="Reject"
+                    dialogTitle="Reject Bid"
+                    description="Are you sure you want to reject this bid?"
+                    onConfirm={() => console.log('Bid rejected')}
+                  />
                 </>
               ) : null}
             </div>

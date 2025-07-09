@@ -2,19 +2,11 @@
 
 import RowItem from '@/components/row-item';
 import { Button } from '@/components/ui/button';
-import { BidsIndex } from '../bids-index';
+import { BidList } from '../bids-list';
 import { useEffect, useState } from 'react';
-
-interface Collection {
-  id: number;
-  name: string;
-  descriptions: string;
-  price: number;
-  stocks: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Collection } from '@/types';
+import { DynamicInputDialog } from '../dynamic-input-dialog';
+import { ConfirmationDialog } from '@/components/confirmation-dialog';
 
 export default function CollectionsIndex() {
   const [isOwner, setIsOwner] = useState(true); // Placeholder for owner check
@@ -24,8 +16,8 @@ export default function CollectionsIndex() {
   useEffect(() => {
     const fetchCollections = async () => {
       const response = await fetch('/api/collections');
-      const data = await response.json();
-      setCollections(data);
+      const collectionData: Collection[] = await response.json();
+      setCollections(collectionData);
     };
     fetchCollections();
   }, []);
@@ -42,30 +34,23 @@ export default function CollectionsIndex() {
     <div className="flex flex-col gap-4 w-full max-w-8xl items-end justify-end">
       {collections.map((collection) => (
         <div key={collection.id} className="w-full">
-          <RowItem title={collection.name} onClick={() => toggleCollection(collection.id)}>
+          <RowItem rowTitle={collection.name} onClick={() => toggleCollection(collection.id)}>
             <div className="flex items-center gap-2">
               {isOwner ? (
                 <>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log('Edit Collection clicked');
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log('Delete Collection clicked');
-                    }}
-                  >
-                    Delete
-                  </Button>
+                  <DynamicInputDialog
+                    triggerText="Edit"
+                    dialogTitle="Edit Collection"
+                    description="Fill out the form to edit the collection."
+                    modalCategory="collection"
+                    method="PUT"
+                  />
+                  <ConfirmationDialog
+                    triggerText="Delete"
+                    dialogTitle="Delete Collection"
+                    description="Are you sure you want to delete this collection?"
+                    onConfirm={() => console.log('Collection deleted')}
+                  />
                 </>
               ) : (
                 <Button
@@ -82,7 +67,7 @@ export default function CollectionsIndex() {
             </div>
           </RowItem>
           {expandedCollection === collection.id && (
-            <BidsIndex isOwner={isOwner} collectionId={collection.id} />
+            <BidList isOwner={isOwner} collectionId={collection.id} />
           )}
         </div>
       ))}
