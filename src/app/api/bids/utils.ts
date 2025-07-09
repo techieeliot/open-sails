@@ -1,4 +1,4 @@
-import { BIDS_PATH } from '@/lib/contstants';
+import { BIDS_PATH } from '@/lib/constants';
 import { Bid } from '@/types';
 import { fetchDataByPath, setDataByPath } from '../utils';
 

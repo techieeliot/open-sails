@@ -1845,15 +1845,6 @@
     "updatedAt": "2025-07-02T16:30:29.743Z"
   },
   {
-    "id": 206,
-    "collectionId": 18,
-    "userId": 1,
-    "price": 4702,
-    "status": "pending",
-    "createdAt": "2025-06-10T21:37:43.586Z",
-    "updatedAt": "2025-06-10T21:37:43.586Z"
-  },
-  {
     "id": 207,
     "collectionId": 18,
     "userId": 5,
@@ -11239,5 +11230,122 @@
     "status": "pending",
     "createdAt": "2025-07-01T09:49:30.525Z",
     "updatedAt": "2025-07-01T09:49:30.525Z"
+  },
+  {
+    "price": 30000,
+    "status": "pending",
+    "collectionId": 160,
+    "userId": 5,
+    "updatedAt": "2025-07-09T10:53:51.959Z",
+    "createdAt": "2025-07-09T10:53:51.959Z",
+    "id": 1250
+  },
+  {
+    "price": 387872,
+    "status": "pending",
+    "collectionId": 160,
+    "userId": 5,
+    "updatedAt": "2025-07-09T10:58:05.496Z",
+    "createdAt": "2025-07-09T10:58:05.496Z",
+    "id": 1251
+  },
+  {
+    "price": 8000,
+    "status": "pending",
+    "collectionId": 11,
+    "userId": 5,
+    "updatedAt": "2025-07-09T11:00:42.489Z",
+    "createdAt": "2025-07-09T11:00:42.489Z",
+    "id": 1252
+  },
+  {
+    "price": 387872,
+    "status": "pending",
+    "collectionId": 18,
+    "userId": 5,
+    "updatedAt": "2025-07-09T11:36:36.925Z",
+    "createdAt": "2025-07-09T11:36:36.925Z",
+    "id": 1253
+  },
+  {
+    "price": 387872,
+    "status": "pending",
+    "collectionId": 10,
+    "userId": 5,
+    "updatedAt": "2025-07-09T12:16:00.149Z",
+    "createdAt": "2025-07-09T12:16:00.149Z",
+    "id": 1254
+  },
+  {
+    "price": 387872,
+    "status": "pending",
+    "collectionId": 10,
+    "userId": 5,
+    "updatedAt": "2025-07-09T12:20:43.896Z",
+    "createdAt": "2025-07-09T12:20:43.896Z",
+    "id": 1255
+  },
+  {
+    "price": 30000,
+    "status": "pending",
+    "collectionId": 10,
+    "userId": 5,
+    "updatedAt": "2025-07-09T12:22:25.993Z",
+    "createdAt": "2025-07-09T12:22:25.992Z",
+    "id": 1256
+  },
+  {
+    "price": 77777,
+    "status": "pending",
+    "collectionId": 10,
+    "userId": 5,
+    "updatedAt": "2025-07-09T12:25:27.240Z",
+    "createdAt": "2025-07-09T12:25:27.240Z",
+    "id": 1257
+  },
+  {
+    "price": 888,
+    "status": "pending",
+    "collectionId": 163,
+    "userId": 1,
+    "updatedAt": "2025-07-09T12:50:50.332Z",
+    "createdAt": "2025-07-09T12:50:50.332Z",
+    "id": 1260
+  },
+  {
+    "price": 888,
+    "status": "pending",
+    "collectionId": 162,
+    "userId": 1,
+    "updatedAt": "2025-07-09T12:52:06.815Z",
+    "createdAt": "2025-07-09T12:52:06.815Z",
+    "id": 1261
+  },
+  {
+    "price": 8888,
+    "status": "pending",
+    "collectionId": 92,
+    "userId": 2,
+    "updatedAt": "2025-07-09T13:19:07.507Z",
+    "createdAt": "2025-07-09T13:19:07.507Z",
+    "id": 1262
+  },
+  {
+    "price": 8888,
+    "status": "pending",
+    "collectionId": 167,
+    "userId": 1,
+    "updatedAt": "2025-07-09T13:20:36.152Z",
+    "createdAt": "2025-07-09T13:20:36.152Z",
+    "id": 1263
+  },
+  {
+    "price": 777,
+    "status": "pending",
+    "collectionId": 167,
+    "userId": 1,
+    "updatedAt": "2025-07-09T13:27:59.697Z",
+    "createdAt": "2025-07-09T13:27:59.697Z",
+    "id": 1264
   }
 ]

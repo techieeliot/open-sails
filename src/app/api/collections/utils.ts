@@ -1,4 +1,4 @@
-import { COLLECTIONS_PATH } from '@/lib/contstants';
+import { COLLECTIONS_PATH } from '@/lib/constants';
 import { Collection } from '@/types';
 import { fetchDataByPath, setDataByPath } from '../utils';
 

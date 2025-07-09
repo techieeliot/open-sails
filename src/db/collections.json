@@ -1,7 +1,63 @@
 [
   {
+    "name": "test bob",
+    "descriptions": "iouyiuy",
+    "price": 87,
+    "stocks": 87,
+    "updatedAt": "2025-07-09T13:13:52.953Z",
+    "ownerId": 2,
+    "createdAt": "2025-07-09T13:13:52.953Z",
+    "id": 167,
+    "status": "open"
+  },
+  {
+    "name": "8787",
+    "descriptions": "8787",
+    "price": 8787,
+    "stocks": 8787,
+    "updatedAt": "2025-07-09T13:28:14.391Z",
+    "ownerId": 1,
+    "createdAt": "2025-07-09T13:10:47.260Z",
+    "id": 166,
+    "status": "open"
+  },
+  {
+    "name": "e",
+    "descriptions": "98797",
+    "price": 987978,
+    "stocks": 987987,
+    "updatedAt": "2025-07-09T12:14:26.461Z",
+    "ownerId": 5,
+    "createdAt": "2025-07-09T12:14:26.461Z",
+    "id": 163,
+    "status": "open"
+  },
+  {
+    "name": "test name",
+    "descriptions": "dlkjlkj",
+    "price": 888,
+    "stocks": 888,
+    "updatedAt": "2025-07-09T12:08:46.098Z",
+    "ownerId": 5,
+    "createdAt": "2025-07-09T12:08:46.098Z",
+    "id": 162,
+    "status": "open"
+  },
+  {
+    "name": "test name",
+    "descriptions": "888",
+    "price": 88,
+    "stocks": 888,
+    "ownerId": 5,
+    "updatedAt": "2025-07-09T12:08:11.244Z",
+    "createdAt": "2025-07-09T12:08:11.244Z",
+    "id": 161,
+    "status": "open"
+  },
+  {
     "name": "thinggg",
     "descriptions": "the",
+    "ownerId": 5,
     "price": 9,
     "stocks": 9,
     "updatedAt": "2025-07-09T08:17:13.749Z",
@@ -125,6 +181,7 @@
     "descriptions": "Hydro-cooling miner with 226 TH/s at 29 J/TH. High performance.",
     "price": 4500,
     "stocks": 7,
+    "ownerId": 5,
     "status": "open",
     "createdAt": "2025-07-27T10:00:00Z",
     "updatedAt": "2025-07-27T10:00:00Z"
@@ -145,6 +202,7 @@
     "descriptions": "Nervos CKB miner with 25 TH/s at 3300W.",
     "price": 7000,
     "stocks": 4,
+    "ownerId": 5,
     "status": "open",
     "createdAt": "2025-07-29T10:00:00Z",
     "updatedAt": "2025-07-29T10:00:00Z"
@@ -154,6 +212,7 @@
     "name": "Goldshell HS-BOX",
     "descriptions": "Handshake miner, 470 GH/s at 230W. Small form factor.",
     "price": 800,
+    "ownerId": 5,
     "stocks": 25,
     "status": "open",
     "createdAt": "2025-07-31T10:00:00Z",
@@ -1126,6 +1185,7 @@
     "price": 29807.59,
     "stocks": 13,
     "status": "open",
+    "ownerId": 1,
     "createdAt": "2025-06-11T21:13:39.175Z",
     "updatedAt": "2025-06-11T21:13:39.175Z"
   },

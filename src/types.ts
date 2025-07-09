@@ -7,6 +7,7 @@ export interface Collection {
   price: number;
   stocks: number;
   status: 'open' | 'closed';
+  ownerId: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,7 +17,7 @@ export interface Bid {
   price: number;
   collectionId: number;
   userId: number;
-  status: 'pending' | 'accepted' | 'rejected';
+  status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
   createdAt: string;
   updatedAt: string;
 }

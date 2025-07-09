@@ -1,9 +1,7 @@
-import { getCollectionById, getCollections } from '@/app/api/collections/utils';
-import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
-import { ConfirmationDialog } from '@/components/confirmation-dialog';
+import { getCollectionById } from '@/app/api/collections/utils';
 import PageWrapper from '@/components/page-wrapper';
-import { Button } from '@/components/ui/button';
 import { CollectionAdminPanel } from './components/collection-management-panel';
+import Link from 'next/link';
 
 export default async function CollectionDetailsPage({ params }: { params: { id: string } }) {
   const parsedId = Number(params?.id);
@@ -21,10 +19,16 @@ export default async function CollectionDetailsPage({ params }: { params: { id: 
 
   return (
     <PageWrapper>
+      <Link href="/dashboard">
+        <p className="text-blue-500">Back to Dashboard</p>
+      </Link>
+      <h1 className="text-2xl font-bold mb-4">Collection Details</h1>
+      <p className="mb-4">Here you can view and manage the details of the collection.</p>
+      <p className="mb-4">Collection ID: {parsedId}</p>
       <div className="flex flex-col gap-4 w-full max-w-8xl items-end justify-end">
         {collection ? (
           <div className="w-full">
-            <h1 className="text-2xl font-bold mb-4">{collection.name}</h1>
+            <h1 className="text-2xl font-bold mb-4">Name: {collection.name}</h1>
             <p className="mb-2">Description: {collection.descriptions}</p>
             <p className="mb-2">Status: {collection.status}</p>
           </div>

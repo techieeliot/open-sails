@@ -1,8 +1,11 @@
 'use client';
 
 import { FormProps, InteractiveForm } from '@/components/interactive-form';
+import { userSessionAtom } from '@/lib/atoms';
 import { Collection } from '@/types';
+import { useAtomValue } from 'jotai';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export interface CollectionFormProps extends Pick<FormProps, 'method'> {
   collectionId?: number;
@@ -17,8 +20,40 @@ export const CollectionForm = ({
   closeDialog,
 }: CollectionFormProps) => {
   const router = useRouter();
+  const { user } = useAtomValue(userSessionAtom);
   const formTitle = method === 'POST' ? 'Create a new collection' : 'Edit collection';
   const triggerText = method === 'POST' ? 'Create Collection' : 'Save Changes';
+
+  let formData: Partial<Collection> = {
+    name: '',
+    descriptions: '',
+    price: 0,
+    stocks: 0,
+    updatedAt: new Date().toISOString(),
+  };
+
+  // fetch initial data if method is PUT
+  if (method === 'PUT' && collectionId) {
+    // Fetch the collection data to pre-fill the form
+    // This could be done with a useEffect hook or similar, but for simplicity,
+    // we will assume the data is fetched and available in the form.
+    // You would typically fetch the data here and set it in the form fields.
+    // Example:
+    const fetchCollectionData = async () => {
+      const response = await fetch(`/api/collections/${collectionId}`);
+      const data: Collection = await response.json();
+      formData = {
+        ...data,
+        price: Number(data.price),
+        stocks: Number(data.stocks),
+        updatedAt: new Date().toISOString(),
+      };
+    };
+
+    useEffect(() => {
+      fetchCollectionData();
+    }, [collectionId]);
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,6 +70,7 @@ export const CollectionForm = ({
     if (method === 'POST') {
       data = {
         ...data,
+        ownerId: user?.id,
         createdAt: new Date().toISOString(),
       };
     }
@@ -91,6 +127,7 @@ export const CollectionForm = ({
         type="text"
         placeholder="Enter collection name"
         className="input input-bordered w-full"
+        defaultValue={formData.name || ''}
         required
       />
       <label htmlFor="descriptions" className="text-sm font-medium">
@@ -101,6 +138,7 @@ export const CollectionForm = ({
         name="descriptions"
         placeholder="Enter collection description"
         className="textarea textarea-bordered w-full"
+        defaultValue={formData.descriptions || ''}
         required
       />
       <label htmlFor="price" className="text-sm font-medium">
@@ -112,6 +150,7 @@ export const CollectionForm = ({
         type="number"
         placeholder="Enter price"
         className="input input-bordered w-full"
+        defaultValue={formData.price || ''}
         required
       />
       <label htmlFor="stocks" className="text-sm font-medium">
@@ -123,6 +162,7 @@ export const CollectionForm = ({
         type="number"
         placeholder="Enter stock quantity"
         className="input input-bordered w-full"
+        defaultValue={formData.stocks || ''}
         required
       />
     </InteractiveForm>

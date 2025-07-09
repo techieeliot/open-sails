@@ -1,6 +1,8 @@
-import { FormProps, InteractiveForm } from '@/components/interactive-form';
+import { InteractiveForm } from '@/components/interactive-form';
 import { CollectionFormProps } from '../collection-form';
 import { Bid } from '@/types';
+import { useAtomValue } from 'jotai';
+import { userSessionAtom } from '@/lib/atoms';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
@@ -9,8 +11,21 @@ export interface BidFormProps extends CollectionFormProps {
 }
 
 export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }: BidFormProps) => {
+  const { user } = useAtomValue(userSessionAtom);
   const formTitle = method === 'POST' ? 'Create a new bid' : `Edit bid ${bidId}`;
   const triggerText = method === 'POST' ? 'Create Bid' : 'Save Changes';
+
+  if (!user) {
+    return <div className="text-center text-muted-foreground">Please log in to place a bid.</div>;
+  }
+
+  if (!collectionId) {
+    return <div className="text-center text-muted-foreground">No collection selected.</div>;
+  }
+
+  if (!user.id) {
+    return <div className="text-center text-muted-foreground">User ID is not available.</div>;
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,7 +36,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
       price: Number(formValues.price),
       status: 'pending',
       collectionId,
-      userId: 1, // Replace with actual user ID
+      userId: user.id,
       updatedAt: new Date().toISOString(),
     };
 

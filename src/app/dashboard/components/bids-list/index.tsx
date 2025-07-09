@@ -4,15 +4,20 @@ import { Bid } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { DynamicInputDialog } from '../dynamic-input-dialog';
 import { Button } from '@/components/ui/button';
+import { PriceBidStatus } from './components';
+import { useAtomValue } from 'jotai';
+import { userSessionAtom } from '@/lib/atoms';
+import { cn } from '@/lib/utils';
 
 export interface BidIndexProps {
-  isOwner?: boolean;
+  isOwner: boolean;
   collectionId: number;
 }
 
-export const BidList = ({ isOwner = true, collectionId }: BidIndexProps) => {
+export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
   const [bids, setBids] = useState<Bid[]>([]);
   const [visibleBidsCount, setVisibleBidsCount] = useState(10);
+  const { user } = useAtomValue(userSessionAtom);
 
   const fetchBids = useCallback(async () => {
     if (collectionId) {
@@ -25,7 +30,7 @@ export const BidList = ({ isOwner = true, collectionId }: BidIndexProps) => {
   const resolveBid = async (
     bidId: number,
     collectionId: number,
-    status: 'accepted' | 'rejected',
+    status: 'accepted' | 'rejected' | 'cancelled',
   ) => {
     await fetch(`/api/bids?collection_id=${collectionId}&bid_id=${bidId}`, {
       method: 'PUT',
@@ -35,6 +40,15 @@ export const BidList = ({ isOwner = true, collectionId }: BidIndexProps) => {
       body: JSON.stringify({
         status,
       }),
+    });
+  };
+
+  const cancelBid = async (bidId: number) => {
+    await fetch(`/api/bids?bid_id=${bidId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   };
 
@@ -48,79 +62,79 @@ export const BidList = ({ isOwner = true, collectionId }: BidIndexProps) => {
 
   return (
     <div className="pl-10 w-full">
-      {!isOwner && (
-        <div className="flex justify-end mb-4">
-          <DynamicInputDialog
-            triggerText="Place Bid"
-            dialogTitle="Place a new bid"
-            modalCategory="bid"
-            method="POST"
-            collectionId={collectionId}
-            onSuccess={fetchBids}
-          />
-        </div>
-      )}
       <Suspense fallback={<div className="text-center text-muted-foreground">Loading bids...</div>}>
         {bids.length === 0 ? (
           <div className="text-center text-muted-foreground">
             No bids found for this collection yet...
           </div>
         ) : (
-          bids.slice(0, visibleBidsCount).map((bid, index) => (
-            <RowItem key={bid.id} rowTitle={`Bid ${index + 1}`}>
-              <div className="flex items-center gap-2">
-                {/* Placeholder for user details */}
-                <span>User: {bid.userId}</span>
-              </div>
-              {isOwner ? (
+          bids.slice(0, visibleBidsCount).map((bid, index) => {
+            const isBidder = user && bid.userId === user.id;
+
+            return (
+              <RowItem key={bid.id} rowTitle={`Bid ${index + 1}`}>
                 <div className="flex items-center gap-2">
-                  {/* Placeholder for bid details */}
-                  <span>Price: {bid.price}</span>
+                  {/* Placeholder for user details */}
+                  <span className={cn(isBidder ? 'text-yellow-400' : 'text-muted-foreground')}>
+                    User: {bid.userId}
+                  </span>
                 </div>
-              ) : null}
-              <div className="flex items-center gap-2">
-                {/* If collection owner, show an icon/button to accept bid */}
-                {bid.status === 'pending' ? (
-                  <>
+                <PriceBidStatus price={bid.price} status={bid.status} />
+                <div className="flex items-center gap-2">
+                  {/* If collection owner, show an icon/button to accept bid */}
+                  {isOwner && bid.status === 'pending' ? (
+                    <>
+                      <ConfirmationDialog
+                        triggerText="Accept"
+                        dialogTitle="Accept Bid"
+                        description="Are you sure you want to accept this bid?"
+                        onConfirm={async () => {
+                          try {
+                            await resolveBid(bid.id, bid.collectionId, 'accepted');
+                            alert('Bid accepted successfully');
+                            fetchBids();
+                          } catch (error) {
+                            console.error('Failed to accept bid:', error);
+                            alert('Failed to accept bid');
+                          }
+                        }}
+                      />
+                      <ConfirmationDialog
+                        triggerText="Reject"
+                        dialogTitle="Reject Bid"
+                        description="Are you sure you want to reject this bid?"
+                        onConfirm={async () => {
+                          try {
+                            await resolveBid(bid.id, bid.collectionId, 'rejected');
+                            alert('Bid rejected successfully');
+                            fetchBids();
+                          } catch (error) {
+                            console.error('Failed to reject bid:', error);
+                            alert('Failed to reject bid');
+                          }
+                        }}
+                      />
+                    </>
+                  ) : !isOwner && status === 'pending' && isBidder ? (
                     <ConfirmationDialog
-                      triggerText="Accept"
-                      dialogTitle="Accept Bid"
-                      description="Are you sure you want to accept this bid?"
+                      triggerText="Cancel Bid"
+                      dialogTitle="Cancel Bid"
                       onConfirm={async () => {
                         try {
-                          await resolveBid(bid.id, bid.collectionId, 'accepted');
-                          alert('Bid accepted successfully');
+                          await cancelBid(bid.id);
+                          alert('Bid cancelled successfully');
                           fetchBids();
                         } catch (error) {
-                          console.error('Failed to accept bid:', error);
-                          alert('Failed to accept bid');
+                          console.error('Failed to cancel bid:', error);
+                          alert('Failed to cancel bid');
                         }
                       }}
                     />
-                    <ConfirmationDialog
-                      triggerText="Reject"
-                      dialogTitle="Reject Bid"
-                      description="Are you sure you want to reject this bid?"
-                      onConfirm={async () => {
-                        try {
-                          await resolveBid(bid.id, bid.collectionId, 'rejected');
-                          alert('Bid rejected successfully');
-                          fetchBids();
-                        } catch (error) {
-                          console.error('Failed to reject bid:', error);
-                          alert('Failed to reject bid');
-                        }
-                      }}
-                    />
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <span>Status: {bid.status}</span>
-                  </div>
-                )}
-              </div>
-            </RowItem>
-          ))
+                  ) : null}
+                </div>
+              </RowItem>
+            );
+          })
         )}
       </Suspense>
       {visibleBidsCount < bids.length && (

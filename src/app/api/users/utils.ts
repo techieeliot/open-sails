@@ -1,4 +1,4 @@
-import { USERS_PATH } from '@/lib/contstants';
+import { USERS_PATH } from '@/lib/constants';
 import { User } from '@/types';
 import { fetchDataByPath } from '../utils';
 
