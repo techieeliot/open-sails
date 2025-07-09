@@ -1,8 +1,9 @@
-import usersData from '@/db/users.json';
+import { getUsers } from './utils';
 
 export async function GET(request: Request) {
   try {
-    return new Response(JSON.stringify(usersData), {
+    const users = await getUsers();
+    return new Response(JSON.stringify(users), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {

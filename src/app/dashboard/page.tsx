@@ -14,15 +14,6 @@ export default function DashboardPage() {
   return (
     <PageWrapper>
       <section className="flex flex-col items-center gap-8 min-w-lg">
-        <div className="flex w-full justify-end max-w-8xl">
-          <DynamicInputDialog
-            triggerText="Create Collection"
-            dialogTitle="Create Collection"
-            description="Fill out the form to create a new collection."
-            modalCategory="collection"
-            method="POST"
-          />
-        </div>
         <CollectionsIndex />
       </section>
     </PageWrapper>

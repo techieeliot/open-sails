@@ -1,9 +1,21 @@
 'use client';
 
 import { FormProps, InteractiveForm } from '@/components/interactive-form';
+import { Collection } from '@/types';
 import { useRouter } from 'next/navigation';
 
-export const CollectionEntryForm = ({ method }: { method: FormProps['method'] }) => {
+export interface CollectionFormProps extends Pick<FormProps, 'method'> {
+  collectionId?: number;
+  onSuccess?: () => void;
+  closeDialog?: () => void;
+}
+
+export const CollectionForm = ({
+  method,
+  collectionId,
+  onSuccess,
+  closeDialog,
+}: CollectionFormProps) => {
   const router = useRouter();
   const formTitle = method === 'POST' ? 'Create a new collection' : 'Edit collection';
   const triggerText = method === 'POST' ? 'Create Collection' : 'Save Changes';
@@ -11,28 +23,55 @@ export const CollectionEntryForm = ({ method }: { method: FormProps['method'] })
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    const formValues = Object.fromEntries(formData.entries());
+
+    let data: Partial<Collection> = {
+      ...formValues,
+      price: Number(formValues.price),
+      stocks: Number(formValues.stocks),
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (method === 'POST') {
+      data = {
+        ...data,
+        createdAt: new Date().toISOString(),
+      };
+    }
+
+    if (method === 'PUT') {
+      data = {
+        ...data,
+        id: collectionId,
+      };
+    }
 
     const response = await fetch('/api/collections', {
       method,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        ...data,
-        name: data.name,
-        descriptions: data.descriptions,
-        price: Number(data.price),
-        stocks: Number(data.stocks),
-      }),
+      body: JSON.stringify(data),
     });
 
+    console.log('Response status:', response.status);
     if (response.ok) {
-      router.refresh();
-      // Optionally close the modal
+      alert('Collection processed successfully');
+      if (onSuccess) {
+        onSuccess();
+      }
+      if (closeDialog) {
+        closeDialog();
+      }
+
+      if (method === 'POST') {
+        const data = await response.json();
+        router.push(`/collections/${data.id}`);
+      }
+      console.log('Collection action successful');
     } else {
       // Handle error
-      console.error('Failed to create collection');
+      console.error('Failed to process collection');
     }
   };
 

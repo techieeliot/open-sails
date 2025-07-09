@@ -5,7 +5,7 @@ export interface FormProps {
   formTitle?: string;
   triggerText?: string;
   method: 'POST' | 'PUT';
-  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const InteractiveForm = ({

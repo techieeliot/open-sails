@@ -1,16 +1,13 @@
-import collectionsData from '@/db/collections.json';
+import { getCollectionById } from '../utils';
 
-export async function GET(request: Request) {
-  const collectionId = request.url.split('/').pop() || 0;
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    if (!collectionId) {
-      return Response.json({ error: 'Collection ID is required' }, { status: 400 });
-    }
-    if (collectionId === 'route' || isNaN(Number(collectionId))) {
+    const collectionId = Number(params.id);
+    if (isNaN(collectionId)) {
       return Response.json({ error: 'Invalid collection ID' }, { status: 400 });
     }
 
-    const collection = collectionsData.find((c) => c.id === Number(collectionId));
+    const collection = await getCollectionById(collectionId);
     if (!collection) {
       return Response.json({ error: 'Collection not found' }, { status: 404 });
     }
@@ -18,6 +15,6 @@ export async function GET(request: Request) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch collections' }, { status: 500 });
+    return Response.json({ error: 'Failed to fetch collection' }, { status: 500 });
   }
 }

@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={cn(geistSans.variable, geistMono.variable, 'antialiased', 'dark')}>
         {/* Top Navigation */}
         <header className="fixed w-full z-50 dark:bg-zinc-900 bg-zinc-100">
@@ -40,7 +40,13 @@ export default function RootLayout({
                 >
                   Open Sails
                   <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <Image src="/logo.png" alt="Logo" width={30} height={30} />
+                    <Image
+                      src="/logo.png"
+                      alt="Logo"
+                      width={30}
+                      height={30}
+                      className="h-auto w-auto"
+                    />
                   </div>
                 </Link>
               </nav>
@@ -53,7 +59,13 @@ export default function RootLayout({
         {children}
 
         <footer className="flex items-center justify-center p-4 shadow-md">
-          <Image src="/logo.png" alt="Footer Logo" width={30} height={30} />
+          <Image
+            src="/logo.png"
+            alt="Footer Logo"
+            width={30}
+            height={30}
+            className="h-auto w-auto"
+          />
         </footer>
       </body>
     </html>

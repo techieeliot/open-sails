@@ -13,7 +13,7 @@ export interface Collection {
 
 export interface Bid {
   id: number;
-  amount: number;
+  price: number;
   collectionId: number;
   userId: number;
   status: 'pending' | 'accepted' | 'rejected';

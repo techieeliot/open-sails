@@ -1,103 +1,23 @@
 [
   {
-    "id": 1,
-    "name": "Antminer S19 Pro",
-    "descriptions": "High-efficiency air-cooled miner with a hashrate of 110 TH/s and power consumption of 3250W.",
-    "price": 1800,
-    "stocks": 15,
-    "status": "open",
-    "createdAt": "2025-07-08T10:00:00Z",
-    "updatedAt": "2025-07-08T10:00:00Z"
-  },
-  {
-    "id": 2,
-    "name": "Whatsminer M30S++",
-    "descriptions": "A robust miner delivering 112 TH/s with an efficiency of 31 J/TH. Known for its stability and longevity.",
-    "price": 1950,
-    "stocks": 10,
-    "status": "open",
-    "createdAt": "2025-07-08T11:00:00Z",
-    "updatedAt": "2025-07-08T11:00:00Z"
-  },
-  {
-    "id": 3,
-    "name": "Canaan AvalonMiner 1246",
-    "descriptions": "Offers 90 TH/s hashrate with a power consumption of 3420W. A reliable choice for various mining operations.",
-    "price": 1500,
-    "stocks": 25,
-    "status": "closed",
-    "createdAt": "2025-07-07T09:00:00Z",
-    "updatedAt": "2025-07-07T14:00:00Z"
-  },
-  {
-    "id": 4,
-    "name": "Antminer S21",
-    "descriptions": "Next-generation miner with 200 TH/s hashrate and superior power efficiency at 17.5 J/TH.",
-    "price": 3500,
-    "stocks": 5,
-    "status": "open",
-    "createdAt": "2025-07-09T10:00:00Z",
-    "updatedAt": "2025-07-09T10:00:00Z"
-  },
-  {
-    "id": 5,
-    "name": "Whatsminer M50S",
-    "descriptions": "Liquid-cooled miner pushing 126 TH/s at 26 J/TH, designed for high-performance data centers.",
-    "price": 2800,
-    "stocks": 8,
-    "status": "open",
-    "createdAt": "2025-07-09T11:00:00Z",
-    "updatedAt": "2025-07-09T11:00:00Z"
-  },
-  {
-    "id": 6,
-    "name": "Jasminer X16-Q",
-    "descriptions": "High-throughput EtHash ASIC with 1950 MH/s and a quiet design, consuming only 620W.",
-    "price": 2200,
-    "stocks": 12,
-    "status": "open",
-    "createdAt": "2025-07-10T10:00:00Z",
-    "updatedAt": "2025-07-10T10:00:00Z"
-  },
-  {
-    "id": 7,
-    "name": "iBeLink BM-K3",
-    "descriptions": "Kadena miner with a massive 70 TH/s hashrate and a power consumption of 3300W.",
-    "price": 9500,
-    "stocks": 3,
-    "status": "closed",
-    "createdAt": "2025-07-01T10:00:00Z",
-    "updatedAt": "2025-07-05T12:00:00Z"
-  },
-  {
-    "id": 8,
-    "name": "Antminer L7",
-    "descriptions": "Top-tier Scrypt miner for Litecoin/Dogecoin, offering 9500 MH/s at 3425W.",
-    "price": 5500,
-    "stocks": 7,
-    "status": "open",
-    "createdAt": "2025-07-11T10:00:00Z",
-    "updatedAt": "2025-07-11T10:00:00Z"
-  },
-  {
-    "id": 9,
-    "name": "Goldshell KD-BOX II",
-    "descriptions": "Compact and quiet Kadena miner, 4.8 TH/s at 400W. Ideal for home or office use.",
-    "price": 1200,
-    "stocks": 30,
-    "status": "open",
-    "createdAt": "2025-07-12T10:00:00Z",
-    "updatedAt": "2025-07-12T10:00:00Z"
+    "name": "thinggg",
+    "descriptions": "the",
+    "price": 9,
+    "stocks": 9,
+    "updatedAt": "2025-07-09T08:17:13.749Z",
+    "createdAt": "2025-07-09T08:17:13.749Z",
+    "id": 160,
+    "status": "open"
   },
   {
     "id": 10,
-    "name": "Antminer E9 Pro",
-    "descriptions": "Powerful EtHash miner with 3680 MH/s at 2200W, a successor to the legendary E9.",
-    "price": 3800,
-    "stocks": 9,
+    "name": "test",
+    "descriptions": "collection",
+    "price": 8,
+    "stocks": 8,
     "status": "open",
     "createdAt": "2025-07-13T10:00:00Z",
-    "updatedAt": "2025-07-13T10:00:00Z"
+    "updatedAt": "2025-07-09T08:10:55.636Z"
   },
   {
     "id": 11,
@@ -110,26 +30,6 @@
     "updatedAt": "2025-07-14T10:00:00Z"
   },
   {
-    "id": 12,
-    "name": "Whatsminer M30S++ (Bulk - 10 Units)",
-    "descriptions": "A pack of 10 Whatsminer M30S++ units. Total hashrate of 1.12 PH/s.",
-    "price": 19000,
-    "stocks": 5,
-    "status": "open",
-    "createdAt": "2025-07-15T10:00:00Z",
-    "updatedAt": "2025-07-15T10:00:00Z"
-  },
-  {
-    "id": 13,
-    "name": "Canaan AvalonMiner 1246 (Used)",
-    "descriptions": "Used AvalonMiner 1246, 90 TH/s. Tested and fully functional. Sold as-is.",
-    "price": 1100,
-    "stocks": 40,
-    "status": "open",
-    "createdAt": "2025-07-16T10:00:00Z",
-    "updatedAt": "2025-07-16T10:00:00Z"
-  },
-  {
     "id": 14,
     "name": "Antminer S21 (Pre-order)",
     "descriptions": "Secure your Antminer S21 from the next batch. Expected delivery in Q4 2025.",
@@ -138,26 +38,6 @@
     "status": "open",
     "createdAt": "2025-07-17T10:00:00Z",
     "updatedAt": "2025-07-17T10:00:00Z"
-  },
-  {
-    "id": 15,
-    "name": "Whatsminer M50S (Slightly Used)",
-    "descriptions": "Liquid-cooled M50S with 3 months of use. 126 TH/s at 26 J/TH. Includes cooling components.",
-    "price": 2500,
-    "stocks": 4,
-    "status": "open",
-    "createdAt": "2025-07-18T10:00:00Z",
-    "updatedAt": "2025-07-18T10:00:00Z"
-  },
-  {
-    "id": 16,
-    "name": "Jasminer X16-Q (Bulk - 5 Units)",
-    "descriptions": "A lot of 5 Jasminer X16-Q units. Total 9750 MH/s at 3100W.",
-    "price": 10500,
-    "stocks": 10,
-    "status": "open",
-    "createdAt": "2025-07-19T10:00:00Z",
-    "updatedAt": "2025-07-19T10:00:00Z"
   },
   {
     "id": 17,
@@ -270,16 +150,6 @@
     "updatedAt": "2025-07-29T10:00:00Z"
   },
   {
-    "id": 28,
-    "name": "Antminer Z15",
-    "descriptions": "Equihash miner for Zcash, 420 KSol/s at 1510W.",
-    "price": 2800,
-    "stocks": 9,
-    "status": "open",
-    "createdAt": "2025-07-30T10:00:00Z",
-    "updatedAt": "2025-07-30T10:00:00Z"
-  },
-  {
     "id": 29,
     "name": "Goldshell HS-BOX",
     "descriptions": "Handshake miner, 470 GH/s at 230W. Small form factor.",
@@ -308,16 +178,6 @@
     "status": "open",
     "createdAt": "2025-08-02T10:00:00Z",
     "updatedAt": "2025-08-02T10:00:00Z"
-  },
-  {
-    "id": 32,
-    "name": "Whatsminer M30S (88 TH/s)",
-    "descriptions": "The base M30S model, delivering 88 TH/s at 38 J/TH.",
-    "price": 1450,
-    "stocks": 25,
-    "status": "open",
-    "createdAt": "2025-08-03T10:00:00Z",
-    "updatedAt": "2025-08-03T10:00:00Z"
   },
   {
     "id": 33,
@@ -1498,5 +1358,95 @@
     "status": "closed",
     "createdAt": "2025-07-02T18:16:22.681Z",
     "updatedAt": "2025-07-02T18:16:22.681Z"
+  },
+  {
+    "id": 151,
+    "name": "test",
+    "descriptions": "lorem ipsum dolor",
+    "price": 1,
+    "stocks": 1,
+    "updatedAt": "2025-07-09T04:45:37.024Z",
+    "createdAt": "2025-07-09T04:45:37.024Z",
+    "status": "open"
+  },
+  {
+    "id": 152,
+    "name": "hello",
+    "descriptions": "baby",
+    "price": 9,
+    "stocks": 9,
+    "updatedAt": "2025-07-09T06:31:55.019Z",
+    "createdAt": "2025-07-09T06:04:01.373Z",
+    "status": "open"
+  },
+  {
+    "id": 153,
+    "name": "new",
+    "descriptions": "new",
+    "price": 9,
+    "stocks": 9,
+    "updatedAt": "2025-07-09T06:18:55.354Z",
+    "createdAt": "2025-07-09T06:18:55.354Z",
+    "status": "open"
+  },
+  {
+    "name": "test machine",
+    "descriptions": "lorem ipsum",
+    "price": 99999,
+    "stocks": 1010,
+    "updatedAt": "2025-07-09T07:25:08.061Z",
+    "createdAt": "2025-07-09T07:25:08.061Z",
+    "id": 154,
+    "status": "open"
+  },
+  {
+    "name": "war machine",
+    "descriptions": "iron man's side kick",
+    "price": 99999,
+    "stocks": 101,
+    "updatedAt": "2025-07-09T07:25:57.314Z",
+    "createdAt": "2025-07-09T07:25:57.314Z",
+    "id": 155,
+    "status": "open"
+  },
+  {
+    "name": "collection",
+    "descriptions": "descriptioin",
+    "price": 999,
+    "stocks": 1010,
+    "updatedAt": "2025-07-09T07:30:40.404Z",
+    "createdAt": "2025-07-09T07:30:40.404Z",
+    "id": 156,
+    "status": "open"
+  },
+  {
+    "name": "black",
+    "descriptions": "silver",
+    "price": 9999,
+    "stocks": 1010,
+    "updatedAt": "2025-07-09T07:32:04.770Z",
+    "createdAt": "2025-07-09T07:32:04.770Z",
+    "id": 157,
+    "status": "open"
+  },
+  {
+    "name": "hello",
+    "descriptions": "thing",
+    "price": 9,
+    "stocks": 9,
+    "updatedAt": "2025-07-09T07:51:50.572Z",
+    "createdAt": "2025-07-09T07:51:50.572Z",
+    "id": 158,
+    "status": "open"
+  },
+  {
+    "name": "thingy",
+    "descriptions": "description",
+    "price": 9,
+    "stocks": 9,
+    "updatedAt": "2025-07-09T08:11:15.040Z",
+    "createdAt": "2025-07-09T08:11:15.040Z",
+    "id": 159,
+    "status": "open"
   }
 ]

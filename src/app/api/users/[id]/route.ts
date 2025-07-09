@@ -1,16 +1,14 @@
-import usersData from '@/db/users.json';
+import { getUserById } from '../utils';
 
-export async function GET(request: Request) {
-  const userId = request.url.split('/').pop() || 0;
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    if (!userId) {
-      return Response.json({ error: 'User ID is required' }, { status: 400 });
-    }
-    if (userId === 'route' || isNaN(Number(userId))) {
+    const userId = Number(params.id);
+    if (isNaN(userId)) {
       return Response.json({ error: 'Invalid user ID' }, { status: 400 });
     }
 
-    const user = usersData.find((u) => u.id === Number(userId));
+    const user = await getUserById(userId);
+
     if (!user) {
       return Response.json({ error: 'User not found' }, { status: 404 });
     }
@@ -18,6 +16,6 @@ export async function GET(request: Request) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch users' }, { status: 500 });
+    return Response.json({ error: 'Failed to fetch user' }, { status: 500 });
   }
 }

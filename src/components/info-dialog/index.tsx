@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -8,7 +10,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { DialogModalProps } from '@/types';
-import { PropsWithChildren } from 'react';
+import { cloneElement, isValidElement, PropsWithChildren, ReactElement, useState } from 'react';
 
 export const InfoDialog = ({
   triggerText,
@@ -17,15 +19,25 @@ export const InfoDialog = ({
   children,
   ...props
 }: PropsWithChildren<DialogModalProps>) => {
+  const [open, setOpen] = useState(false);
+
+  const closeDialog = () => setOpen(false);
+
   return (
-    <Dialog {...props}>
-      <DialogTrigger className="btn btn-primary">{triggerText}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen} {...props}>
+      <DialogTrigger asChild>
+        <Button type="button" variant="outline">
+          {triggerText}
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        {children}
+        {isValidElement(children)
+          ? cloneElement(children as ReactElement<any>, { closeDialog })
+          : children}
       </DialogContent>
     </Dialog>
   );
