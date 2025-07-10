@@ -37,8 +37,8 @@ export async function PUT(request: NextRequest) {
     return new Response(JSON.stringify(updatedCollection), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -51,7 +51,7 @@ export async function DELETE(request: NextRequest) {
     await deleteCollection(id);
 
     return new Response(null, { status: 204 });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }

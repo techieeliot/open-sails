@@ -1,6 +1,6 @@
 import { getUserById } from '../utils';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
     const userId = Number(params.id);
     if (isNaN(userId)) {
@@ -16,6 +16,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch user' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to fetch user: ' + JSON.stringify(error) },
+      { status: 500 },
+    );
   }
 }

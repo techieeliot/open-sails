@@ -15,6 +15,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch collection' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to fetch collection: ' + JSON.stringify(error) },
+      { status: 500 },
+    );
   }
 }

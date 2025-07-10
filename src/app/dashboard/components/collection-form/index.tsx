@@ -66,7 +66,7 @@ export const CollectionForm = ({
   }, [collectionId, method, form]);
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    let data: Partial<Collection> = {
+    const data: Partial<Collection> = {
       ...values,
       updatedAt: new Date().toISOString(),
     };
