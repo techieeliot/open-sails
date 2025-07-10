@@ -1,8 +1,16 @@
 import { getUsers } from './utils';
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get('id');
   try {
     const users = await getUsers();
+    if (userId) {
+      const user = users.find((u) => u.id === Number(userId));
+      return new Response(JSON.stringify(user), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
     return new Response(JSON.stringify(users), {
       headers: { 'Content-Type': 'application/json' },
     });
