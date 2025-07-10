@@ -1,6 +1,6 @@
 import { getUsers } from './utils';
 
-export async function GET(_req: Request) {
+export async function GET() {
   try {
     const users = await getUsers();
     return new Response(JSON.stringify(users), {

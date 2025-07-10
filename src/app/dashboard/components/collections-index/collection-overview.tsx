@@ -3,8 +3,8 @@ import RowItem from '@/components/row-item';
 import { Collection } from '@/types';
 import { DynamicInputDialog } from '../dynamic-input-dialog';
 import { BidList } from '../bids-list';
-import { useAtom, useAtomValue } from 'jotai';
-import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
+import { useAtom } from 'jotai';
+import { collectionsAtom } from '@/lib/atoms';
 
 interface CollectionOverviewProps extends Collection {
   setCollectionActiveState: (id: number) => void;
