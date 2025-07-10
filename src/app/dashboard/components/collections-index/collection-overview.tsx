@@ -23,7 +23,6 @@ export const CollectionOverview = ({
   isOwner,
 }: CollectionOverviewProps) => {
   const [collections, setCollections] = useAtom(collectionsAtom);
-  const { user } = useAtomValue(userSessionAtom);
 
   return (
     <div className="w-full">

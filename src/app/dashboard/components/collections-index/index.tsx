@@ -24,10 +24,6 @@ export default function CollectionsIndex() {
     fetchCollections();
   }, [fetchCollections]);
 
-  const handleCollectionCreated = (newCollection: Collection) => {
-    setCollections((prev) => [...prev, newCollection]);
-  };
-
   return (
     <div className="flex flex-col gap-4 w-full h-full max-w-8xl items-end justify-end">
       <Suspense

@@ -15,7 +15,7 @@ export const LogoutHandler = () => {
 
   useEffect(() => {
     handleLogout();
-  }, []);
+  }, [handleLogout]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">Logging you out...</div>

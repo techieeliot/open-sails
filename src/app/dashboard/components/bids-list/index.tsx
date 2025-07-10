@@ -2,7 +2,6 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import RowItem from '@/components/row-item';
 import { Bid } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { DynamicInputDialog } from '../dynamic-input-dialog';
 import { Button } from '@/components/ui/button';
 import { PriceBidStatus } from './components';
 import { useAtomValue } from 'jotai';

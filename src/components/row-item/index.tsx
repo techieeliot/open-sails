@@ -1,6 +1,6 @@
 'use client';
 
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
 
 export interface RowItemProps {
   rowTitle: string;

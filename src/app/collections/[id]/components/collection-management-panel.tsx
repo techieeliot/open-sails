@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 export const CollectionAdminPanel = ({ id }: { id: number }) => {
   const router = useRouter();
-  const [isOwner, _setIsOwner] = useState(true);
+  const [isOwner] = useState(true);
 
   return (
     <section>

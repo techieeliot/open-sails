@@ -8,7 +8,10 @@ export async function GET() {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch collections' }, { status: 500 });
+    return Response.json(
+      { error: `Failed to fetch collections: ${(error as Error).message}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -22,7 +25,10 @@ export async function POST(request: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to create collection' }, { status: 500 });
+    return Response.json(
+      { error: `Failed to create collection: ${(error as Error).message}` },
+      { status: 500 },
+    );
   }
 }
 
