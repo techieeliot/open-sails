@@ -12,9 +12,10 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-unused-vars': 'warn',
     'no-console': 'warn',
-    'react/react-in-jsx-scope': 'off', // Next.js does not require
-    'react/jsx-uses-react': 'off', // Next.js does not require React to be in scope
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
     'react/jsx-uses-vars': 'warn',
+    'react-hooks/exhaustive-deps': 'warn',
     'prettier/prettier': [
       'error',
       {

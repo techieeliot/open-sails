@@ -15,7 +15,7 @@ export async function getCollectionById(id: number): Promise<Collection | null> 
   return collections.find((c) => c.id === id) || null;
 }
 
-export async function createCollection(collection: any): Promise<Collection> {
+export async function createCollection(collection: Collection): Promise<Collection> {
   const collections = await getCollections();
   const newId = collections.length ? Math.max(...collections.map((c) => c.id)) + 1 : 1;
   const newCollection: Collection = {

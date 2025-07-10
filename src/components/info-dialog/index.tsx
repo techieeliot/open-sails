@@ -36,7 +36,7 @@ export const InfoDialog = ({
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {isValidElement(children)
-          ? cloneElement(children as ReactElement<any>, { closeDialog })
+          ? cloneElement(children as ReactElement<{ closeDialog: () => void }>, { closeDialog })
           : children}
       </DialogContent>
     </Dialog>
