@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return new Response(JSON.stringify(bid), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
