@@ -6,7 +6,7 @@ import { Collection } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
-import { CollectionOverview } from './collection-overview,';
+import { CollectionOverview } from './collection-overview';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);

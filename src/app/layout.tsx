@@ -28,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(geistSans.variable, geistMono.variable, 'antialiased', 'dark')}>
+      <body
+        suppressHydrationWarning
+        className={cn(geistSans.variable, geistMono.variable, 'antialiased', 'dark')}
+      >
         {/* Top Navigation */}
         <header className="fixed w-full z-50 dark:bg-zinc-900 bg-zinc-100">
           <div className="flex items-center justify-between shadow-md">
