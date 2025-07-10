@@ -1,8 +1,10 @@
+import { NextRequest } from 'next/server';
 import { getCollectionById } from '../utils';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
   try {
-    const collectionId = Number(params.id);
+    const collectionId = Number(searchParams.get('id'));
     if (isNaN(collectionId)) {
       return Response.json({ error: 'Invalid collection ID' }, { status: 400 });
     }
