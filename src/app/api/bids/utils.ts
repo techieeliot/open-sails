@@ -1,97 +1,48 @@
-import { BIDS_PATH } from '@/lib/constants';
-import { Bid } from '@/types';
-import { fetchDataByPath, setDataByPath } from '../utils';
+import { BidService } from '@/lib/db-service';
+import { Bid, NewBid } from '@/types';
 
 export async function getBids(): Promise<Bid[]> {
-  return fetchDataByPath(BIDS_PATH);
+  return await BidService.findAll();
 }
 
-export async function saveBids(bids: Bid[]) {
-  return setDataByPath(BIDS_PATH, bids);
+export async function getBidById(bidId: number): Promise<Bid | null> {
+  return await BidService.findById(bidId);
 }
 
-export async function updateBidStatus(bidId: number, status: Bid['status'], collectionId: number) {
-  const bids = await getBids();
-  const bidIndex = bids.findIndex((b) => b.id === bidId);
+export async function getBidsByCollectionId(collectionId: number): Promise<Bid[]> {
+  return await BidService.findByCollectionId(collectionId);
+}
 
-  if (bidIndex === -1) {
-    throw new Error('Bid not found');
-  }
+export async function createBid(bidData: Omit<NewBid, 'id'>): Promise<Bid> {
+  return await BidService.create(bidData);
+}
 
-  bids[bidIndex].status = status;
-  bids[bidIndex].updatedAt = new Date().toISOString();
+export async function updateBid(
+  bidId: number,
+  updatedData: Partial<Omit<NewBid, 'id'>>,
+): Promise<Bid> {
+  return await BidService.update(bidId, updatedData);
+}
 
+export async function updateBidStatus(
+  bidId: number,
+  status: Bid['status'],
+  collectionId: number,
+): Promise<void> {
   if (status === 'accepted') {
-    for (let i = 0; i < bids.length; i++) {
-      if (bids[i].collectionId === collectionId && bids[i].id !== bidId) {
-        bids[i].status = 'rejected';
-        bids[i].updatedAt = new Date().toISOString();
-      }
-    }
+    // Use the service method that handles accepting a bid and rejecting others
+    await BidService.acceptBid(bidId, collectionId);
+  } else {
+    // For other status updates, use the regular update method
+    await BidService.updateStatus(bidId, status);
   }
-
-  await saveBids(bids);
-  return bids[bidIndex];
 }
 
-export async function createBid(bid: Bid) {
-  const bids = await getBids();
-  const newId = bids.length ? Math.max(...bids.map((b) => b.id)) + 1 : 1;
-  const newBid: Bid = {
-    ...bid,
-    id: newId,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  bids.push(newBid);
-  await saveBids(bids);
-  return newBid;
+export async function deleteBid(bidId: number): Promise<void> {
+  await BidService.delete(bidId);
 }
 
-export async function updateBid(bidId: number, updatedData: Bid) {
-  const bids = await getBids();
-  const bidIndex = bids.findIndex((b) => b.id === bidId);
-
-  if (bidIndex === -1) {
-    throw new Error('Bid not found');
-  }
-
-  const updatedBid: Bid = {
-    ...bids[bidIndex],
-    ...updatedData,
-    updatedAt: new Date().toISOString(),
-  };
-
-  bids[bidIndex] = updatedBid;
-  await saveBids(bids);
-  return updatedBid;
-}
-
-export async function deleteBid(bidId: number) {
-  const bids = await getBids();
-  const updatedBids = bids.filter((b) => b.id !== bidId);
-
-  if (updatedBids.length === bids.length) {
-    throw new Error('Bid not found');
-  }
-
-  await saveBids(updatedBids);
-  return { message: 'Bid deleted successfully' };
-}
-
-export async function getBidById(bidId: number) {
-  const bids = await getBids();
-  const bid = bids.find((b) => b.id === bidId);
-
-  if (!bid) {
-    throw new Error('Bid not found');
-  }
-
-  return bid;
-}
-
-export async function getBidsByCollectionId(collectionId: number) {
-  const bids = await getBids();
-  return bids.filter((b) => b.collectionId === collectionId);
+// Get bids with detailed user and collection information
+export async function getBidsWithDetails(collectionId: number) {
+  return await BidService.findByCollectionIdWithDetails(collectionId);
 }

@@ -30,7 +30,10 @@ export async function GET(request: NextRequest) {
       {
         endpoint: '/api/alerts',
         method: 'GET',
-        alertsConfigured: alertStatus.metrics && typeof alertStatus.metrics === 'object' ? Object.keys(alertStatus.metrics).length : 0,
+        alertsConfigured:
+          alertStatus.metrics && typeof alertStatus.metrics === 'object'
+            ? Object.keys(alertStatus.metrics).length
+            : 0,
         externalServices: healthData.externalServices,
         type: 'alerts_status_check',
       },

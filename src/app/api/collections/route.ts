@@ -2,12 +2,15 @@ import { NextRequest } from 'next/server';
 import { createCollection, deleteCollection, getCollections, updateCollection } from './utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { ensureDatabaseInitialized } from '@/lib/db-init';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
   try {
+    await ensureDatabaseInitialized();
+
     const tracker = new PerformanceTracker('GET /api/collections');
     const collections = await getCollections();
     tracker.finish({ count: collections.length });
@@ -51,6 +54,8 @@ export async function POST(request: NextRequest) {
   let response: Response;
 
   try {
+    await ensureDatabaseInitialized();
+
     const tracker = new PerformanceTracker('POST /api/collections');
     const newCollectionData = await request.json();
 
@@ -107,6 +112,8 @@ export async function PUT(request: NextRequest) {
   let response: Response;
 
   try {
+    await ensureDatabaseInitialized();
+
     const tracker = new PerformanceTracker('PUT /api/collections');
     const { id, ...updatedData } = await request.json();
 
@@ -176,6 +183,8 @@ export async function DELETE(request: NextRequest) {
   let response: Response;
 
   try {
+    await ensureDatabaseInitialized();
+
     const tracker = new PerformanceTracker('DELETE /api/collections');
     const { id } = await request.json();
 

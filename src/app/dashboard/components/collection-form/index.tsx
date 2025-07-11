@@ -58,7 +58,12 @@ export const CollectionForm = ({
         const response = await fetch(`/api/collections/${collectionId}`);
         if (response.ok) {
           const data: Collection = await response.json();
-          form.reset(data);
+          form.reset({
+            name: data.name,
+            descriptions: data.descriptions || '',
+            price: data.price,
+            stocks: data.stocks,
+          });
         }
       };
       fetchCollectionData();

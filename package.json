@@ -11,7 +11,10 @@
     "check-format": "prettier --check .",
     "logs:dev": "LOG_LEVEL=debug npm run dev",
     "logs:prod": "LOG_LEVEL=info npm run start",
-    "metrics": "curl -s http://localhost:3000/api/metrics | jq ."
+    "metrics": "curl -s http://localhost:3000/api/metrics | jq .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -19,10 +22,14 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-table": "^8.21.3",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/pino": "^7.0.4",
     "@vercel/analytics": "^1.5.0",
+    "better-sqlite3": "^11.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.2",
     "jotai": "^2.12.5",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
