@@ -1,6 +1,7 @@
+import { NextRequest } from 'next/server';
 import { getUsers } from './utils';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('id');
   try {
