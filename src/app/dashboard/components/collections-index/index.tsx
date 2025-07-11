@@ -20,21 +20,21 @@ export default function CollectionsIndex() {
     try {
       setLoading(true);
       setError(null);
-      
+
       console.log('Fetching collections from API...');
       const response = await fetch('/api/collections');
-      
+
       console.log('Collections response status:', response.status);
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Collections API error response:', errorText);
         throw new Error(`Failed to fetch collections: ${response.status} - ${errorText}`);
       }
-      
+
       const collectionData: Collection[] = await response.json();
       console.log('Received collection data:', collectionData.length, 'collections');
-      
+
       if (Array.isArray(collectionData)) {
         setCollections(collectionData);
       } else {
@@ -69,7 +69,7 @@ export default function CollectionsIndex() {
             onSuccess={fetchCollections}
           />
         </div>
-        
+
         {error && (
           <div className="p-4 border border-red-300 rounded-lg bg-red-50 text-red-700 max-w-md mx-auto">
             <div className="font-medium mb-2">Error loading collections</div>
@@ -79,7 +79,7 @@ export default function CollectionsIndex() {
             </Button>
           </div>
         )}
-        
+
         {loading ? (
           <div className="text-center text-muted-foreground">Loading collections...</div>
         ) : collections.length === 0 && !error ? (
@@ -87,7 +87,8 @@ export default function CollectionsIndex() {
             No collections found yet...
           </div>
         ) : (
-          !error && collections.slice(0, visibleCount).map((collection) => {
+          !error &&
+          collections.slice(0, visibleCount).map((collection) => {
             const isOwner = user !== null && user?.id === collection.ownerId;
             return (
               <CollectionOverview

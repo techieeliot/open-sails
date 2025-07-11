@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
   try {
     await ensureDatabaseInitialized();
-    
+
     const tracker = new PerformanceTracker('GET /api/bids/[id]');
     const url = new URL(request.url);
     const pathSegments = url.pathname.split('/');
