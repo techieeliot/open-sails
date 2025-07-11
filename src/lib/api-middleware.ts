@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger, PerformanceTracker, MetricsTracker, logApiCall } from './logger';
+import { checkAlerts } from './alerting';
 
 // Type for API handler
-export type ApiHandler = (req: NextRequest, context?: any) => Promise<Response>;
+export type ApiHandler = (req: NextRequest, context?: Record<string, unknown>) => Promise<Response>;
 
 // Enhanced API wrapper with logging
 export function withLogging(handler: ApiHandler) {
-  return async (req: NextRequest, context?: any): Promise<Response> => {
+  return async (req: NextRequest, context?: Record<string, unknown>): Promise<Response> => {
     const tracker = new PerformanceTracker(`${req.method} ${req.nextUrl.pathname}`);
     const metrics = MetricsTracker.getInstance();
-    const startTime = Date.now();
 
     let response: Response;
     let statusCode = 200;
@@ -97,6 +97,7 @@ export function logRequest(req: NextRequest) {
 export function logResponse(req: NextRequest, response: Response, startTime: number) {
   const duration = Date.now() - startTime;
   const level = response.status >= 500 ? 'error' : response.status >= 400 ? 'warn' : 'info';
+  const isError = response.status >= 400;
 
   logger[level](
     {
@@ -108,6 +109,25 @@ export function logResponse(req: NextRequest, response: Response, startTime: num
     },
     `${req.method} ${req.nextUrl.pathname} - ${response.status} (${duration}ms)`,
   );
+
+  // Track metrics
+  const metrics = MetricsTracker.getInstance();
+  metrics.trackResponseTime(req.nextUrl.pathname, duration);
+
+  if (isError) {
+    metrics.trackError(req.nextUrl.pathname, new Error(`HTTP ${response.status}`));
+  }
+
+  // Check alerts asynchronously
+  checkAlerts(req.nextUrl.pathname, duration, isError).catch((error) => {
+    logger.warn(
+      {
+        type: 'alert_check_failed',
+        error: (error as Error).message,
+      },
+      'Failed to check alerts',
+    );
+  });
 }
 
 // Error handling wrapper

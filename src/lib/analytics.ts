@@ -1,6 +1,6 @@
 import { track } from '@vercel/analytics';
 
-export const trackError = (error: Error, context?: Record<string, any>) => {
+export const trackError = (error: Error, context?: Record<string, unknown>) => {
   track('error', {
     message: error.message,
     stack: error.stack?.substring(0, 500) ?? '', // Limit stack trace length

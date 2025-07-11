@@ -15,7 +15,7 @@ export const LogoutHandler = () => {
       router.push('/login');
     };
     handleLogout();
-  }, []);
+  }, [router, setUserSession]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">Logging you out...</div>

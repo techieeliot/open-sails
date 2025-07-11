@@ -1,7 +1,7 @@
 'use client';
 
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
-import { ReactNode } from 'react';
+import { ReactNode, ErrorInfo } from 'react';
 
 interface ErrorFallbackProps {
   error: Error;
@@ -13,7 +13,7 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
     <div className="error-boundary">
       <div className="error-boundary-fallback">
         <h2>Something went wrong</h2>
-        <p>We're sorry, but something unexpected happened.</p>
+        <p>We&apos;re sorry, but something unexpected happened.</p>
         <details className="mt-4 text-sm">
           <summary className="cursor-pointer">Error details</summary>
           <pre className="mt-2 text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-auto">
@@ -29,11 +29,11 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: any) => void;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
 export default function ErrorBoundary({ children, fallback, onError }: Props) {
-  const handleError = (error: Error, errorInfo: any) => {
+  const handleError = (error: Error, errorInfo: ErrorInfo) => {
     console.error('Error caught by boundary:', error, errorInfo);
 
     // Custom error handler

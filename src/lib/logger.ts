@@ -3,7 +3,7 @@ const createSimpleLogger = () => {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   return {
-    info: (obj: any, msg?: string) => {
+    info: (obj: Record<string, unknown>, msg?: string) => {
       if (isDevelopment) {
         console.log(`[INFO] ${msg || ''}`, obj);
       } else {
@@ -17,7 +17,7 @@ const createSimpleLogger = () => {
         );
       }
     },
-    warn: (obj: any, msg?: string) => {
+    warn: (obj: Record<string, unknown>, msg?: string) => {
       if (isDevelopment) {
         console.warn(`[WARN] ${msg || ''}`, obj);
       } else {
@@ -31,7 +31,7 @@ const createSimpleLogger = () => {
         );
       }
     },
-    error: (obj: any, msg?: string) => {
+    error: (obj: Record<string, unknown>, msg?: string) => {
       if (isDevelopment) {
         console.error(`[ERROR] ${msg || ''}`, obj);
       } else {
@@ -45,7 +45,7 @@ const createSimpleLogger = () => {
         );
       }
     },
-    debug: (obj: any, msg?: string) => {
+    debug: (obj: Record<string, unknown>, msg?: string) => {
       if (isDevelopment) {
         console.debug(`[DEBUG] ${msg || ''}`, obj);
       } else {
@@ -86,7 +86,7 @@ export class PerformanceTracker {
     this.startTime = Date.now();
   }
 
-  finish(additionalData?: Record<string, any>) {
+  finish(additionalData?: Record<string, unknown>) {
     const duration = Date.now() - this.startTime;
 
     logger.info(
@@ -166,11 +166,11 @@ export class MetricsTracker {
     );
   }
 
-  getMetrics(): Record<string, any> {
-    const summary: Record<string, any> = {};
+  getMetrics(): Record<string, unknown> {
+    const summary: Record<string, unknown> = {};
 
     this.metrics.forEach((values, key) => {
-      const [type, endpoint] = key.split(':');
+      const [type] = key.split(':');
 
       if (type === 'response_time') {
         const avg = values.reduce((a, b) => a + b, 0) / values.length;
@@ -229,7 +229,11 @@ export const logApiCall = (
   );
 };
 
-export const logUserAction = (action: string, userId: string, metadata?: Record<string, any>) => {
+export const logUserAction = (
+  action: string,
+  userId: string,
+  metadata?: Record<string, unknown>,
+) => {
   logger.info(
     {
       action,
@@ -241,7 +245,7 @@ export const logUserAction = (action: string, userId: string, metadata?: Record<
   );
 };
 
-export const logError = (error: Error, context?: Record<string, any>) => {
+export const logError = (error: Error, context?: Record<string, unknown>) => {
   logger.error(
     {
       error: error.message,

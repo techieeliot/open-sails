@@ -6,7 +6,7 @@ import { MetricsTracker } from '@/lib/logger';
 interface UserEngagementData {
   action: string;
   userId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export function useUserEngagement() {
