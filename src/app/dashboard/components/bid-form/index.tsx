@@ -24,7 +24,22 @@ export interface BidFormProps extends CollectionFormProps {
 }
 
 const formSchema = z.object({
-  price: z.coerce.number().positive({ message: 'Price must be a positive number.' }),
+  price: z.coerce
+    .number({
+      required_error: 'Price is required',
+      invalid_type_error: 'Price must be a valid number',
+    })
+    .positive({ message: 'Price must be a positive number' })
+    .min(0.01, { message: 'Price must be at least $0.01' })
+    .max(1000000, { message: 'Price cannot exceed $1,000,000' })
+    .refine(
+      (val) => {
+        // Check if number has at most 2 decimal places
+        const decimals = val.toString().split('.')[1];
+        return !decimals || decimals.length <= 2;
+      },
+      { message: 'Price can have at most 2 decimal places' },
+    ),
 });
 
 export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }: BidFormProps) => {
@@ -35,7 +50,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      price: 0,
+      price: undefined, // Changed from 0 to undefined to show placeholder
     },
   });
 
@@ -122,11 +137,34 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price of Bid</FormLabel>
+                <FormLabel>Bid Price ($)</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Enter bid price" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0.01"
+                    max="1000000"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow empty string for clearing the field
+                      if (value === '') {
+                        field.onChange('');
+                        return;
+                      }
+                      // Parse and validate the number
+                      const numValue = parseFloat(value);
+                      if (!isNaN(numValue)) {
+                        field.onChange(numValue);
+                      }
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Enter your bid amount (minimum $0.01, maximum $1,000,000)
+                </p>
               </FormItem>
             )}
           />

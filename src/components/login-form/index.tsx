@@ -12,6 +12,7 @@ export const LoginForm = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const setUserSession = useSetAtom(userSessionAtom);
   const router = useRouter();
 
@@ -20,27 +21,54 @@ export const LoginForm = () => {
       try {
         setLoading(true);
         setError(null);
+
+        console.log('Fetching users from API...');
         const response = await fetch('/api/users');
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
         if (!response.ok) {
-          throw new Error(`Failed to fetch users: ${response.status}`);
+          const errorText = await response.text();
+          console.error('API error response:', errorText);
+          throw new Error(`Failed to fetch users: ${response.status} - ${errorText}`);
         }
+
         const userData: User[] = await response.json();
+        console.log('Received user data:', userData);
+
         // Ensure userData is an array before setting
         if (Array.isArray(userData)) {
           setUsers(userData);
+          console.log(`Successfully loaded ${userData.length} users`);
         } else {
+          console.error('Invalid data format received:', userData);
           throw new Error('Received invalid data format for users');
         }
       } catch (error) {
         console.error('Error fetching users:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load users');
+        const errorMessage = error instanceof Error ? error.message : 'Failed to load users';
+        setError(errorMessage);
         setUsers([]);
+
+        // Auto-retry up to 3 times with exponential backoff
+        if (retryCount < 3) {
+          console.log(
+            `Retrying in ${(retryCount + 1) * 2} seconds... (attempt ${retryCount + 1}/3)`,
+          );
+          setTimeout(
+            () => {
+              setRetryCount((prev) => prev + 1);
+            },
+            (retryCount + 1) * 2000,
+          );
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchUsers();
-  }, []);
+  }, [retryCount]);
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,14 +85,38 @@ export const LoginForm = () => {
     }
   };
 
+  const handleManualRetry = () => {
+    setRetryCount(0);
+    setError(null);
+    setRetryCount((prev) => prev + 1);
+  };
+
   return (
     <section className="flex flex-col items-center gap-4">
       <p className="text-lg">Please select a user to log in and continue</p>
 
-      {error && <div className="text-red-600 text-sm">Error: {error}</div>}
+      {error && (
+        <div className="p-4 border border-red-300 rounded-lg bg-red-50 text-red-700 max-w-md">
+          <div className="font-medium mb-2">Connection Error</div>
+          <div className="text-sm mb-3">{error}</div>
+          {retryCount < 3 && (
+            <div className="text-xs text-red-600 mb-2">
+              Auto-retrying... (attempt {retryCount + 1}/3)
+            </div>
+          )}
+          <Button size="sm" variant="outline" onClick={handleManualRetry} disabled={loading}>
+            Retry Now
+          </Button>
+        </div>
+      )}
 
       {loading ? (
-        <div className="text-gray-600">Loading users...</div>
+        <div className="flex flex-col items-center gap-2">
+          <div className="text-gray-600">Loading users...</div>
+          {retryCount > 0 && (
+            <div className="text-sm text-gray-500">Retry attempt {retryCount}/3</div>
+          )}
+        </div>
       ) : (
         <form onSubmit={handleLogin} className="flex flex-col items-center gap-4">
           {/* dropdown for the user id from the db users.json */}
@@ -77,17 +129,30 @@ export const LoginForm = () => {
             required
             disabled={users.length === 0}
           >
-            <option value="">{users.length === 0 ? 'No users available' : 'Select User'}</option>
+            <option value="">
+              {users.length === 0
+                ? 'No users available'
+                : `Select User (${users.length} available)`}
+            </option>
             {/* Map over users from the database and create an option for each */}
             {users.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.name}
+                {user.name} ({user.email})
               </option>
             ))}
           </select>
           <Button type="submit" variant="outline" disabled={users.length === 0}>
             Log in
           </Button>
+
+          {users.length === 0 && !loading && !error && (
+            <div className="text-sm text-gray-500 text-center max-w-md">
+              <p>Unable to load user list. This might be a temporary issue.</p>
+              <Button size="sm" variant="outline" onClick={handleManualRetry} className="mt-2">
+                Try Again
+              </Button>
+            </div>
+          )}
         </form>
       )}
     </section>

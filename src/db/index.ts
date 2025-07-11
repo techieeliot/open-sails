@@ -4,29 +4,41 @@ import { users, collections, bids } from './schema';
 import * as schema from './schema';
 
 // Initialize SQLite database
-const sqlite = new Database(':memory:'); // For production, use file path like './database.sqlite'
+const getDatabasePath = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return './database.sqlite'; // Persistent file for production
+  }
+  return ':memory:'; // In-memory for development
+};
+
+const sqlite = new Database(getDatabasePath());
 
 // Create Drizzle instance
 export const db = drizzle(sqlite, { schema });
 
 // Initialize database tables
 export async function initializeDatabase() {
-  // Disable foreign key constraints during setup
-  sqlite.exec('PRAGMA foreign_keys = OFF');
+  try {
+    console.log('Initializing database...');
+    console.log('Database path:', getDatabasePath());
+    console.log('Environment:', process.env.NODE_ENV);
 
-  // Create tables
-  sqlite.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE,
-      role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
-      created_at TEXT NOT NULL DEFAULT (datetime('now')),
-      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    )
-  `);
+    // Disable foreign key constraints during setup
+    sqlite.exec('PRAGMA foreign_keys = OFF');
 
-  sqlite.exec(`
+    // Create tables
+    sqlite.exec(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )
+    `);
+
+    sqlite.exec(`
     CREATE TABLE IF NOT EXISTS collections (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -40,7 +52,7 @@ export async function initializeDatabase() {
     )
   `);
 
-  sqlite.exec(`
+    sqlite.exec(`
     CREATE TABLE IF NOT EXISTS bids (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       price INTEGER NOT NULL,
@@ -52,19 +64,27 @@ export async function initializeDatabase() {
     )
   `);
 
-  // Create indexes for better performance
-  sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_collections_owner ON collections(owner_id)`);
-  sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_bids_collection ON bids(collection_id)`);
-  sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_bids_user ON bids(user_id)`);
-  sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
+    // Create indexes for better performance
+    sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_collections_owner ON collections(owner_id)`);
+    sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_bids_collection ON bids(collection_id)`);
+    sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_bids_user ON bids(user_id)`);
+    sqlite.exec(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
 
-  // Re-enable foreign key constraints after setup
-  sqlite.exec('PRAGMA foreign_keys = ON');
+    // Re-enable foreign key constraints after setup
+    sqlite.exec('PRAGMA foreign_keys = ON');
+
+    console.log('Database tables created successfully');
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    throw error;
+  }
 }
 
 // Migration function to seed data from JSON files
 export async function migrateFromJSON() {
   try {
+    console.log('Starting JSON migration...');
+
     // Disable foreign key constraints during migration
     sqlite.exec('PRAGMA foreign_keys = OFF');
 

@@ -20,10 +20,45 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  descriptions: z.string().min(1, 'Description is required'),
-  price: z.coerce.number().min(1, 'Price must be a positive number'),
-  stocks: z.coerce.number().int().min(1, 'Stocks must be a positive integer'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .min(2, 'Name must be at least 2 characters')
+    .max(100, 'Name cannot exceed 100 characters')
+    .regex(
+      /^[a-zA-Z0-9\s\-_]+$/,
+      'Name can only contain letters, numbers, spaces, hyphens, and underscores',
+    ),
+  descriptions: z
+    .string()
+    .min(1, 'Description is required')
+    .min(10, 'Description must be at least 10 characters')
+    .max(1000, 'Description cannot exceed 1000 characters'),
+  price: z.coerce
+    .number({
+      required_error: 'Price is required',
+      invalid_type_error: 'Price must be a valid number',
+    })
+    .positive({ message: 'Price must be a positive number' })
+    .min(0.01, { message: 'Price must be at least $0.01' })
+    .max(1000000, { message: 'Price cannot exceed $1,000,000' })
+    .refine(
+      (val) => {
+        // Check if number has at most 2 decimal places
+        const decimals = val.toString().split('.')[1];
+        return !decimals || decimals.length <= 2;
+      },
+      { message: 'Price can have at most 2 decimal places' },
+    ),
+  stocks: z.coerce
+    .number({
+      required_error: 'Stock quantity is required',
+      invalid_type_error: 'Stock quantity must be a valid number',
+    })
+    .int({ message: 'Stock quantity must be a whole number' })
+    .positive({ message: 'Stock quantity must be a positive number' })
+    .min(1, { message: 'Stock quantity must be at least 1' })
+    .max(10000, { message: 'Stock quantity cannot exceed 10,000 units' }),
 });
 
 export interface CollectionFormProps {
@@ -47,8 +82,8 @@ export const CollectionForm = ({
     defaultValues: {
       name: '',
       descriptions: '',
-      price: 0,
-      stocks: 0,
+      price: undefined, // Changed from 0 to undefined to show placeholder
+      stocks: undefined, // Changed from 0 to undefined to show placeholder
     },
   });
 
@@ -116,11 +151,14 @@ export const CollectionForm = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Collection Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter collection name" {...field} />
+                <Input placeholder="e.g., Antminer S19 Pro" maxLength={100} {...field} />
               </FormControl>
               <FormMessage />
+              <p className="text-xs text-muted-foreground mt-1">
+                2-100 characters, letters, numbers, spaces, hyphens, and underscores only
+              </p>
             </FormItem>
           )}
         />
@@ -131,9 +169,17 @@ export const CollectionForm = ({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Enter collection description" {...field} />
+                <Textarea
+                  placeholder="Describe your mining hardware collection in detail..."
+                  maxLength={1000}
+                  rows={4}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
+              <p className="text-xs text-muted-foreground mt-1">
+                {field.value?.length || 0}/1000 characters (minimum 10 required)
+              </p>
             </FormItem>
           )}
         />
@@ -142,11 +188,32 @@ export const CollectionForm = ({
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Starting Price ($)</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Enter price" {...field} />
+                <Input
+                  type="number"
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0.01"
+                  max="1000000"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      field.onChange('');
+                      return;
+                    }
+                    const numValue = parseFloat(value);
+                    if (!isNaN(numValue)) {
+                      field.onChange(numValue);
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
+              <p className="text-xs text-muted-foreground mt-1">
+                Minimum $0.01, maximum $1,000,000 (up to 2 decimal places)
+              </p>
             </FormItem>
           )}
         />
@@ -155,16 +222,47 @@ export const CollectionForm = ({
           name="stocks"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Stocks</FormLabel>
+              <FormLabel>Stock Quantity</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Enter stock quantity" {...field} />
+                <Input
+                  type="number"
+                  placeholder="1"
+                  min="1"
+                  max="10000"
+                  step="1"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      field.onChange('');
+                      return;
+                    }
+                    const numValue = parseInt(value, 10);
+                    if (!isNaN(numValue)) {
+                      field.onChange(numValue);
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
+              <p className="text-xs text-muted-foreground mt-1">
+                Number of units available (1-10,000 whole numbers only)
+              </p>
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          {method === 'POST' ? 'Create Collection' : 'Save Changes'}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting
+            ? method === 'POST'
+              ? 'Creating...'
+              : 'Saving...'
+            : method === 'POST'
+              ? 'Create Collection'
+              : 'Save Changes'}
         </Button>
       </form>
     </Form>
