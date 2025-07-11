@@ -2,15 +2,19 @@ import { NextRequest } from 'next/server';
 import { getBidById } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { ensureDatabaseInitialized } from '@/lib/db-init';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
   try {
+    await ensureDatabaseInitialized();
+    
     const tracker = new PerformanceTracker('GET /api/bids/[id]');
-    const { searchParams } = new URL(request.url);
-    const bidId = Number(searchParams.get('id'));
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split('/');
+    const bidId = Number(pathSegments[pathSegments.length - 1]);
 
     if (isNaN(bidId)) {
       logger.warn(
@@ -18,7 +22,7 @@ export async function GET(request: NextRequest) {
           endpoint: '/api/bids/[id]',
           method: 'GET',
           error: 'Invalid bid ID',
-          providedId: searchParams.get('id'),
+          providedId: pathSegments[pathSegments.length - 1],
           type: 'validation_error',
         },
         'GET request with invalid bid ID',

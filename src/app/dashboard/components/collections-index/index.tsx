@@ -13,11 +13,41 @@ export default function CollectionsIndex() {
   const [collections, setCollections] = useAtom(collectionsAtom);
   const [expandedCollection, setExpandedCollection] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(25);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCollections = useCallback(async () => {
-    const response = await fetch('/api/collections');
-    const collectionData: Collection[] = await response.json();
-    setCollections(collectionData);
+    try {
+      setLoading(true);
+      setError(null);
+      
+      console.log('Fetching collections from API...');
+      const response = await fetch('/api/collections');
+      
+      console.log('Collections response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Collections API error response:', errorText);
+        throw new Error(`Failed to fetch collections: ${response.status} - ${errorText}`);
+      }
+      
+      const collectionData: Collection[] = await response.json();
+      console.log('Received collection data:', collectionData.length, 'collections');
+      
+      if (Array.isArray(collectionData)) {
+        setCollections(collectionData);
+      } else {
+        throw new Error('Received invalid data format for collections');
+      }
+    } catch (error) {
+      console.error('Error fetching collections:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load collections';
+      setError(errorMessage);
+      setCollections([]);
+    } finally {
+      setLoading(false);
+    }
   }, [setCollections]);
 
   useEffect(() => {
@@ -39,12 +69,25 @@ export default function CollectionsIndex() {
             onSuccess={fetchCollections}
           />
         </div>
-        {collections.length === 0 ? (
+        
+        {error && (
+          <div className="p-4 border border-red-300 rounded-lg bg-red-50 text-red-700 max-w-md mx-auto">
+            <div className="font-medium mb-2">Error loading collections</div>
+            <div className="text-sm mb-3">{error}</div>
+            <Button size="sm" variant="outline" onClick={fetchCollections} disabled={loading}>
+              Retry
+            </Button>
+          </div>
+        )}
+        
+        {loading ? (
+          <div className="text-center text-muted-foreground">Loading collections...</div>
+        ) : collections.length === 0 && !error ? (
           <div className="text-center text-muted-foreground h-screen">
             No collections found yet...
           </div>
         ) : (
-          collections.slice(0, visibleCount).map((collection) => {
+          !error && collections.slice(0, visibleCount).map((collection) => {
             const isOwner = user !== null && user?.id === collection.ownerId;
             return (
               <CollectionOverview
@@ -61,7 +104,7 @@ export default function CollectionsIndex() {
           })
         )}
       </Suspense>
-      {visibleCount < collections.length && (
+      {!loading && !error && visibleCount < collections.length && (
         <div className="flex w-full justify-center">
           <Button onClick={() => setVisibleCount((prev) => prev + 10)} variant="outline">
             Load More Collections

@@ -12,8 +12,9 @@ export async function GET(request: NextRequest) {
     await ensureDatabaseInitialized();
 
     const tracker = new PerformanceTracker('GET /api/users/[id]');
-    const { searchParams } = new URL(request.url);
-    const userId = Number(searchParams.get('id'));
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split('/');
+    const userId = Number(pathSegments[pathSegments.length - 1]);
 
     if (isNaN(userId)) {
       logger.warn(
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
           endpoint: '/api/users/[id]',
           method: 'GET',
           error: 'Invalid user ID',
-          providedId: searchParams.get('id'),
+          providedId: pathSegments[pathSegments.length - 1],
           type: 'validation_error',
         },
         'GET request with invalid user ID',
