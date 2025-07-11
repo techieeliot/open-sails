@@ -1,21 +1,22 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, integer, serial, timestamp, varchar, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 
 // Users table
-export const users = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
   email: text('email').notNull().unique(),
   role: text('role', { enum: ['admin', 'user'] })
     .notNull()
     .default('user'),
-  createdAt: text('created_at').notNull().default(new Date().toISOString()),
-  updatedAt: text('updated_at').notNull().default(new Date().toISOString()),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 
 // Collections table (removed userId to normalize)
-export const collections = sqliteTable('collections', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const collections = pgTable('collections', {
+  id: serial('id').primaryKey().notNull(),
   name: text('name').notNull(),
   descriptions: text('descriptions'),
   price: integer('price').notNull(),
@@ -26,13 +27,13 @@ export const collections = sqliteTable('collections', {
   ownerId: integer('owner_id')
     .notNull()
     .references(() => users.id),
-  createdAt: text('created_at').notNull().default(new Date().toISOString()),
-  updatedAt: text('updated_at').notNull().default(new Date().toISOString()),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 
 // Bids table
-export const bids = sqliteTable('bids', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const bids = pgTable('bids', {
+  id: serial('id').primaryKey().notNull(),
   price: integer('price').notNull(),
   collectionId: integer('collection_id')
     .notNull()
@@ -43,8 +44,8 @@ export const bids = sqliteTable('bids', {
   status: text('status', { enum: ['pending', 'accepted', 'rejected', 'cancelled'] })
     .notNull()
     .default('pending'),
-  createdAt: text('created_at').notNull().default(new Date().toISOString()),
-  updatedAt: text('updated_at').notNull().default(new Date().toISOString()),
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 
 // Relations

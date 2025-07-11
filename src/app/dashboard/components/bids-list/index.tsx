@@ -114,7 +114,7 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                         }}
                       />
                     </>
-                  ) : !isOwner && status === 'pending' && isBidder ? (
+                  ) : !isOwner && bid.status === 'pending' && isBidder ? (
                     <ConfirmationDialog
                       triggerText="Cancel Bid"
                       dialogTitle="Cancel Bid"

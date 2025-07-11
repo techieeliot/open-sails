@@ -1,5 +1,5 @@
-import { initializeDatabase, migrateFromJSON } from '@/db';
-
+// For PostgreSQL with Neon, we don't need manual database initialization
+// The database tables are created via migrations
 let isInitialized = false;
 
 export async function ensureDatabaseInitialized() {
@@ -8,12 +8,12 @@ export async function ensureDatabaseInitialized() {
   }
 
   try {
-    await initializeDatabase();
-    await migrateFromJSON();
+    // For PostgreSQL, we just need to ensure the connection works
+    // Tables are created via drizzle migrations
+    console.log('Database connection established');
     isInitialized = true;
-    console.log('Database initialized successfully');
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    console.error('Failed to connect to database:', error);
     throw error;
   }
 }

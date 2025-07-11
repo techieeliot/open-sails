@@ -2,19 +2,15 @@ import { NextRequest } from 'next/server';
 import { getCollectionById } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
-import { ensureDatabaseInitialized } from '@/lib/db-init';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const startTime = logRequest(request);
   let response: Response;
+  const { id } = params;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('GET /api/collections/[id]');
-    const url = new URL(request.url);
-    const pathSegments = url.pathname.split('/');
-    const collectionId = Number(pathSegments[pathSegments.length - 1]);
+    const collectionId = Number(id);
 
     if (isNaN(collectionId)) {
       logger.warn(
@@ -22,7 +18,7 @@ export async function GET(request: NextRequest) {
           endpoint: '/api/collections/[id]',
           method: 'GET',
           error: 'Invalid collection ID',
-          providedId: pathSegments[pathSegments.length - 1],
+          providedId: id,
           type: 'validation_error',
         },
         'GET request with invalid collection ID',

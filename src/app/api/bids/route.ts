@@ -2,15 +2,12 @@ import { NextRequest } from 'next/server';
 import { createBid, deleteBid, getBidsByCollectionId, updateBid, updateBidStatus } from './utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
-import { ensureDatabaseInitialized } from '@/lib/db-init';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('GET /api/bids');
     const searchParams = request.nextUrl.searchParams;
     const collectionId = searchParams.get('collection_id');
@@ -102,8 +99,6 @@ export async function POST(request: NextRequest) {
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('POST /api/bids');
     const newBidData = await request.json();
 
@@ -180,8 +175,6 @@ export async function PUT(request: NextRequest) {
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('PUT /api/bids');
     const { searchParams } = new URL(request.url);
     const bidId = searchParams.get('bid_id');
@@ -287,8 +280,6 @@ export async function DELETE(request: NextRequest) {
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('DELETE /api/bids');
     const { searchParams } = new URL(request.url);
     const bidId = searchParams.get('bid_id');

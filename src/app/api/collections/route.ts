@@ -2,14 +2,14 @@ import { NextRequest } from 'next/server';
 import { createCollection, deleteCollection, getCollections, updateCollection } from './utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
-import { ensureDatabaseInitialized } from '@/lib/db-init';
+import { seedDatabase } from '@/db';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
+    await seedDatabase();
 
     const tracker = new PerformanceTracker('GET /api/collections');
     const collections = await getCollections();
@@ -54,8 +54,6 @@ export async function POST(request: NextRequest) {
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('POST /api/collections');
     const newCollectionData = await request.json();
 
@@ -112,22 +110,12 @@ export async function PUT(request: NextRequest) {
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('PUT /api/collections');
-    const { id, ...updatedData } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const collectionId = Number(searchParams.get('id'));
+    const updatedCollectionData = await request.json();
 
-    if (!id) {
-      logger.warn(
-        {
-          endpoint: '/api/collections',
-          method: 'PUT',
-          error: 'Missing collection ID',
-          type: 'validation_error',
-        },
-        'PUT request missing collection ID',
-      );
-
+    if (!collectionId || isNaN(collectionId)) {
       response = Response.json({ error: 'Collection ID is required' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;
@@ -137,15 +125,15 @@ export async function PUT(request: NextRequest) {
       {
         endpoint: '/api/collections',
         method: 'PUT',
-        collectionId: id,
-        updateData: updatedData,
+        collectionId,
+        updatedData: updatedCollectionData,
         type: 'collection_update_started',
       },
-      `Updating collection: ${id}`,
+      `Updating collection: ${collectionId}`,
     );
 
-    const updatedCollection = await updateCollection(id, updatedData);
-    tracker.finish({ collectionId: id });
+    const updatedCollection = await updateCollection(collectionId, updatedCollectionData);
+    tracker.finish({ collectionId });
 
     response = new Response(JSON.stringify(updatedCollection), {
       headers: { 'Content-Type': 'application/json' },
@@ -155,10 +143,10 @@ export async function PUT(request: NextRequest) {
       {
         endpoint: '/api/collections',
         method: 'PUT',
-        collectionId: id,
+        collectionId,
         type: 'collection_updated',
       },
-      `Updated collection: ${id}`,
+      `Updated collection: ${collectionId}`,
     );
   } catch (error) {
     logger.error(
@@ -171,7 +159,10 @@ export async function PUT(request: NextRequest) {
       `Failed to update collection: ${(error as Error).message}`,
     );
 
-    response = Response.json({ error: (error as Error).message }, { status: 500 });
+    response = Response.json(
+      { error: `Failed to update collection: ${(error as Error).message}` },
+      { status: 500 },
+    );
   }
 
   logResponse(request, response, startTime);
@@ -183,22 +174,11 @@ export async function DELETE(request: NextRequest) {
   let response: Response;
 
   try {
-    await ensureDatabaseInitialized();
-
     const tracker = new PerformanceTracker('DELETE /api/collections');
-    const { id } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const collectionId = Number(searchParams.get('id'));
 
-    if (!id) {
-      logger.warn(
-        {
-          endpoint: '/api/collections',
-          method: 'DELETE',
-          error: 'Missing collection ID',
-          type: 'validation_error',
-        },
-        'DELETE request missing collection ID',
-      );
-
+    if (!collectionId || isNaN(collectionId)) {
       response = Response.json({ error: 'Collection ID is required' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;
@@ -208,14 +188,14 @@ export async function DELETE(request: NextRequest) {
       {
         endpoint: '/api/collections',
         method: 'DELETE',
-        collectionId: id,
+        collectionId,
         type: 'collection_deletion_started',
       },
-      `Deleting collection: ${id}`,
+      `Deleting collection: ${collectionId}`,
     );
 
-    await deleteCollection(id);
-    tracker.finish({ collectionId: id });
+    await deleteCollection(collectionId);
+    tracker.finish({ collectionId });
 
     response = new Response(null, { status: 204 });
 
@@ -223,10 +203,10 @@ export async function DELETE(request: NextRequest) {
       {
         endpoint: '/api/collections',
         method: 'DELETE',
-        collectionId: id,
+        collectionId,
         type: 'collection_deleted',
       },
-      `Deleted collection: ${id}`,
+      `Deleted collection: ${collectionId}`,
     );
   } catch (error) {
     logger.error(
@@ -239,7 +219,10 @@ export async function DELETE(request: NextRequest) {
       `Failed to delete collection: ${(error as Error).message}`,
     );
 
-    response = Response.json({ error: (error as Error).message }, { status: 500 });
+    response = Response.json(
+      { error: `Failed to delete collection: ${(error as Error).message}` },
+      { status: 500 },
+    );
   }
 
   logResponse(request, response, startTime);

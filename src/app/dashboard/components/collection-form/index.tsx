@@ -120,13 +120,16 @@ export const CollectionForm = ({
       data.id = collectionId;
     }
 
-    const response = await fetch('/api/collections', {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      method === 'PUT' ? `/api/collections/${collectionId}` : '/api/collections',
+      {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
 
     if (response.ok) {
       const updatedItem = await response.json();
