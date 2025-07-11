@@ -5,10 +5,9 @@ import * as schema from './schema';
 
 // Initialize SQLite database
 const getDatabasePath = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return './database.sqlite'; // Persistent file for production
-  }
-  return ':memory:'; // In-memory for development
+  // Use in-memory database for both development and production
+  // In serverless environments like Vercel, persistent files are not suitable
+  return ':memory:';
 };
 
 const sqlite = new Database(getDatabasePath());
