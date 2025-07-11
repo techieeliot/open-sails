@@ -1,8 +1,10 @@
+import { NextRequest } from 'next/server';
 import { getUserById } from '../utils';
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
   try {
-    const userId = Number(params.id);
+    const userId = Number(searchParams.get('id'));
     if (isNaN(userId)) {
       return Response.json({ error: 'Invalid user ID' }, { status: 400 });
     }
