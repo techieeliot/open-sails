@@ -3,10 +3,11 @@ import { getCollectionById } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
-  const { id } = params;
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
 
   try {
     const tracker = new PerformanceTracker('GET /api/collections/[id]');
