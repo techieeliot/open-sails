@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "logs:dev": "LOG_LEVEL=debug npm run dev",
+    "logs:prod": "LOG_LEVEL=info npm run start",
+    "metrics": "curl -s http://localhost:3000/api/metrics | jq ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -16,12 +19,15 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-table": "^8.21.3",
+    "@types/pino": "^7.0.4",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jotai": "^2.12.5",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
+    "pino": "^9.7.0",
+    "pino-pretty": "^13.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-error-boundary": "^6.0.0",
