@@ -8,7 +8,10 @@ export async function GET() {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch collections' }, { status: 500 });
+    return Response.json(
+      { error: `Failed to fetch collections: ${(error as Error).message}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -22,7 +25,10 @@ export async function POST(request: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to create collection' }, { status: 500 });
+    return Response.json(
+      { error: `Failed to create collection: ${(error as Error).message}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -37,8 +43,8 @@ export async function PUT(request: NextRequest) {
     return new Response(JSON.stringify(updatedCollection), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -51,7 +57,7 @@ export async function DELETE(request: NextRequest) {
     await deleteCollection(id);
 
     return new Response(null, { status: 204 });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }

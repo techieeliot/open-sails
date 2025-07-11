@@ -1,9 +1,8 @@
 'use client';
 
 import { userSessionAtom } from '@/lib/atoms';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import Link from 'next/link';
-import { useState } from 'react';
 
 export const UserAccessSwitcher = () => {
   const { user } = useAtomValue(userSessionAtom);

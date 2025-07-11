@@ -22,8 +22,8 @@ import { Button } from '@/components/ui/button';
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   descriptions: z.string().min(1, 'Description is required'),
-  price: z.coerce.number().min(0, 'Price must be a positive number'),
-  stocks: z.coerce.number().int().min(0, 'Stocks must be a positive integer'),
+  price: z.coerce.number().min(1, 'Price must be a positive number'),
+  stocks: z.coerce.number().int().min(1, 'Stocks must be a positive integer'),
 });
 
 export interface CollectionFormProps {
@@ -66,7 +66,7 @@ export const CollectionForm = ({
   }, [collectionId, method, form]);
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    let data: Partial<Collection> = {
+    const data: Partial<Collection> = {
       ...values,
       updatedAt: new Date().toISOString(),
     };

@@ -8,12 +8,12 @@ import { useEffect } from 'react';
 export const LogoutHandler = () => {
   const setUserSession = useSetAtom(userSessionAtom);
   const router = useRouter();
-  const handleLogout = () => {
-    setUserSession({ user: null, loginTimestamp: null });
-    router.push('/login');
-  };
 
   useEffect(() => {
+    const handleLogout = () => {
+      setUserSession({ user: null, loginTimestamp: null });
+      router.push('/login');
+    };
     handleLogout();
   }, []);
 

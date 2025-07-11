@@ -34,7 +34,7 @@ export async function updateBidStatus(bidId: number, status: Bid['status'], coll
   return bids[bidIndex];
 }
 
-export async function createBid(bid: any) {
+export async function createBid(bid: Bid) {
   const bids = await getBids();
   const newId = bids.length ? Math.max(...bids.map((b) => b.id)) + 1 : 1;
   const newBid: Bid = {

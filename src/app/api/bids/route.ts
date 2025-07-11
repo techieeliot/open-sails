@@ -14,7 +14,10 @@ export async function GET(request: NextRequest) {
     }
     return Response.json({ error: 'Collection ID is required' }, { status: 400 });
   } catch (error) {
-    return Response.json({ error: 'Failed to fetch bids' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to fetch bids: ' + JSON.stringify(error) },
+      { status: 500 },
+    );
   }
 }
 
@@ -30,7 +33,10 @@ export async function POST(request: Request) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return Response.json({ error: 'Failed to create bid' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to create bid: ' + JSON.stringify(error) },
+      { status: 500 },
+    );
   }
 }
 
@@ -62,8 +68,8 @@ export async function PUT(request: Request) {
     return new Response(JSON.stringify(updatedBids), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -78,7 +84,7 @@ export async function DELETE(request: Request) {
   try {
     await deleteBid(Number(bidId));
     return new Response(null, { status: 204 });
-  } catch (error: any) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }

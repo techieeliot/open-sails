@@ -1,5 +1,4 @@
 import PageWrapper from '@/components/page-wrapper';
-import { DynamicInputDialog } from './components/dynamic-input-dialog';
 import CollectionsIndex from './components/collections-index';
 
 export default function DashboardPage() {

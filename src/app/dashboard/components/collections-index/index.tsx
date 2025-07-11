@@ -6,7 +6,7 @@ import { Collection } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
-import { CollectionOverview } from './collection-overview,';
+import { CollectionOverview } from './collection-overview';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
@@ -23,10 +23,6 @@ export default function CollectionsIndex() {
   useEffect(() => {
     fetchCollections();
   }, [fetchCollections]);
-
-  const handleCollectionCreated = (newCollection: Collection) => {
-    setCollections((prev) => [...prev, newCollection]);
-  };
 
   return (
     <div className="flex flex-col gap-4 w-full h-full max-w-8xl items-end justify-end">
