@@ -5,6 +5,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { UserNavigation } from '@/components/user-navigation';
+import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -70,6 +71,7 @@ export default function RootLayout({
             className="h-auto w-auto"
           />
         </footer>
+        <Analytics />
       </body>
     </html>
   );
