@@ -14,7 +14,7 @@ import { Collection, User } from '@/types';
 import { BidList } from '@/app/dashboard/components/bids-list';
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 
-export default function CollectionDetailsPage() {
+export function CollectionDetailsClient() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAtomValue(userSessionAtom);
@@ -91,7 +91,9 @@ export default function CollectionDetailsPage() {
     }
   };
 
-  // We're using the DynamicInputDialog for editing instead of navigation
+  const handleEditCollection = () => {
+    router.push(`/dashboard?edit=${collectionId}`);
+  };
 
   const isOwnerOfCollection = !!(user && collection && user.id === collection.ownerId);
 
@@ -186,30 +188,9 @@ export default function CollectionDetailsPage() {
           </div>
           {isOwnerOfCollection && (
             <div className="flex gap-2">
-              <DynamicInputDialog
-                triggerText="Edit Collection"
-                dialogTitle="Edit Collection"
-                description="Update the details for this collection."
-                modalCategory="collection"
-                method="PUT"
-                collectionId={collectionId}
-                onSuccess={() => {
-                  // Refetch collection details after update
-                  if (collectionId) {
-                    setIsLoading(true);
-                    fetch(`/api/collections/${collectionId}`)
-                      .then((response) => response.json())
-                      .then((data) => {
-                        setCollection(data);
-                        toast.success('Collection updated successfully');
-                      })
-                      .catch(() => {
-                        toast.error('Error refreshing collection data');
-                      })
-                      .finally(() => setIsLoading(false));
-                  }
-                }}
-              />
+              <Button variant="outline" onClick={handleEditCollection}>
+                Edit Collection
+              </Button>
               <ConfirmationDialog
                 triggerText="Delete Collection"
                 dialogTitle="Delete Collection"

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { UserNavigation } from '@/components/user-navigation';
 import { Analytics } from '@vercel/analytics/next';
 import ErrorBoundary from '@/components/error-boundary';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -74,6 +75,7 @@ export default function RootLayout({
             />
           </footer>
         </ErrorBoundary>
+        <Toaster position="top-center" richColors />
         <Analytics />
       </body>
     </html>

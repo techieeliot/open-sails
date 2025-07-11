@@ -1,3 +1,5 @@
+'use client';
+
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import RowItem from '@/components/row-item';
 import { Collection } from '@/types';
@@ -5,6 +7,8 @@ import { DynamicInputDialog } from '../dynamic-input-dialog';
 import { BidList } from '../bids-list';
 import { useAtom } from 'jotai';
 import { collectionsAtom } from '@/lib/atoms';
+import { toast } from 'sonner';
+import Link from 'next/link';
 
 interface CollectionOverviewProps extends Collection {
   setCollectionActiveState: (id: number) => void;
@@ -31,6 +35,7 @@ export const CollectionOverview = ({
           <span className="text-sm text-muted-foreground">Status: {status}</span>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/collections/${id}`}>View Collection</Link>
           {isOwner ? (
             <>
               <DynamicInputDialog
@@ -49,38 +54,44 @@ export const CollectionOverview = ({
                 onConfirm={async () => {
                   console.log('Delete Collection clicked');
                   try {
-                    const removalConfirmationResponse = await fetch(`/api/collections`, {
+                    const removalConfirmationResponse = await fetch(`/api/collections/${id}`, {
                       method: 'DELETE',
                       headers: {
                         'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({ id }),
                     });
                     if (!removalConfirmationResponse.ok) {
                       throw new Error('Failed to delete collection');
                     }
 
-                    alert('Collection deleted successfully');
+                    toast.success('Collection deleted successfully', {
+                      duration: 5000,
+                    });
                     const updatedCollections = collections.filter((c) => c.id !== id);
                     setCollections(updatedCollections);
                     console.log('Collection deleted successfully');
                   } catch (error) {
-                    alert('Failed to delete collection');
+                    toast.error('Failed to delete collection', {
+                      description: 'Please try again later',
+                      duration: 5000,
+                    });
                     console.error('Failed to delete collection:', error);
                   }
                 }}
               />
             </>
           ) : (
-            <DynamicInputDialog
-              triggerText="Place Bid"
-              dialogTitle="Place a Bid"
-              description="Fill out the form to place a bid on this collection."
-              modalCategory="bid"
-              method="POST"
-              collectionId={id}
-              onSuccess={fetchCollections}
-            />
+            status !== 'closed' && (
+              <DynamicInputDialog
+                triggerText="Place Bid"
+                dialogTitle="Place a Bid"
+                description="Fill out the form to place a bid on this collection."
+                modalCategory="bid"
+                method="POST"
+                collectionId={id}
+                onSuccess={fetchCollections}
+              />
+            )
           )}
         </div>
       </RowItem>

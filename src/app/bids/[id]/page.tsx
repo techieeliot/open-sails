@@ -1,11 +1,5 @@
-import PageWrapper from '@/components/page-wrapper';
+import { BidDetailsClient } from '@/components/bid-details';
 
 export default function BidDetailsPage() {
-  return (
-    <PageWrapper>
-      <h1 className="text-2xl font-bold mb-4">Bid Details</h1>
-      <p className="text-gray-600">This page will display the details of a specific bid.</p>
-      {/* Add more content here as needed */}
-    </PageWrapper>
-  );
+  return <BidDetailsClient />;
 }

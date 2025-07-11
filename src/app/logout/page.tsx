@@ -1,5 +1,5 @@
 import PageWrapper from '@/components/page-wrapper';
-import { LogoutHandler } from './component';
+import { LogoutHandler } from './logout-handler-client';
 
 export default function LogoutPage() {
   // This page is for logging out users. It can be used to display a message or redirect them.

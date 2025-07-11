@@ -1,5 +1,5 @@
 import PageWrapper from '@/components/page-wrapper';
-import { UserAccessSwitcher } from './user-access-switcher';
+import { UserAccessSwitcher } from './user-access-switcher.client';
 
 export default function Home() {
   return (

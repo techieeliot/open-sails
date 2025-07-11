@@ -4,6 +4,7 @@ import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dia
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export const CollectionAdminPanel = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -43,9 +44,15 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
                   }
 
                   console.log('Collection deleted successfully');
-                  alert('Collection deleted successfully');
+                  toast.success('Collection deleted successfully', {
+                    duration: 5000,
+                  });
                   router.push('/dashboard');
                 } catch (error) {
+                  toast.error('Failed to delete collection', {
+                    description: 'Please try again later',
+                    duration: 5000,
+                  });
                   console.error('Failed to delete collection:', error);
                 }
               }}

@@ -1,5 +1,5 @@
 import { pgTable, text, integer, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, InferModel } from 'drizzle-orm';
 
 // Users table
 export const users = pgTable('users', {
@@ -72,10 +72,19 @@ export const bidsRelations = relations(bids, ({ one }) => ({
   }),
 }));
 
-// Types derived from schema
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Collection = typeof collections.$inferSelect;
-export type NewCollection = typeof collections.$inferInsert;
-export type Bid = typeof bids.$inferSelect;
-export type NewBid = typeof bids.$inferInsert;
+export const schema = {
+  users,
+  collections,
+  bids,
+  usersRelations,
+  collectionsRelations,
+  bidsRelations,
+};
+
+// Type definitions
+export type User = InferModel<typeof users>;
+export type NewUser = InferModel<typeof users, 'insert'>;
+export type Collection = InferModel<typeof collections>;
+export type NewCollection = InferModel<typeof collections, 'insert'>;
+export type Bid = InferModel<typeof bids>;
+export type NewBid = InferModel<typeof bids, 'insert'>;

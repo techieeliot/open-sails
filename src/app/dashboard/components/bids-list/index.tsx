@@ -3,26 +3,67 @@ import RowItem from '@/components/row-item';
 import { Bid } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { PriceBidStatus } from './components';
+import { PriceBidStatus } from './components/price-bid-status.client';
 import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { EditBidDialog } from './components/edit-bid-dialog.client';
 
 export interface BidIndexProps {
   isOwner: boolean;
   collectionId: number;
 }
 
+// Helper function to format user IDs consistently
+const formatUserId = (userId: string | number | null | undefined): string => {
+  if (!userId) return 'Unknown';
+
+  if (typeof userId === 'string') {
+    // For UUIDs, display only the first part
+    return userId.includes('-') ? `${userId.split('-')[0]}...` : userId;
+  }
+
+  // For numeric IDs, just return the number as a string
+  return String(userId);
+};
+
 export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
   const [bids, setBids] = useState<Bid[]>([]);
   const [visibleBidsCount, setVisibleBidsCount] = useState(10);
   const { user } = useAtomValue(userSessionAtom);
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
 
   const fetchBids = useCallback(async () => {
     if (collectionId) {
       const response = await fetch(`/api/bids?collection_id=${collectionId}`);
       const data: Bid[] = await response.json();
       setBids(data);
+
+      // Extract unique user IDs from bids
+      const uniqueUserIds = Array.from(new Set(data.map((bid) => String(bid.userId))));
+
+      // Fetch user details for these IDs if we have any
+      if (uniqueUserIds.length > 0) {
+        try {
+          const usersResponse = await fetch('/api/users');
+          if (usersResponse.ok) {
+            const usersData = await usersResponse.json();
+            const userMap: Record<string, string> = {};
+
+            // Create a mapping of user IDs to names
+            usersData.forEach((u: { id: string | number; name?: string }) => {
+              if (u.id) {
+                userMap[String(u.id)] = u.name || 'Anonymous User';
+              }
+            });
+
+            setUserNames(userMap);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user details:', error);
+        }
+      }
     }
   }, [collectionId]);
 
@@ -73,9 +114,19 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
             return (
               <RowItem key={bid.id} rowTitle={`Bid ${index + 1}`}>
                 <div className="flex items-center gap-2">
-                  {/* Placeholder for user details */}
-                  <span className={cn(isBidder ? 'text-yellow-400' : 'text-muted-foreground')}>
-                    User: {bid.userId}
+                  {/* Display user name if available, otherwise formatted ID */}
+                  <span
+                    className={cn(
+                      'px-2 py-1 rounded-md text-sm',
+                      isBidder
+                        ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
+                    )}
+                  >
+                    {bid.userId && userNames[String(bid.userId)]
+                      ? `${userNames[String(bid.userId)]}`
+                      : `User ${formatUserId(bid.userId)}`}
+                    {isBidder && ' (You)'}
                   </span>
                 </div>
                 <PriceBidStatus price={bid.price} status={bid.status} />
@@ -90,11 +141,17 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                         onConfirm={async () => {
                           try {
                             await resolveBid(bid.id, bid.collectionId, 'accepted');
-                            alert('Bid accepted successfully');
+                            toast.success('Bid accepted successfully', {
+                              description:
+                                'The collection is now closed and other bids have been rejected',
+                              duration: 5000,
+                            });
                             fetchBids();
                           } catch (error) {
                             console.error('Failed to accept bid:', error);
-                            alert('Failed to accept bid');
+                            toast.error('Failed to accept bid', {
+                              description: 'Please try again later',
+                            });
                           }
                         }}
                       />
@@ -105,30 +162,37 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                         onConfirm={async () => {
                           try {
                             await resolveBid(bid.id, bid.collectionId, 'rejected');
-                            alert('Bid rejected successfully');
+                            toast.success('Bid rejected successfully');
                             fetchBids();
                           } catch (error) {
                             console.error('Failed to reject bid:', error);
-                            alert('Failed to reject bid');
+                            toast.error('Failed to reject bid', {
+                              description: 'Please try again later',
+                            });
                           }
                         }}
                       />
                     </>
                   ) : !isOwner && bid.status === 'pending' && isBidder ? (
-                    <ConfirmationDialog
-                      triggerText="Cancel Bid"
-                      dialogTitle="Cancel Bid"
-                      onConfirm={async () => {
-                        try {
-                          await cancelBid(bid.id);
-                          alert('Bid cancelled successfully');
-                          fetchBids();
-                        } catch (error) {
-                          console.error('Failed to cancel bid:', error);
-                          alert('Failed to cancel bid');
-                        }
-                      }}
-                    />
+                    <>
+                      <EditBidDialog bid={bid} onBidUpdated={fetchBids} />
+                      <ConfirmationDialog
+                        triggerText="Cancel Bid"
+                        dialogTitle="Cancel Bid"
+                        onConfirm={async () => {
+                          try {
+                            await cancelBid(bid.id);
+                            toast.success('Bid cancelled successfully');
+                            fetchBids();
+                          } catch (error) {
+                            console.error('Failed to cancel bid:', error);
+                            toast.error('Failed to cancel bid', {
+                              description: 'Please try again later',
+                            });
+                          }
+                        }}
+                      />
+                    </>
                   ) : null}
                 </div>
               </RowItem>

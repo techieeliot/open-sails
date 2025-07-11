@@ -4,6 +4,8 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { Collection } from '@/types';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import {
   Form,
   FormControl,
@@ -18,48 +20,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Name is required')
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name cannot exceed 100 characters')
-    .regex(
-      /^[a-zA-Z0-9\s\-_]+$/,
-      'Name can only contain letters, numbers, spaces, hyphens, and underscores',
-    ),
-  descriptions: z
-    .string()
-    .min(1, 'Description is required')
-    .min(10, 'Description must be at least 10 characters')
-    .max(1000, 'Description cannot exceed 1000 characters'),
-  price: z.coerce
-    .number({
-      required_error: 'Price is required',
-      invalid_type_error: 'Price must be a valid number',
-    })
-    .positive({ message: 'Price must be a positive number' })
-    .min(0.01, { message: 'Price must be at least $0.01' })
-    .max(1000000, { message: 'Price cannot exceed $1,000,000' })
-    .refine(
-      (val) => {
-        // Check if number has at most 2 decimal places
-        const decimals = val.toString().split('.')[1];
-        return !decimals || decimals.length <= 2;
-      },
-      { message: 'Price can have at most 2 decimal places' },
-    ),
-  stocks: z.coerce
-    .number({
-      required_error: 'Stock quantity is required',
-      invalid_type_error: 'Stock quantity must be a valid number',
-    })
-    .int({ message: 'Stock quantity must be a whole number' })
-    .positive({ message: 'Stock quantity must be a positive number' })
-    .min(1, { message: 'Stock quantity must be at least 1' })
-    .max(10000, { message: 'Stock quantity cannot exceed 10,000 units' }),
-});
+import { formSchema } from './schema';
 
 export interface CollectionFormProps {
   method: 'POST' | 'PUT';
@@ -76,6 +37,7 @@ export const CollectionForm = ({
 }: CollectionFormProps) => {
   const { user } = useAtomValue(userSessionAtom);
   const setCollections = useSetAtom(collectionsAtom);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,6 +47,8 @@ export const CollectionForm = ({
       price: undefined, // Changed from 0 to undefined to show placeholder
       stocks: undefined, // Changed from 0 to undefined to show placeholder
     },
+    mode: 'onBlur', // Validate fields when they lose focus
+    criteriaMode: 'all', // Show all validation errors
   });
 
   useEffect(() => {
@@ -134,15 +98,34 @@ export const CollectionForm = ({
     if (response.ok) {
       const updatedItem = await response.json();
       if (method === 'POST') {
-        setCollections((prev) => [...prev, updatedItem]);
+        setCollections((prev) => [updatedItem, ...prev]);
+
+        // Show success toast and navigate to the new collection page
+        toast.success('Collection created successfully! Let the bidding begin.', {
+          duration: 5000,
+        });
+
+        // Close dialog if provided
+        if (closeDialog) closeDialog();
+
+        // Navigate to the new collection page
+        router.push(`/collections/${updatedItem.id}`);
       } else {
         setCollections((prev) => prev.map((c) => (c.id === collectionId ? updatedItem : c)));
+
+        // Show success toast for updates
+        toast.success('Collection updated successfully!', {
+          duration: 3000,
+        });
+
+        if (onSuccess) onSuccess();
+        if (closeDialog) closeDialog();
       }
-      if (onSuccess) onSuccess();
-      if (closeDialog) closeDialog();
     } else {
       console.error('Failed to process collection');
-      alert('Failed to process collection. Check console for details.');
+      toast.error('Failed to process collection. Please try again.', {
+        duration: 5000,
+      });
     }
   };
 
@@ -156,7 +139,17 @@ export const CollectionForm = ({
             <FormItem>
               <FormLabel>Collection Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Antminer S19 Pro" maxLength={100} {...field} />
+                <Input
+                  placeholder="e.g., Antminer S19 Pro"
+                  maxLength={100}
+                  {...field}
+                  value={field.value ?? ''}
+                  onBlur={() => {
+                    field.onBlur(); // Trigger validation
+                    form.trigger('name'); // Explicitly trigger validation
+                  }}
+                  aria-invalid={!!form.formState.errors.name}
+                />
               </FormControl>
               <FormMessage />
               <p className="text-xs text-muted-foreground mt-1">
@@ -177,6 +170,11 @@ export const CollectionForm = ({
                   maxLength={1000}
                   rows={4}
                   {...field}
+                  onBlur={() => {
+                    field.onBlur();
+                    form.trigger('descriptions'); // Explicitly trigger validation
+                  }}
+                  aria-invalid={!!form.formState.errors.descriptions}
                 />
               </FormControl>
               <FormMessage />
@@ -200,6 +198,7 @@ export const CollectionForm = ({
                   min="0.01"
                   max="1000000"
                   {...field}
+                  value={field.value ?? ''}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === '') {
@@ -211,6 +210,11 @@ export const CollectionForm = ({
                       field.onChange(numValue);
                     }
                   }}
+                  onBlur={() => {
+                    field.onBlur();
+                    form.trigger('price'); // Explicitly trigger validation
+                  }}
+                  aria-invalid={!!form.formState.errors.price}
                 />
               </FormControl>
               <FormMessage />
@@ -234,6 +238,7 @@ export const CollectionForm = ({
                   max="10000"
                   step="1"
                   {...field}
+                  value={field.value ?? ''}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === '') {
@@ -245,6 +250,11 @@ export const CollectionForm = ({
                       field.onChange(numValue);
                     }
                   }}
+                  onBlur={() => {
+                    field.onBlur();
+                    form.trigger('stocks'); // Explicitly trigger validation
+                  }}
+                  aria-invalid={!!form.formState.errors.stocks}
                 />
               </FormControl>
               <FormMessage />

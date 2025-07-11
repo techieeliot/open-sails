@@ -1,5 +1,12 @@
 import { NextRequest } from 'next/server';
-import { createBid, deleteBid, getBidsByCollectionId, updateBid, updateBidStatus } from './utils';
+import {
+  createBid,
+  deleteBid,
+  getBidById,
+  getBidsByCollectionId,
+  updateBid,
+  updateBidStatus,
+} from './utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
 
@@ -11,7 +18,77 @@ export async function GET(request: NextRequest) {
     const tracker = new PerformanceTracker('GET /api/bids');
     const searchParams = request.nextUrl.searchParams;
     const collectionId = searchParams.get('collection_id');
+    const bidId = searchParams.get('bid_id');
 
+    // Check if we're fetching a single bid
+    if (bidId) {
+      const bidIdNum = Number(bidId);
+      if (isNaN(bidIdNum)) {
+        logger.warn(
+          {
+            endpoint: '/api/bids',
+            method: 'GET',
+            error: 'Invalid bid ID',
+            providedId: bidId,
+            type: 'validation_error',
+          },
+          'GET request with invalid bid ID',
+        );
+
+        response = Response.json({ error: 'Invalid bid ID' }, { status: 400 });
+        logResponse(request, response, startTime);
+        return response;
+      }
+
+      logger.info(
+        {
+          endpoint: '/api/bids',
+          method: 'GET',
+          bidId: bidIdNum,
+          type: 'bid_fetch_started',
+        },
+        `Fetching bid: ${bidIdNum}`,
+      );
+
+      const bid = await getBidById(bidIdNum);
+
+      if (!bid) {
+        logger.warn(
+          {
+            endpoint: '/api/bids',
+            method: 'GET',
+            bidId: bidIdNum,
+            type: 'bid_not_found',
+          },
+          `Bid not found: ${bidIdNum}`,
+        );
+
+        response = Response.json({ error: 'Bid not found' }, { status: 404 });
+        logResponse(request, response, startTime);
+        return response;
+      }
+
+      tracker.finish({ bidId: bidIdNum });
+
+      response = new Response(JSON.stringify(bid), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      logger.info(
+        {
+          endpoint: '/api/bids',
+          method: 'GET',
+          bidId: bidIdNum,
+          type: 'bid_fetched',
+        },
+        `Successfully fetched bid: ${bidIdNum}`,
+      );
+
+      logResponse(request, response, startTime);
+      return response;
+    }
+
+    // Handling collection bids
     if (!collectionId) {
       logger.warn(
         {

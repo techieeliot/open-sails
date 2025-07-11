@@ -6,7 +6,7 @@ import { Collection } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
-import { CollectionOverview } from './collection-overview';
+import { CollectionOverview } from './collection-overview.client';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
@@ -36,7 +36,11 @@ export default function CollectionsIndex() {
       console.log('Received collection data:', collectionData.length, 'collections');
 
       if (Array.isArray(collectionData)) {
-        setCollections(collectionData);
+        // Sort collections by createdAt date (newest first)
+        const sortedCollections = [...collectionData].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+        setCollections(sortedCollections);
       } else {
         throw new Error('Received invalid data format for collections');
       }
@@ -60,14 +64,16 @@ export default function CollectionsIndex() {
         fallback={<div className="text-center text-muted-foreground">Loading collections...</div>}
       >
         <div className="flex w-full justify-end max-w-8xl">
-          <DynamicInputDialog
-            triggerText="Create Collection"
-            dialogTitle="Create Collection"
-            description="Fill out the form to create a new collection."
-            modalCategory="collection"
-            method="POST"
-            onSuccess={fetchCollections}
-          />
+          {user && (
+            <DynamicInputDialog
+              triggerText="Create Collection"
+              dialogTitle="Create Collection"
+              description="Fill out the form to create a new collection."
+              modalCategory="collection"
+              method="POST"
+              onSuccess={fetchCollections}
+            />
+          )}
         </div>
 
         {error && (

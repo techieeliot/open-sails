@@ -1,3 +1,5 @@
+'use client';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -16,31 +18,14 @@ import { Bid } from '@/types';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bidsAtom, userSessionAtom } from '@/lib/atoms';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
+import { formSchema } from './schema';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
   onSuccess?: () => void;
   closeDialog?: () => void;
 }
-
-const formSchema = z.object({
-  price: z.coerce
-    .number({
-      required_error: 'Price is required',
-      invalid_type_error: 'Price must be a valid number',
-    })
-    .positive({ message: 'Price must be a positive number' })
-    .min(0.01, { message: 'Price must be at least $0.01' })
-    .max(1000000, { message: 'Price cannot exceed $1,000,000' })
-    .refine(
-      (val) => {
-        // Check if number has at most 2 decimal places
-        const decimals = val.toString().split('.')[1];
-        return !decimals || decimals.length <= 2;
-      },
-      { message: 'Price can have at most 2 decimal places' },
-    ),
-});
 
 export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }: BidFormProps) => {
   const { user } = useAtomValue(userSessionAtom);
@@ -113,7 +98,17 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
     if (response.ok) {
       const updatedBids = await response.json();
       setBids(updatedBids);
-      alert('Bid processed successfully');
+
+      if (method === 'POST') {
+        toast.success('Bid placed successfully!', {
+          description: 'Your bid has been recorded and is awaiting review.',
+          duration: 5000,
+        });
+      } else {
+        toast.success('Bid updated successfully!', {
+          duration: 3000,
+        });
+      }
 
       if (onSuccess) {
         onSuccess();
@@ -123,7 +118,10 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
       }
     } else {
       console.error('Failed to create or update bid');
-      alert('Failed to process bid. See console for details.');
+      toast.error('Failed to process bid', {
+        description: 'Please check your bid details and try again.',
+        duration: 5000,
+      });
     }
   };
 
@@ -146,6 +144,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
                     min="0.01"
                     max="1000000"
                     {...field}
+                    value={field.value ?? ''}
                     onChange={(e) => {
                       const value = e.target.value;
                       // Allow empty string for clearing the field
