@@ -13,6 +13,8 @@ import { userSessionAtom } from '@/lib/atoms';
 import { Collection, User } from '@/types';
 import { BidList } from '@/app/dashboard/components/bids-list';
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
+import { DELETE } from '@/lib/constants';
+import { Bitcoin } from 'lucide-react';
 
 export default function CollectionDetailsPage() {
   const params = useParams();
@@ -70,7 +72,7 @@ export default function CollectionDetailsPage() {
   const handleDeleteCollection = async () => {
     try {
       const response = await fetch(`/api/collections/${collectionId}`, {
-        method: 'DELETE',
+        method: DELETE,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -99,7 +101,9 @@ export default function CollectionDetailsPage() {
     return (
       <PageWrapper>
         <div className="flex justify-center items-center min-h-[300px]">
-          <p className="text-gray-600">Loading collection details...</p>
+          <p className="text-gray-600">
+            <Bitcoin className="animate-pulse" height={300} width={300} />
+          </p>
         </div>
       </PageWrapper>
     );
@@ -160,8 +164,10 @@ export default function CollectionDetailsPage() {
 
             {collection.descriptions && (
               <div className="mt-4">
-                <h3 className="text-lg font-semibold mb-2">Description</h3>
-                <p className="text-gray-700 whitespace-pre-wrap">{collection.descriptions}</p>
+                <h3 className="flex flex-col">
+                  <span className="text-lg font-semibold mb-2">Description:</span>{' '}
+                  <span className="whitespace-pre-wrap max-w-sm">{collection.descriptions}</span>
+                </h3>
               </div>
             )}
           </div>
@@ -218,7 +224,7 @@ export default function CollectionDetailsPage() {
               />
             </div>
           )}{' '}
-          {user && !isOwnerOfCollection && (
+          {user && !isOwnerOfCollection && collection.status === 'open' && (
             <div className="flex">
               <DynamicInputDialog
                 triggerText="Place Bid"

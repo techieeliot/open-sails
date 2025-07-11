@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/users/[id]',
-        method: 'GET',
+        method: GET,
         userId,
         type: 'user_fetch_started',
       },
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       logger.warn(
         {
           endpoint: '/api/users/[id]',
-          method: 'GET',
+          method: GET,
           userId,
           type: 'user_not_found',
         },
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/users/[id]',
-        method: 'GET',
+        method: GET,
         userId,
         type: 'user_fetched',
       },
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
     logger.error(
       {
         endpoint: '/api/users/[id]',
-        method: 'GET',
+        method: GET,
         userId: id,
         error: (error as Error).message,
         type: 'user_fetch_error',

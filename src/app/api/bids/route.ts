@@ -9,6 +9,7 @@ import {
 } from './utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
@@ -26,8 +27,8 @@ export async function GET(request: NextRequest) {
       if (isNaN(bidIdNum)) {
         logger.warn(
           {
-            endpoint: '/api/bids',
-            method: 'GET',
+            endpoint: API_ENDPOINTS.bids,
+            method: GET,
             error: 'Invalid bid ID',
             providedId: bidId,
             type: 'validation_error',
@@ -42,8 +43,8 @@ export async function GET(request: NextRequest) {
 
       logger.info(
         {
-          endpoint: '/api/bids',
-          method: 'GET',
+          endpoint: API_ENDPOINTS.bids,
+          method: GET,
           bidId: bidIdNum,
           type: 'bid_fetch_started',
         },
@@ -55,8 +56,8 @@ export async function GET(request: NextRequest) {
       if (!bid) {
         logger.warn(
           {
-            endpoint: '/api/bids',
-            method: 'GET',
+            endpoint: API_ENDPOINTS.bids,
+            method: API_METHODS.GET,
             bidId: bidIdNum,
             type: 'bid_not_found',
           },
@@ -71,19 +72,8 @@ export async function GET(request: NextRequest) {
       tracker.finish({ bidId: bidIdNum });
 
       response = new Response(JSON.stringify(bid), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': CONTENT_TYPE_JSON },
       });
-
-      logger.info(
-        {
-          endpoint: '/api/bids',
-          method: 'GET',
-          bidId: bidIdNum,
-          type: 'bid_fetched',
-        },
-        `Successfully fetched bid: ${bidIdNum}`,
-      );
-
       logResponse(request, response, startTime);
       return response;
     }
@@ -92,8 +82,8 @@ export async function GET(request: NextRequest) {
     if (!collectionId) {
       logger.warn(
         {
-          endpoint: '/api/bids',
-          method: 'GET',
+          endpoint: API_ENDPOINTS.bids,
+          method: GET,
           error: 'Missing collection ID',
           type: 'validation_error',
         },
@@ -109,8 +99,8 @@ export async function GET(request: NextRequest) {
     if (isNaN(collectionIdNum)) {
       logger.warn(
         {
-          endpoint: '/api/bids',
-          method: 'GET',
+          endpoint: API_ENDPOINTS.bids,
+          method: GET,
           error: 'Invalid collection ID',
           providedId: collectionId,
           type: 'validation_error',
@@ -125,8 +115,8 @@ export async function GET(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.GET,
         collectionId: collectionIdNum,
         type: 'bids_fetch_started',
       },
@@ -137,13 +127,13 @@ export async function GET(request: NextRequest) {
     tracker.finish({ collectionId: collectionIdNum, count: bids.length });
 
     response = new Response(JSON.stringify(bids), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.GET,
         collectionId: collectionIdNum,
         bidsCount: bids.length,
         type: 'bids_fetched',
@@ -153,8 +143,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/bids',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.GET,
         error: (error as Error).message,
         type: 'bids_fetch_error',
       },
@@ -179,27 +169,10 @@ export async function POST(request: NextRequest) {
     const tracker = new PerformanceTracker('POST /api/bids');
     const newBidData = await request.json();
 
-    if (!newBidData.collectionId || !newBidData.userId || !newBidData.price) {
-      logger.warn(
-        {
-          endpoint: '/api/bids',
-          method: 'POST',
-          error: 'Missing required fields',
-          providedFields: Object.keys(newBidData),
-          type: 'validation_error',
-        },
-        'POST request missing required fields',
-      );
-
-      response = Response.json({ error: 'Missing required fields' }, { status: 400 });
-      logResponse(request, response, startTime);
-      return response;
-    }
-
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.POST,
         bidData: newBidData,
         type: 'bid_creation_started',
       },
@@ -211,17 +184,14 @@ export async function POST(request: NextRequest) {
 
     response = new Response(JSON.stringify(newBid), {
       status: 201,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.POST,
         bidId: newBid.id,
-        collectionId: newBidData.collectionId,
-        userId: newBidData.userId,
-        price: newBidData.price,
         type: 'bid_created',
       },
       `Created bid: ${newBid.id}`,
@@ -229,8 +199,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/bids',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.POST,
         error: (error as Error).message,
         type: 'bid_creation_error',
       },
@@ -260,8 +230,8 @@ export async function PUT(request: NextRequest) {
     if (!bidId || !collectionId) {
       logger.warn(
         {
-          endpoint: '/api/bids',
-          method: 'PUT',
+          endpoint: API_ENDPOINTS.bids,
+          method: PUT,
           error: 'Missing bid or collection ID',
           providedBidId: bidId,
           providedCollectionId: collectionId,
@@ -281,8 +251,8 @@ export async function PUT(request: NextRequest) {
     if (isNaN(bidIdNumeric) || isNaN(collectionIdNumeric)) {
       logger.warn(
         {
-          endpoint: '/api/bids',
-          method: 'PUT',
+          endpoint: API_ENDPOINTS.bids,
+          method: PUT,
           error: 'Invalid bid or collection ID',
           providedBidId: bidId,
           providedCollectionId: collectionId,
@@ -297,12 +267,12 @@ export async function PUT(request: NextRequest) {
     }
 
     const requestBody = await request.json();
-    const { status } = requestBody;
+    const { status, ...updatedData } = requestBody;
 
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'PUT',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.PUT,
         bidId: bidIdNumeric,
         collectionId: collectionIdNumeric,
         updateType: status ? 'status' : 'data',
@@ -313,32 +283,32 @@ export async function PUT(request: NextRequest) {
 
     if (status) {
       await updateBidStatus(bidIdNumeric, status, collectionIdNumeric);
+      response = new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': CONTENT_TYPE_JSON },
+      });
     } else {
-      await updateBid(bidIdNumeric, requestBody);
+      const updatedBid = await updateBid(bidIdNumeric, updatedData);
+      response = new Response(JSON.stringify(updatedBid), {
+        headers: { 'Content-Type': CONTENT_TYPE_JSON },
+      });
     }
 
-    const updatedBids = await getBidsByCollectionId(collectionIdNumeric);
-    tracker.finish({ bidId: bidIdNumeric, collectionId: collectionIdNumeric });
-
-    response = new Response(JSON.stringify(updatedBids), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    tracker.finish({ bidId: bidIdNumeric });
 
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'PUT',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.PUT,
         bidId: bidIdNumeric,
-        collectionId: collectionIdNumeric,
         type: 'bid_updated',
       },
-      `Updated bid: ${bidIdNumeric}`,
+      `Successfully updated bid: ${bidIdNumeric}`,
     );
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/bids',
-        method: 'PUT',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.PUT,
         error: (error as Error).message,
         type: 'bid_update_error',
       },
@@ -362,70 +332,51 @@ export async function DELETE(request: NextRequest) {
     const bidId = searchParams.get('bid_id');
 
     if (!bidId) {
-      logger.warn(
-        {
-          endpoint: '/api/bids',
-          method: 'DELETE',
-          error: 'Missing bid ID',
-          type: 'validation_error',
-        },
-        'DELETE request missing bid ID',
-      );
-
       response = Response.json({ error: 'Bid ID is required' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;
     }
 
-    const bidIdNumeric = Number(bidId);
-    if (isNaN(bidIdNumeric)) {
-      logger.warn(
-        {
-          endpoint: '/api/bids',
-          method: 'DELETE',
-          error: 'Invalid bid ID',
-          providedId: bidId,
-          type: 'validation_error',
-        },
-        'DELETE request with invalid bid ID',
-      );
+    logger.info(
+      {
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.DELETE,
+        bidId,
+        type: 'bid_delete_started',
+      },
+      `Deleting bid: ${bidId}`,
+    );
 
-      response = Response.json({ error: 'Invalid bid ID' }, { status: 400 });
+    const bidIdNumeric = parseInt(bidId, 10);
+    if (isNaN(bidIdNumeric)) {
+      response = Response.json({ error: 'Invalid Bid ID' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;
     }
 
-    logger.info(
-      {
-        endpoint: '/api/bids',
-        method: 'DELETE',
-        bidId: bidIdNumeric,
-        type: 'bid_deletion_started',
-      },
-      `Deleting bid: ${bidIdNumeric}`,
-    );
-
     await deleteBid(bidIdNumeric);
     tracker.finish({ bidId: bidIdNumeric });
 
-    response = new Response(null, { status: 204 });
+    response = new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
+    });
 
     logger.info(
       {
-        endpoint: '/api/bids',
-        method: 'DELETE',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.DELETE,
         bidId: bidIdNumeric,
         type: 'bid_deleted',
       },
-      `Deleted bid: ${bidIdNumeric}`,
+      `Successfully deleted bid: ${bidIdNumeric}`,
     );
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/bids',
-        method: 'DELETE',
+        endpoint: API_ENDPOINTS.bids,
+        method: API_METHODS.DELETE,
         error: (error as Error).message,
-        type: 'bid_deletion_error',
+        type: 'bid_delete_error',
       },
       `Failed to delete bid: ${(error as Error).message}`,
     );

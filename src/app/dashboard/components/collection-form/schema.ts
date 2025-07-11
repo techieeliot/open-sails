@@ -7,8 +7,8 @@ export const formSchema = z.object({
     .min(2, 'Name must be at least 2 characters')
     .max(100, 'Name cannot exceed 100 characters')
     .regex(
-      /^[a-zA-Z0-9\s\-_]+$/,
-      'Name can only contain letters, numbers, spaces, hyphens, and underscores',
+      /^[a-zA-Z0-9\s\-_()]+$/,
+      'Name can only contain letters, numbers, spaces, hyphens, underscores, and parentheses',
     ),
   descriptions: z
     .string()

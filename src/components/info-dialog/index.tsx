@@ -30,9 +30,9 @@ export const InfoDialog = ({
           {triggerText}
         </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogContent className="max-w-lg mx-auto p-24 flex flex-col items-center justify-center">
+        <DialogHeader className="text-center">
+          <DialogTitle className="p-24">{dialogTitle}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {isValidElement(children)

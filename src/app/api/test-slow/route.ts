@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/test-slow',
-        method: 'GET',
+        method: GET,
         simulatedDelay: 1200,
         type: 'test_slow_endpoint',
       },
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     logger.error(
       {
         endpoint: '/api/test-slow',
-        method: 'GET',
+        method: GET,
         error: (error as Error).message,
         type: 'test_slow_error',
       },

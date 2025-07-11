@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
+  FluidFormElement,
   Form,
   FormControl,
   FormField,
@@ -21,6 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { formSchema } from './schema';
+import { API_ENDPOINTS, POST, PUT } from '@/lib/constants';
 
 export interface CollectionFormProps {
   method: 'POST' | 'PUT';
@@ -52,7 +54,7 @@ export const CollectionForm = ({
   });
 
   useEffect(() => {
-    if (method === 'PUT' && collectionId) {
+    if (method === PUT && collectionId) {
       const fetchCollectionData = async () => {
         const response = await fetch(`/api/collections/${collectionId}`);
         if (response.ok) {
@@ -75,17 +77,17 @@ export const CollectionForm = ({
       updatedAt: new Date().toISOString(),
     };
 
-    if (method === 'POST') {
+    if (method === POST) {
       if (user) {
         data.ownerId = user.id;
       }
       data.createdAt = new Date().toISOString();
-    } else if (method === 'PUT') {
+    } else if (method === PUT) {
       data.id = collectionId;
     }
 
     const response = await fetch(
-      method === 'PUT' ? `/api/collections/${collectionId}` : '/api/collections',
+      method === PUT ? `/api/collections/${collectionId}` : API_ENDPOINTS.collections,
       {
         method,
         headers: {
@@ -97,7 +99,7 @@ export const CollectionForm = ({
 
     if (response.ok) {
       const updatedItem = await response.json();
-      if (method === 'POST') {
+      if (method === POST) {
         setCollections((prev) => [updatedItem, ...prev]);
 
         // Show success toast and navigate to the new collection page
@@ -131,7 +133,7 @@ export const CollectionForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 p-4">
+      <FluidFormElement onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 p-4">
         <FormField
           control={form.control}
           name="name"
@@ -270,14 +272,14 @@ export const CollectionForm = ({
           disabled={!form.formState.isValid || form.formState.isSubmitting}
         >
           {form.formState.isSubmitting
-            ? method === 'POST'
+            ? method === POST
               ? 'Creating...'
               : 'Saving...'
-            : method === 'POST'
+            : method === POST
               ? 'Create Collection'
               : 'Save Changes'}
         </Button>
-      </form>
+      </FluidFormElement>
     </Form>
   );
 };

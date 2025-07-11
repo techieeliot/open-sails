@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { PriceBidStatus } from './components/price-bid-status.client';
 import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
-import { cn } from '@/lib/utils';
+import { cn, toTitleCase } from '@/lib/utils';
 import { toast } from 'sonner';
 import { EditBidDialog } from './components/edit-bid-dialog.client';
+import { DELETE, PUT, UNKNOWN } from '@/lib/constants';
 
 export interface BidIndexProps {
   isOwner: boolean;
@@ -17,7 +18,7 @@ export interface BidIndexProps {
 
 // Helper function to format user IDs consistently
 const formatUserId = (userId: string | number | null | undefined): string => {
-  if (!userId) return 'Unknown';
+  if (!userId) return toTitleCase(UNKNOWN);
 
   if (typeof userId === 'string') {
     // For UUIDs, display only the first part
@@ -73,7 +74,7 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
     status: 'accepted' | 'rejected' | 'cancelled',
   ) => {
     await fetch(`/api/bids?collection_id=${collectionId}&bid_id=${bidId}`, {
-      method: 'PUT',
+      method: PUT,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -85,7 +86,7 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
 
   const cancelBid = async (bidId: number) => {
     await fetch(`/api/bids?bid_id=${bidId}`, {
-      method: 'DELETE',
+      method: DELETE,
       headers: {
         'Content-Type': 'application/json',
       },

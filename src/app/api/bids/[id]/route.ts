@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       logger.warn(
         {
           endpoint: '/api/bids/[id]',
-          method: 'GET',
+          method: GET,
           error: 'Invalid bid ID',
           providedId: pathSegments[pathSegments.length - 1],
           type: 'validation_error',
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/bids/[id]',
-        method: 'GET',
+        method: GET,
         bidId,
         type: 'bid_fetch_started',
       },
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       logger.warn(
         {
           endpoint: '/api/bids/[id]',
-          method: 'GET',
+          method: GET,
           bidId,
           type: 'bid_not_found',
         },
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/bids/[id]',
-        method: 'GET',
+        method: GET,
         bidId,
         type: 'bid_fetched',
       },
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
     logger.error(
       {
         endpoint: '/api/bids/[id]',
-        method: 'GET',
+        method: GET,
         error: (error as Error).message,
         type: 'bid_fetch_error',
       },

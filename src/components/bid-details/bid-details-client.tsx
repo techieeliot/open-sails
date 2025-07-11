@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
+import { DELETE } from '@/lib/constants';
+import { Bitcoin } from 'lucide-react';
 
 export function BidDetailsClient() {
   const params = useParams();
@@ -76,7 +78,9 @@ export function BidDetailsClient() {
     return (
       <PageWrapper>
         <div className="flex justify-center items-center min-h-[300px]">
-          <p className="text-gray-600">Loading bid details...</p>
+          <p className="text-gray-600">
+            <Bitcoin className="animate-pulse" height={300} width={300} />
+          </p>
         </div>
       </PageWrapper>
     );
@@ -178,7 +182,7 @@ export function BidDetailsClient() {
             onConfirm={async () => {
               try {
                 const response = await fetch(`/api/bids?bid_id=${bid.id}`, {
-                  method: 'DELETE',
+                  method: DELETE,
                   headers: {
                     'Content-Type': 'application/json',
                   },

@@ -23,14 +23,16 @@ export const ConfirmationDialog = ({
 }: ConfirmationDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogTrigger className="btn btn-primary">{triggerText}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
+      <DialogTrigger asChild>
+        <Button variant="outline">{triggerText}</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md mx-auto p-6">
+        <DialogHeader className="text-center flex flex-col justify-center items-center min-h-32">
           <DialogTitle>{dialogTitle}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        <DialogFooter>
-          <Button type="button" onClick={onConfirm}>
+        <DialogFooter className="flex min-h-32">
+          <Button type="button" onClick={onConfirm} size="icon" className="w-2xs">
             Confirm
           </Button>
         </DialogFooter>

@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 import { MetricsTracker } from '@/lib/logger';
+import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
 
 interface UserEngagementData {
   action: string;
@@ -17,8 +18,8 @@ export function useUserEngagement() {
       metrics.trackUserEngagement(action, userId);
 
       // Send to server for persistent logging
-      await fetch('/api/engagement', {
-        method: 'POST',
+      await fetch(API_ENDPOINTS.engagement, {
+        method: API_METHODS.POST,
         headers: {
           'Content-Type': 'application/json',
         },

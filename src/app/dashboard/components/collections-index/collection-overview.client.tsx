@@ -9,6 +9,7 @@ import { useAtom } from 'jotai';
 import { collectionsAtom } from '@/lib/atoms';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { API_METHODS, CONTENT_TYPE_JSON, MODAL_CATEGORY, API_ENDPOINTS } from '@/lib/constants';
 
 interface CollectionOverviewProps extends Collection {
   setCollectionActiveState: (id: number) => void;
@@ -42,8 +43,8 @@ export const CollectionOverview = ({
                 triggerText="Edit"
                 dialogTitle="Edit Collection"
                 description="Fill out the form to edit the collection."
-                modalCategory="collection"
-                method="PUT"
+                modalCategory={MODAL_CATEGORY.COLLECTION}
+                method={API_METHODS.PUT}
                 collectionId={id}
                 onSuccess={fetchCollections}
               />
@@ -54,12 +55,15 @@ export const CollectionOverview = ({
                 onConfirm={async () => {
                   console.log('Delete Collection clicked');
                   try {
-                    const removalConfirmationResponse = await fetch(`/api/collections/${id}`, {
-                      method: 'DELETE',
-                      headers: {
-                        'Content-Type': 'application/json',
+                    const removalConfirmationResponse = await fetch(
+                      `${API_ENDPOINTS.collections}/${id}`,
+                      {
+                        method: API_METHODS.DELETE,
+                        headers: {
+                          'Content-Type': CONTENT_TYPE_JSON,
+                        },
                       },
-                    });
+                    );
                     if (!removalConfirmationResponse.ok) {
                       throw new Error('Failed to delete collection');
                     }
@@ -86,8 +90,8 @@ export const CollectionOverview = ({
                 triggerText="Place Bid"
                 dialogTitle="Place a Bid"
                 description="Fill out the form to place a bid on this collection."
-                modalCategory="bid"
-                method="POST"
+                modalCategory={MODAL_CATEGORY.BID}
+                method={API_METHODS.POST}
                 collectionId={id}
                 onSuccess={fetchCollections}
               />

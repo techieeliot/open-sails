@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/test-error',
-        method: 'GET',
+        method: GET,
         success: true,
         type: 'test_error_endpoint',
       },
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     logger.error(
       {
         endpoint: '/api/test-error',
-        method: 'GET',
+        method: GET,
         error: (error as Error).message,
         type: 'test_error_endpoint_error',
       },

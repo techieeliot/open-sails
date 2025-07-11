@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getCollectionById, updateCollection, deleteCollection } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
@@ -10,14 +11,14 @@ export async function GET(request: NextRequest) {
   const id = url.pathname.split('/').pop();
 
   try {
-    const tracker = new PerformanceTracker('GET /api/collections/[id]');
+    const tracker = new PerformanceTracker(`GET ${API_ENDPOINTS.collections}/[id]`);
     const collectionId = Number(id);
 
     if (isNaN(collectionId)) {
       logger.warn(
         {
-          endpoint: '/api/collections/[id]',
-          method: 'GET',
+          endpoint: `${API_ENDPOINTS.collections}/[id]`,
+          method: API_METHODS.GET,
           error: 'Invalid collection ID',
           providedId: id,
           type: 'validation_error',
@@ -32,8 +33,8 @@ export async function GET(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'GET',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.GET,
         collectionId,
         type: 'collection_fetch_started',
       },
@@ -45,8 +46,8 @@ export async function GET(request: NextRequest) {
     if (!collection) {
       logger.warn(
         {
-          endpoint: '/api/collections/[id]',
-          method: 'GET',
+          endpoint: `${API_ENDPOINTS.collections}/[id]`,
+          method: API_METHODS.GET,
           collectionId,
           type: 'collection_not_found',
         },
@@ -61,13 +62,13 @@ export async function GET(request: NextRequest) {
     tracker.finish({ collectionId });
 
     response = new Response(JSON.stringify(collection), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'GET',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.GET,
         collectionId,
         type: 'collection_fetched',
       },
@@ -76,8 +77,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'GET',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.GET,
         error: (error as Error).message,
         type: 'collection_fetch_error',
       },
@@ -101,14 +102,14 @@ export async function PUT(request: NextRequest) {
   const id = url.pathname.split('/').pop();
 
   try {
-    const tracker = new PerformanceTracker('PUT /api/collections/[id]');
+    const tracker = new PerformanceTracker(`PUT ${API_ENDPOINTS.collections}/[id]`);
     const collectionId = Number(id);
 
     if (isNaN(collectionId)) {
       logger.warn(
         {
-          endpoint: '/api/collections/[id]',
-          method: 'PUT',
+          endpoint: `${API_ENDPOINTS.collections}/[id]`,
+          method: API_METHODS.PUT,
           error: 'Invalid collection ID',
           providedId: id,
           type: 'validation_error',
@@ -127,8 +128,8 @@ export async function PUT(request: NextRequest) {
     if (!existingCollection) {
       logger.warn(
         {
-          endpoint: '/api/collections/[id]',
-          method: 'PUT',
+          endpoint: `${API_ENDPOINTS.collections}/[id]`,
+          method: API_METHODS.PUT,
           collectionId,
           type: 'collection_not_found',
         },
@@ -145,8 +146,8 @@ export async function PUT(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'PUT',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.PUT,
         collectionId,
         type: 'collection_update_started',
       },
@@ -159,13 +160,13 @@ export async function PUT(request: NextRequest) {
     tracker.finish({ collectionId });
 
     response = new Response(JSON.stringify(updatedCollection), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'PUT',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.PUT,
         collectionId,
         type: 'collection_updated',
       },
@@ -174,8 +175,8 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'PUT',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.PUT,
         error: (error as Error).message,
         type: 'collection_update_error',
       },
@@ -199,14 +200,14 @@ export async function DELETE(request: NextRequest) {
   const id = url.pathname.split('/').pop();
 
   try {
-    const tracker = new PerformanceTracker('DELETE /api/collections/[id]');
+    const tracker = new PerformanceTracker(`DELETE ${API_ENDPOINTS.collections}/[id]`);
     const collectionId = Number(id);
 
     if (isNaN(collectionId)) {
       logger.warn(
         {
-          endpoint: '/api/collections/[id]',
-          method: 'DELETE',
+          endpoint: `${API_ENDPOINTS.collections}/[id]`,
+          method: API_METHODS.DELETE,
           error: 'Invalid collection ID',
           providedId: id,
           type: 'validation_error',
@@ -225,8 +226,8 @@ export async function DELETE(request: NextRequest) {
     if (!existingCollection) {
       logger.warn(
         {
-          endpoint: '/api/collections/[id]',
-          method: 'DELETE',
+          endpoint: `${API_ENDPOINTS.collections}/[id]`,
+          method: API_METHODS.DELETE,
           collectionId,
           type: 'collection_not_found',
         },
@@ -240,8 +241,8 @@ export async function DELETE(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'DELETE',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.DELETE,
         collectionId,
         type: 'collection_delete_started',
       },
@@ -254,13 +255,13 @@ export async function DELETE(request: NextRequest) {
     tracker.finish({ collectionId });
 
     response = new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'DELETE',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.DELETE,
         collectionId,
         type: 'collection_deleted',
       },
@@ -269,8 +270,8 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections/[id]',
-        method: 'DELETE',
+        endpoint: `${API_ENDPOINTS.collections}/[id]`,
+        method: API_METHODS.DELETE,
         error: (error as Error).message,
         type: 'collection_delete_error',
       },

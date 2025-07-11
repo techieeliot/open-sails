@@ -1,5 +1,7 @@
+import { DANGER, GLOBAL, POST, UNKNOWN, WARNING } from './constants';
 import { logger, MetricsTracker } from './logger';
 import { track } from '@vercel/analytics/server';
+import { toTitleCase } from './utils';
 
 // Alerting configuration
 export const ALERT_THRESHOLDS = {
@@ -68,9 +70,17 @@ export class AlertManager {
     return false;
   }
 
+  // Method to reset all alert states
+  resetAlerts() {
+    this.recentAlerts.clear();
+    this.errorHistory = [];
+    this.consecutiveErrors.clear();
+    logger.info({ type: 'alerts_reset' }, 'All alert states have been reset.');
+  }
+
   // Send alert through multiple channels
   async sendAlert(context: AlertContext) {
-    const alertKey = `${context.type}_${context.endpoint || 'global'}`;
+    const alertKey = `${context.type}_${context.endpoint || GLOBAL}`;
 
     if (this.shouldSuppressAlert(alertKey)) {
       logger.debug(
@@ -105,7 +115,7 @@ export class AlertManager {
         severity: context.severity,
         value: context.value,
         threshold: context.threshold,
-        endpoint: context.endpoint || 'global',
+        endpoint: context.endpoint || GLOBAL,
         message: context.message,
         timestamp: context.timestamp,
         environment: process.env.NODE_ENV,
@@ -131,19 +141,23 @@ export class AlertManager {
     if (process.env.SLACK_WEBHOOK_URL) {
       try {
         await fetch(process.env.SLACK_WEBHOOK_URL, {
-          method: 'POST',
+          method: POST,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text: `🚨 ${context.severity.toUpperCase()} Alert: ${context.message}`,
             attachments: [
               {
-                color: context.severity === AlertSeverity.CRITICAL ? 'danger' : 'warning',
+                color: context.severity === AlertSeverity.CRITICAL ? DANGER : WARNING,
                 fields: [
                   { title: 'Type', value: context.type, short: true },
-                  { title: 'Endpoint', value: context.endpoint || 'Global', short: true },
+                  {
+                    title: 'Endpoint',
+                    value: context.endpoint || toTitleCase(GLOBAL),
+                    short: true,
+                  },
                   { title: 'Value', value: context.value.toString(), short: true },
                   { title: 'Threshold', value: context.threshold.toString(), short: true },
-                  { title: 'Environment', value: process.env.NODE_ENV || 'unknown', short: true },
+                  { title: 'Environment', value: process.env.NODE_ENV || UNKNOWN, short: true },
                   { title: 'Timestamp', value: context.timestamp, short: true },
                 ],
               },
@@ -165,7 +179,7 @@ export class AlertManager {
     if (process.env.PAGERDUTY_INTEGRATION_KEY && context.severity === AlertSeverity.CRITICAL) {
       try {
         await fetch('https://events.pagerduty.com/v2/enqueue', {
-          method: 'POST',
+          method: POST,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             routing_key: process.env.PAGERDUTY_INTEGRATION_KEY,

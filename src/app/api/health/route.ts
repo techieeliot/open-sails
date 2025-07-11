@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/health',
-        method: 'GET',
+        method: GET,
         uptime: healthData.uptime,
         memoryUsage: healthData.memory.rss,
         type: 'health_check',
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     logger.error(
       {
         endpoint: '/api/health',
-        method: 'GET',
+        method: GET,
         error: (error as Error).message,
         type: 'health_check_error',
       },

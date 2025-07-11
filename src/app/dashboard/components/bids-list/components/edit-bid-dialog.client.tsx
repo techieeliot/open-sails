@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Bid } from '@/types';
 import { useRouter } from 'next/navigation';
+import { API_METHODS } from '@/lib/constants';
 
 interface EditBidDialogProps {
   bid: Bid;
@@ -56,7 +57,7 @@ export function EditBidDialog({ bid, onBidUpdated }: EditBidDialogProps) {
 
     try {
       const response = await fetch(`/api/bids?bid_id=${bid.id}&collection_id=${bid.collectionId}`, {
-        method: 'PUT',
+        method: API_METHODS.PUT,
         headers: {
           'Content-Type': 'application/json',
         },

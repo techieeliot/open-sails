@@ -3,6 +3,7 @@ import { createCollection, deleteCollection, getCollections, updateCollection } 
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
 import { seedDatabase } from '@/db';
+import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
@@ -11,18 +12,18 @@ export async function GET(request: NextRequest) {
   try {
     await seedDatabase();
 
-    const tracker = new PerformanceTracker('GET /api/collections');
+    const tracker = new PerformanceTracker(`GET ${API_ENDPOINTS.collections}`);
     const collections = await getCollections();
     tracker.finish({ count: collections.length });
 
     response = new Response(JSON.stringify(collections), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.GET,
         collectionsCount: collections.length,
         type: 'collections_fetched',
       },
@@ -31,8 +32,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.GET,
         error: (error as Error).message,
         type: 'collections_fetch_error',
       },
@@ -54,13 +55,13 @@ export async function POST(request: NextRequest) {
   let response: Response;
 
   try {
-    const tracker = new PerformanceTracker('POST /api/collections');
+    const tracker = new PerformanceTracker(`POST ${API_ENDPOINTS.collections}`);
     const newCollectionData = await request.json();
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.POST,
         collectionData: newCollectionData,
         type: 'collection_creation_started',
       },
@@ -72,13 +73,13 @@ export async function POST(request: NextRequest) {
 
     response = new Response(JSON.stringify(newCollection), {
       status: 201,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.POST,
         collectionId: newCollection.id,
         type: 'collection_created',
       },
@@ -87,8 +88,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.POST,
         error: (error as Error).message,
         type: 'collection_creation_error',
       },
@@ -110,10 +111,10 @@ export async function PUT(request: NextRequest) {
   let response: Response;
 
   try {
-    const tracker = new PerformanceTracker('PUT /api/collections');
+    const tracker = new PerformanceTracker(`PUT ${API_ENDPOINTS.collections}`);
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
-    const updatedCollectionData = await request.json();
+    const updatedData = await request.json();
 
     if (!collectionId || isNaN(collectionId)) {
       response = Response.json({ error: 'Collection ID is required' }, { status: 400 });
@@ -123,36 +124,35 @@ export async function PUT(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'PUT',
-        collectionId,
-        updatedData: updatedCollectionData,
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.PUT,
+        collectionId: collectionId,
         type: 'collection_update_started',
       },
       `Updating collection: ${collectionId}`,
     );
 
-    const updatedCollection = await updateCollection(collectionId, updatedCollectionData);
-    tracker.finish({ collectionId });
+    const updatedCollection = await updateCollection(collectionId, updatedData);
+    tracker.finish({ collectionId: collectionId });
 
     response = new Response(JSON.stringify(updatedCollection), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'PUT',
-        collectionId,
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.PUT,
+        collectionId: collectionId,
         type: 'collection_updated',
       },
-      `Updated collection: ${collectionId}`,
+      `Successfully updated collection: ${collectionId}`,
     );
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections',
-        method: 'PUT',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.PUT,
         error: (error as Error).message,
         type: 'collection_update_error',
       },
@@ -174,7 +174,7 @@ export async function DELETE(request: NextRequest) {
   let response: Response;
 
   try {
-    const tracker = new PerformanceTracker('DELETE /api/collections');
+    const tracker = new PerformanceTracker(`DELETE ${API_ENDPOINTS.collections}`);
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
 
@@ -186,35 +186,37 @@ export async function DELETE(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'DELETE',
-        collectionId,
-        type: 'collection_deletion_started',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.DELETE,
+        collectionId: collectionId,
+        type: 'collection_delete_started',
       },
       `Deleting collection: ${collectionId}`,
     );
 
     await deleteCollection(collectionId);
-    tracker.finish({ collectionId });
+    tracker.finish({ collectionId: collectionId });
 
-    response = new Response(null, { status: 204 });
+    response = new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': CONTENT_TYPE_JSON },
+    });
 
     logger.info(
       {
-        endpoint: '/api/collections',
-        method: 'DELETE',
-        collectionId,
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.DELETE,
+        collectionId: collectionId,
         type: 'collection_deleted',
       },
-      `Deleted collection: ${collectionId}`,
+      `Successfully deleted collection: ${collectionId}`,
     );
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/collections',
-        method: 'DELETE',
+        endpoint: API_ENDPOINTS.collections,
+        method: API_METHODS.DELETE,
         error: (error as Error).message,
-        type: 'collection_deletion_error',
+        type: 'collection_delete_error',
       },
       `Failed to delete collection: ${(error as Error).message}`,
     );

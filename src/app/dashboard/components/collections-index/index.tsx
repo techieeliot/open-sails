@@ -7,6 +7,8 @@ import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { CollectionOverview } from './collection-overview.client';
+import { Bitcoin } from 'lucide-react';
+import { API_ENDPOINTS } from '@/lib/constants';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
@@ -22,7 +24,7 @@ export default function CollectionsIndex() {
       setError(null);
 
       console.log('Fetching collections from API...');
-      const response = await fetch('/api/collections');
+      const response = await fetch(API_ENDPOINTS.collections);
 
       console.log('Collections response status:', response.status);
 
@@ -61,11 +63,16 @@ export default function CollectionsIndex() {
   return (
     <div className="flex flex-col gap-4 w-full h-full max-w-8xl items-end justify-end">
       <Suspense
-        fallback={<div className="text-center text-muted-foreground">Loading collections...</div>}
+        fallback={
+          <div className="text-center text-muted-foreground">
+            <Bitcoin className="animate-pulse" height={300} width={300} />
+          </div>
+        }
       >
-        <div className="flex w-full justify-end max-w-8xl">
-          {user && (
+        <div className="flex w-full items-end justify-end max-w-8xl h-32">
+          {!loading && user && (
             <DynamicInputDialog
+              className="min-w-3xs bg-zinc-900"
               triggerText="Create Collection"
               dialogTitle="Create Collection"
               description="Fill out the form to create a new collection."
@@ -87,7 +94,9 @@ export default function CollectionsIndex() {
         )}
 
         {loading ? (
-          <div className="text-center text-muted-foreground">Loading collections...</div>
+          <div className="text-center text-muted-foreground min-w-md">
+            <Bitcoin className="animate-pulse" height={500} width={500} />
+          </div>
         ) : collections.length === 0 && !error ? (
           <div className="text-center text-muted-foreground h-screen">
             No collections found yet...

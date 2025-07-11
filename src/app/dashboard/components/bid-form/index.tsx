@@ -5,12 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
+  FluidFormElement,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  FormWrapper,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { CollectionFormProps } from '../collection-form';
@@ -20,6 +22,7 @@ import { bidsAtom, userSessionAtom } from '@/lib/atoms';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { formSchema } from './schema';
+import { POST, PUT } from '@/lib/constants';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
@@ -40,7 +43,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   });
 
   useEffect(() => {
-    if (method === 'PUT' && bidId) {
+    if (method === PUT && bidId) {
       const bidToEdit = bids.find((bid) => bid.id === bidId);
       if (bidToEdit) {
         form.reset({
@@ -50,7 +53,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
     }
   }, [bidId, method, bids, form]);
 
-  const formTitle = method === 'POST' ? 'Create a new bid' : `Edit bid ${bidId}`;
+  const formTitle = method === POST ? 'Create a new bid' : `Edit bid ${bidId}`;
 
   if (!user) {
     return <div className="text-center text-muted-foreground">Please log in to place a bid.</div>;
@@ -73,14 +76,14 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
       updatedAt: new Date().toISOString(),
     };
 
-    if (method === 'POST') {
+    if (method === POST) {
       data = {
         ...data,
         createdAt: new Date().toISOString(),
       };
     }
 
-    if (method === 'PUT') {
+    if (method === PUT) {
       data = {
         ...data,
         id: bidId,
@@ -99,7 +102,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
       const updatedBids = await response.json();
       setBids(updatedBids);
 
-      if (method === 'POST') {
+      if (method === POST) {
         toast.success('Bid placed successfully!', {
           description: 'Your bid has been recorded and is awaiting review.',
           duration: 5000,
@@ -126,55 +129,57 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4">{formTitle}</h2>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bid Price ($)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="0.00"
-                    step="0.01"
-                    min="0.01"
-                    max="1000000"
-                    {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Allow empty string for clearing the field
-                      if (value === '') {
-                        field.onChange('');
-                        return;
-                      }
-                      // Parse and validate the number
-                      const numValue = parseFloat(value);
-                      if (!isNaN(numValue)) {
-                        field.onChange(numValue);
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Enter your bid amount (minimum $0.01, maximum $1,000,000)
-                </p>
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={closeDialog}>
-              Cancel
-            </Button>
-            <Button type="submit">{method === 'POST' ? 'Create Bid' : 'Save Changes'}</Button>
-          </div>
-        </form>
-      </Form>
+    <div className="flex flex-col justify-center items-center p-4">
+      <FormWrapper>
+        <h2 className="text-lg font-semibold mb-4 text-center">{formTitle}</h2>
+        <Form {...form}>
+          <FluidFormElement onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bid Price ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0.01"
+                      max="1000000"
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow empty string for clearing the field
+                        if (value === '') {
+                          field.onChange('');
+                          return;
+                        }
+                        // Parse and validate the number
+                        const numValue = parseFloat(value);
+                        if (!isNaN(numValue)) {
+                          field.onChange(numValue);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter your bid amount (minimum $0.01, maximum $1,000,000)
+                  </p>
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end gap-4">
+              <Button type="button" variant="outline" onClick={closeDialog}>
+                Cancel
+              </Button>
+              <Button type="submit">{method === POST ? 'Create Bid' : 'Save Changes'}</Button>
+            </div>
+          </FluidFormElement>
+        </Form>
+      </FormWrapper>
     </div>
   );
 };

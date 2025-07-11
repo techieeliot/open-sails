@@ -13,6 +13,8 @@ import { userSessionAtom } from '@/lib/atoms';
 import { Collection, User } from '@/types';
 import { BidList } from '@/app/dashboard/components/bids-list';
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
+import { API_ENDPOINTS, CONTENT_TYPE_JSON, DELETE } from '@/lib/constants';
+import { Bitcoin } from 'lucide-react';
 
 export function CollectionDetailsClient() {
   const params = useParams();
@@ -31,7 +33,7 @@ export function CollectionDetailsClient() {
         setError(null);
 
         // Fetch the collection details
-        const response = await fetch(`/api/collections/${collectionId}`);
+        const response = await fetch(`${API_ENDPOINTS.collections}/${collectionId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch collection details');
         }
@@ -70,9 +72,9 @@ export function CollectionDetailsClient() {
   const handleDeleteCollection = async () => {
     try {
       const response = await fetch(`/api/collections/${collectionId}`, {
-        method: 'DELETE',
+        method: DELETE,
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': CONTENT_TYPE_JSON,
         },
       });
 
@@ -101,7 +103,9 @@ export function CollectionDetailsClient() {
     return (
       <PageWrapper>
         <div className="flex justify-center items-center min-h-[300px]">
-          <p className="text-gray-600">Loading collection details...</p>
+          <p className="text-gray-600">
+            <Bitcoin className="animate-pulse" height={300} width={300} />
+          </p>
         </div>
       </PageWrapper>
     );
@@ -202,6 +206,7 @@ export function CollectionDetailsClient() {
           {user && !isOwnerOfCollection && (
             <div className="flex">
               <DynamicInputDialog
+                className="bg-zinc-900"
                 triggerText="Place Bid"
                 dialogTitle="Place a Bid"
                 description="Fill out the form to place a bid on this collection."

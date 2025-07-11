@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
 import { logRequest, logResponse } from '@/lib/api-middleware';
-import { alertManager, ALERT_THRESHOLDS, AlertType, AlertSeverity } from '@/lib/alerting';
 import { logger } from '@/lib/logger';
+import { alertManager, ALERT_THRESHOLDS, AlertType, AlertSeverity } from '@/lib/alerting';
+import { API_METHODS, API_ENDPOINTS, ALERT_ACTIONS } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
@@ -28,8 +29,8 @@ export async function GET(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/alerts',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.alerts,
+        method: API_METHODS.GET,
         alertsConfigured:
           alertStatus.metrics && typeof alertStatus.metrics === 'object'
             ? Object.keys(alertStatus.metrics).length
@@ -42,8 +43,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/alerts',
-        method: 'GET',
+        endpoint: API_ENDPOINTS.alerts,
+        method: API_METHODS.GET,
         error: (error as Error).message,
         type: 'alerts_status_error',
       },
@@ -71,37 +72,25 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action, type, endpoint } = body;
 
-    if (action === 'test') {
-      // Test alert - useful for verifying integrations
-      await alertManager.sendAlert({
-        type: AlertType.UPTIME,
-        severity: AlertSeverity.LOW,
-        message: `Test alert from ${endpoint || 'admin'}`,
-        value: 1,
-        threshold: 1,
-        endpoint: endpoint || '/api/alerts',
-        timestamp: new Date().toISOString(),
-        metadata: {
-          isTest: true,
-          triggeredBy: 'manual',
-        },
-      });
-
-      response = Response.json({
-        message: 'Test alert sent successfully',
-        timestamp: new Date().toISOString(),
-      });
-    } else if (action === 'reset') {
-      // Reset alert history for an endpoint
-      if (endpoint) {
-        // Note: This would require additional methods in AlertManager
-        response = Response.json({
-          message: `Alert history reset for ${endpoint}`,
-          timestamp: new Date().toISOString(),
-        });
-      } else {
-        response = Response.json({ error: 'Endpoint required for reset action' }, { status: 400 });
+    if (action === ALERT_ACTIONS.TEST) {
+      // Test alert logic
+      const alertType = type as AlertType;
+      if (!Object.values(AlertType).includes(alertType)) {
+        response = Response.json({ error: 'Invalid alert type for test action' }, { status: 400 });
       }
+      await alertManager.sendAlert({
+        type: alertType,
+        severity: AlertSeverity.HIGH,
+        message: `This is a test alert for ${alertType}`,
+        value: 99,
+        threshold: 90,
+        endpoint: endpoint || 'test/endpoint',
+        timestamp: new Date().toISOString(),
+      });
+      response = Response.json({ message: `Test alert for ${type} sent` });
+    } else if (action === ALERT_ACTIONS.RESET) {
+      alertManager.resetAlerts();
+      response = Response.json({ message: 'Alerts have been reset' });
     } else {
       response = Response.json(
         { error: 'Invalid action. Supported actions: test, reset' },
@@ -111,8 +100,8 @@ export async function POST(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/alerts',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.alerts,
+        method: POST,
         action,
         alertType: type,
         targetEndpoint: endpoint,
@@ -123,8 +112,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/alerts',
-        method: 'POST',
+        endpoint: API_ENDPOINTS.alerts,
+        method: API_METHODS.POST,
         error: (error as Error).message,
         type: 'alerts_action_error',
       },

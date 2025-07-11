@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
     logger.info(
       {
         endpoint: '/api/uptime',
-        method: 'GET',
+        method: GET,
         status: healthData.status,
         duration: totalDuration,
         checksCount: healthResults.length,
@@ -185,7 +185,7 @@ export async function GET(request: NextRequest) {
     logger.error(
       {
         endpoint: '/api/uptime',
-        method: 'GET',
+        method: GET,
         error: (error as Error).message,
         type: 'uptime_check_error',
       },
