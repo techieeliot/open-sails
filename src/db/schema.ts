@@ -36,7 +36,7 @@ export const bids = pgTable('bids', {
   price: integer('price').notNull(),
   collectionId: integer('collection_id')
     .notNull()
-    .references(() => collections.id),
+    .references(() => collections.id, { onDelete: 'cascade' }),
   userId: integer('user_id')
     .notNull()
     .references(() => users.id),

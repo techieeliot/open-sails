@@ -193,6 +193,7 @@ export default function CollectionDetailsPage() {
           {isOwnerOfCollection && (
             <div className="flex gap-2">
               <DynamicInputDialog
+                key={`edit-dialog-${collectionId}`}
                 triggerText="Edit Collection"
                 dialogTitle="Edit Collection"
                 description="Update the details for this collection."
@@ -217,6 +218,7 @@ export default function CollectionDetailsPage() {
                 }}
               />
               <ConfirmationDialog
+                key={`delete-dialog-${collectionId}`}
                 triggerText="Delete Collection"
                 dialogTitle="Delete Collection"
                 description="Are you sure you want to delete this collection? This action cannot be undone."
@@ -227,6 +229,7 @@ export default function CollectionDetailsPage() {
           {user && !isOwnerOfCollection && collection.status === 'open' && (
             <div className="flex">
               <DynamicInputDialog
+                key={`bid-dialog-${collectionId}`}
                 triggerText="Place Bid"
                 dialogTitle="Place a Bid"
                 description="Fill out the form to place a bid on this collection."

@@ -1,42 +1,57 @@
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { DialogModalProps } from '@/types';
+import { ReactNode } from 'react';
 
 interface ConfirmationDialogProps extends DialogModalProps {
   onConfirm: () => void;
+  triggerText: ReactNode;
+  dialogTitle: ReactNode;
+  description?: string;
 }
 
 export const ConfirmationDialog = ({
+  onConfirm,
   triggerText,
   dialogTitle,
   description,
-  onConfirm,
   ...props
 }: ConfirmationDialogProps) => {
   return (
-    <Dialog {...props}>
-      <DialogTrigger asChild>
-        <Button variant="outline">{triggerText}</Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md mx-auto p-6">
-        <DialogHeader className="text-center flex flex-col justify-center items-center min-h-32">
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
-        </DialogHeader>
-        <DialogFooter className="flex min-h-32">
-          <Button type="button" onClick={onConfirm} size="icon" className="w-2xs">
-            Confirm
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AlertDialog {...props}>
+      <AlertDialogTrigger asChild>
+        <Button type="button" variant="outline">
+          {triggerText}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-w-md mx-auto p-6">
+        <AlertDialogHeader className="text-center flex flex-col justify-center items-center min-h-32">
+          <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+        </AlertDialogHeader>
+        <AlertDialogFooter className="flex min-h-32">
+          <AlertDialogCancel asChild>
+            <Button type="button" variant="secondary" className="w-2xs">
+              Cancel
+            </Button>
+          </AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button type="button" onClick={onConfirm} size="icon" className="w-2xs">
+              Confirm
+            </Button>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };

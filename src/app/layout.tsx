@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Analytics } from '@vercel/analytics/next';
 import ErrorBoundary from '@/components/error-boundary';
 import { Toaster } from 'sonner';
-import TopNavigation from '@/components/top-navigation.tsx';
+import HeaderNavigation from '@/components/header-navigation.tsx';
 import Footer from '@/components/footer';
 import JotaiProvider from '@/components/providers/jotai-provider';
 import { ReactNode } from 'react';
@@ -38,7 +38,7 @@ export default function RootLayout({
       >
         <ErrorBoundary>
           <JotaiProvider>
-            <TopNavigation />
+            <HeaderNavigation />
             {/* PAGE CONTENT */}
             {children}
             <Footer />

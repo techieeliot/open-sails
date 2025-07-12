@@ -196,6 +196,7 @@ export function CollectionDetailsClient() {
                 Edit Collection
               </Button>
               <ConfirmationDialog
+                key={`delete-dialog-${collection.id}`}
                 triggerText="Delete Collection"
                 dialogTitle="Delete Collection"
                 description="Are you sure you want to delete this collection? This action cannot be undone."
@@ -206,13 +207,14 @@ export function CollectionDetailsClient() {
           {user && !isOwnerOfCollection && (
             <div className="flex">
               <DynamicInputDialog
+                key={`bid-dialog-${collection.id}`}
                 className="bg-zinc-900"
                 triggerText="Place Bid"
                 dialogTitle="Place a Bid"
                 description="Fill out the form to place a bid on this collection."
                 modalCategory="bid"
                 method="POST"
-                collectionId={collectionId}
+                collectionId={collection.id}
               />
             </div>
           )}

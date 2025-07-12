@@ -1,15 +1,13 @@
 import { InfoDialog } from '@/components/info-dialog';
 import { CollectionForm } from '../collection-form';
 import { BidForm, BidFormProps } from '../bid-form';
-import { FormProps } from '@/components/interactive-form';
 import { FormWrapper } from '@/components/ui/form';
-import { HtmlHTMLAttributes } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { HtmlHTMLAttributes, ReactNode } from 'react';
 
-export interface DynamicInputDialogProps
-  extends Required<Pick<FormProps, 'method' | 'triggerText'>>,
-    HtmlHTMLAttributes<HTMLDivElement> {
-  dialogTitle: string;
+export interface DynamicInputDialogProps extends HtmlHTMLAttributes<HTMLDivElement> {
+  method: 'POST' | 'PUT';
+  triggerText: ReactNode;
+  dialogTitle: ReactNode;
   description?: string;
   modalCategory: 'collection' | 'bid';
   onSuccess?: () => void;
@@ -24,26 +22,31 @@ export const DynamicInputDialog = ({
   className,
   ...props
 }: DynamicInputDialogProps & BidFormProps) => {
+  // Remove closeDialog from ...props so it doesn't leak to DOM
+  const { closeDialog, ...restProps } = props;
+  const form =
+    modalCategory === 'collection' ? (
+      <CollectionForm
+        method={method}
+        collectionId={collectionId}
+        onSuccess={onSuccess}
+        closeDialog={closeDialog}
+      />
+    ) : (
+      <BidForm
+        method={method}
+        collectionId={collectionId}
+        bidId={bidId}
+        onSuccess={onSuccess}
+        closeDialog={closeDialog}
+      />
+    );
+
   return (
-    <Card className="bg-zinc-900">
-      <CardContent className={`flex justify-center items-center ${className}`}>
-        <InfoDialog {...props}>
-          <FormWrapper
-            className={`flex justify-center items-center max-w-sm min-w-md mx-auto p-48$`}
-          >
-            {modalCategory === 'collection' ? (
-              <CollectionForm method={method} collectionId={collectionId} onSuccess={onSuccess} />
-            ) : (
-              <BidForm
-                method={method}
-                collectionId={collectionId}
-                bidId={bidId}
-                onSuccess={onSuccess}
-              />
-            )}
-          </FormWrapper>
-        </InfoDialog>
-      </CardContent>
-    </Card>
+    <InfoDialog {...restProps}>
+      <FormWrapper className="flex flex-col gap-6 justify-center items-center min-w-md mx-auto">
+        {form}
+      </FormWrapper>
+    </InfoDialog>
   );
 };

@@ -19,11 +19,11 @@ import {
   FluidFormElement,
   FormWrapper,
 } from '../ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { formSchema } from './schema';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Bitcoin } from 'lucide-react';
 import { API_ENDPOINTS } from '@/lib/constants';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export const LoginForm = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -81,15 +81,15 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] min-w-64">
-      <Card className="w-full shadow-lg min-h-96 min-w-96 flex flex-col justify-center">
-        <CardHeader className="text-center h-24">
+    <div className="flex flex-col items-center justify-center min-w-64">
+      <Card className="w-full max-w-md shadow-lg flex flex-col justify-center">
+        <CardHeader className="text-center">
           <CardTitle>Login</CardTitle>
           <p className="text-muted-foreground text-sm">
             Please select a user to log in and continue
           </p>
         </CardHeader>
-        <CardContent className="flex flex-col items-center gap-4 p-6">
+        <CardContent className="flex flex-col items-center gap-4 w-full">
           {error && (
             <div className="p-4 border border-red-300 rounded-lg bg-red-50 text-red-700 mb-4">
               <div className="font-medium mb-2">Connection Error</div>
@@ -107,18 +107,18 @@ export const LoginForm = () => {
           {loading ? (
             <div className="flex flex-col items-center gap-2">
               <div className="text-gray-600">
-                <Bitcoin className="animate-pulse" height={100} width={100} />
+                <Bitcoin className="animate-pulse" height={88} width={88} />
               </div>
               {retryCount > 0 && (
                 <div className="text-sm text-gray-500">Retry attempt {retryCount}/3</div>
               )}
             </div>
           ) : (
-            <FormWrapper className="flex flex-col items-center gap-2 max-w-xs w-full">
+            <FormWrapper className="flex flex-col items-center gap-2 w-full">
               <Form {...form}>
                 <FluidFormElement
                   onSubmit={form.handleSubmit(handleLogin)}
-                  className="flex flex-col items-center gap-4 w-full min-w-[260px] p-24"
+                  className="flex flex-col items-center gap-4 w-full min-w-81"
                 >
                   <FormField
                     control={form.control}
@@ -132,7 +132,7 @@ export const LoginForm = () => {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full text-base border-accent/60 bg-zinc-900">
                               <SelectValue
                                 placeholder={
                                   users.length === 0
@@ -141,10 +141,10 @@ export const LoginForm = () => {
                                 }
                               />
                             </SelectTrigger>
-                            <SelectContent>
-                              {users.map((user) => (
-                                <SelectItem key={user.id} value={user.id.toString()}>
-                                  {user.name} ({user.email})
+                            <SelectContent className="max-h-60 overflow-y-auto bg-zinc-900">
+                              {users.map(({ id, name }) => (
+                                <SelectItem key={id} value={id.toString()}>
+                                  {name}
                                 </SelectItem>
                               ))}
                             </SelectContent>

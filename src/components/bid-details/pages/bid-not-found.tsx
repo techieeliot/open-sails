@@ -1,0 +1,19 @@
+import GoBackButton from '@/components/go-back-button.tsx';
+import PageWrapper from '@/components/page-wrapper';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/router';
+
+export default function BidNotFoundPage() {
+  const router = useRouter();
+  return (
+    <PageWrapper>
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+        <h1 className="text-2xl font-bold mb-4">Bid Not Found</h1>
+        <p className="text-gray-600 mb-4">
+          The bid you&apos;re looking for doesn&apos;t exist or may have been removed.
+        </p>
+        <GoBackButton />
+      </div>
+    </PageWrapper>
+  );
+}

@@ -20,6 +20,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
             <CardContent className="flex flex-col">
               <div className="flex w-full justify-end">
                 <DynamicInputDialog
+                  key={`edit-dialog-${id}`}
                   triggerText="Edit"
                   dialogTitle="Edit Collection"
                   description="Fill out the form to edit the collection."
@@ -30,6 +31,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
               </div>
               <div className="flex w-full justify-end">
                 <ConfirmationDialog
+                  key={`delete-dialog-${id}`}
                   triggerText="Delete"
                   dialogTitle="Delete Collection"
                   description="Are you sure you want to delete this collection?"
@@ -70,6 +72,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
           <p>You do not have permission to manage this collection.</p>
           <div className="flex w-full justify-end">
             <DynamicInputDialog
+              key={`bid-dialog-${id}`}
               triggerText="Place Bid"
               dialogTitle="Place a Bid"
               description="Fill out the form to place a bid on this collection."

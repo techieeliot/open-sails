@@ -26,17 +26,17 @@ export const InfoDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen} {...props}>
       <DialogTrigger asChild>
-        <Button type="button" variant="outline">
+        <Button type="button" variant="outline" size="sm">
           {triggerText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg mx-auto p-24 flex flex-col items-center justify-center">
+      <DialogContent className="max-w-lg mx-auto flex flex-col items-center justify-center">
         <DialogHeader className="text-center">
           <DialogTitle className="p-24">{dialogTitle}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        {isValidElement(children)
-          ? cloneElement(children as ReactElement<{ closeDialog: () => void }>, { closeDialog })
+        {isValidElement(children) && typeof children.type !== 'string'
+          ? cloneElement(children as React.ReactElement<any>, { closeDialog })
           : children}
       </DialogContent>
     </Dialog>

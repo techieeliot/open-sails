@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { UserNavigation } from '@/components/user-navigation';
+import { UserMenu } from '@/components/user-navigation';
 
-export default function TopNavigation() {
+export default function HeaderNavigation() {
   return (
     <header className="fixed w-full z-50 dark:bg-zinc-900 bg-zinc-100">
       <div className="flex items-center justify-between shadow-md">
@@ -14,15 +14,15 @@ export default function TopNavigation() {
                 <Image
                   src="/logo.png"
                   alt="Logo"
-                  width={30}
-                  height={30}
+                  width={40}
+                  height={40}
                   className="h-auto w-auto"
                 />
               </div>
             </Link>
           </nav>
         </div>
-        <UserNavigation />
+        <UserMenu />
       </div>
     </header>
   );

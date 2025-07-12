@@ -273,13 +273,17 @@ export async function DELETE(request: NextRequest) {
         endpoint: `${API_ENDPOINTS.collections}/[id]`,
         method: API_METHODS.DELETE,
         error: (error as Error).message,
+        stack: (error as Error).stack,
         type: 'collection_delete_error',
       },
       `Failed to delete collection: ${(error as Error).message}`,
     );
 
     response = Response.json(
-      { error: 'Failed to delete collection: ' + (error as Error).message },
+      {
+        error: 'Failed to delete collection: ' + (error as Error).message,
+        details: (error as Error).stack,
+      },
       { status: 500 },
     );
   }

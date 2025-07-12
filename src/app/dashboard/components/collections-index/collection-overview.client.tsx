@@ -40,6 +40,7 @@ export const CollectionOverview = ({
           {isOwner ? (
             <>
               <DynamicInputDialog
+                key={`edit-dialog-${id}`}
                 triggerText="Edit"
                 dialogTitle="Edit Collection"
                 description="Fill out the form to edit the collection."
@@ -49,9 +50,10 @@ export const CollectionOverview = ({
                 onSuccess={fetchCollections}
               />
               <ConfirmationDialog
+                key={`delete-dialog-${id}`}
                 triggerText="Delete"
                 dialogTitle="Delete Collection"
-                description="Are you sure you want to delete this collection?"
+                description="Are you sure you want to delete this collection? This will also delete all bids on this collection."
                 onConfirm={async () => {
                   console.log('Delete Collection clicked');
                   try {
@@ -75,8 +77,12 @@ export const CollectionOverview = ({
                     setCollections(updatedCollections);
                     console.log('Collection deleted successfully');
                   } catch (error) {
+                    let errorMessage = 'Please try again later';
+                    if (error instanceof Error && error.message) {
+                      errorMessage = error.message;
+                    }
                     toast.error('Failed to delete collection', {
-                      description: 'Please try again later',
+                      description: errorMessage,
                       duration: 5000,
                     });
                     console.error('Failed to delete collection:', error);
@@ -87,6 +93,7 @@ export const CollectionOverview = ({
           ) : (
             status !== 'closed' && (
               <DynamicInputDialog
+                key={`bid-dialog-${id}`}
                 triggerText="Place Bid"
                 dialogTitle="Place a Bid"
                 description="Fill out the form to place a bid on this collection."

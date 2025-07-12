@@ -46,8 +46,8 @@ export const CollectionForm = ({
     defaultValues: {
       name: '',
       descriptions: '',
-      price: undefined, // Changed from 0 to undefined to show placeholder
-      stocks: undefined, // Changed from 0 to undefined to show placeholder
+      price: undefined,
+      stocks: undefined,
     },
     mode: 'onBlur', // Validate fields when they lose focus
     criteriaMode: 'all', // Show all validation errors
@@ -153,7 +153,7 @@ export const CollectionForm = ({
                   aria-invalid={!!form.formState.errors.name}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="h-4" />
               <p className="text-xs text-muted-foreground mt-1">
                 2-100 characters, letters, numbers, spaces, hyphens, and underscores only
               </p>

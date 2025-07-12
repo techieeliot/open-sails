@@ -3,12 +3,21 @@
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { Button } from '@/components/ui/button';
 import { Collection } from '@/types';
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
-import { CollectionOverview } from './collection-overview.client';
-import { Bitcoin } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Bitcoin, FolderPlus } from 'lucide-react';
 import { API_ENDPOINTS } from '@/lib/constants';
+import { Badge, BadgeProps } from '@/components/ui/badge';
+import { VariantProps } from 'class-variance-authority';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
@@ -61,7 +70,7 @@ export default function CollectionsIndex() {
   }, [fetchCollections]);
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full max-w-8xl items-end justify-end">
+    <div className="flex flex-col gap-6 w-full h-full max-w-8xl mx-auto p-4">
       <Suspense
         fallback={
           <div className="text-center text-muted-foreground">
@@ -72,8 +81,14 @@ export default function CollectionsIndex() {
         <div className="flex w-full items-end justify-end max-w-8xl h-32">
           {!loading && user && (
             <DynamicInputDialog
-              className="min-w-3xs bg-zinc-900"
-              triggerText="Create Collection"
+              key="create-collection-dialog"
+              className="min-w-3xs bg-card"
+              triggerText={
+                <span className="flex items-center gap-2">
+                  <FolderPlus className="mr-2 h-5 w-5" />
+                  Create Collection
+                </span>
+              }
               dialogTitle="Create Collection"
               description="Fill out the form to create a new collection."
               modalCategory="collection"
@@ -102,22 +117,111 @@ export default function CollectionsIndex() {
             No collections found yet...
           </div>
         ) : (
-          !error &&
-          collections.slice(0, visibleCount).map((collection) => {
-            const isOwner = user !== null && user?.id === collection.ownerId;
-            return (
-              <CollectionOverview
-                key={collection.id}
-                isOwner={isOwner}
-                setCollectionActiveState={() =>
-                  setExpandedCollection(expandedCollection === collection.id ? null : collection.id)
-                }
-                fetchCollections={fetchCollections}
-                activeCollectionId={expandedCollection}
-                {...collection}
-              />
-            );
-          })
+          !error && (
+            <Table className="w-full border-separate border-spacing-y-6">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-1/3 text-lg font-bold">Collection</TableHead>
+                  <TableHead className="w-1/3">Status</TableHead>
+                  <TableHead className="w-1/3 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {collections.slice(0, visibleCount).map((collection) => {
+                  const isOwner = user !== null && user?.id === collection.ownerId;
+                  const isExpanded = expandedCollection === collection.id;
+                  const badgeVariant = collection.status === 'open' ? 'default' : 'struckthrough';
+                  return (
+                    <Fragment key={collection.id}>
+                      <TableRow
+                        key={collection.id}
+                        className="bg-card rounded-2xl shadow-md border border-border align-top"
+                      >
+                        <TableCell className="align-top rounded-l-2xl font-semibold text-base py-6">
+                          {collection.name}
+                        </TableCell>
+                        <TableCell className="align-top py-6">
+                          <Badge variant={badgeVariant as BadgeProps['variant']}>
+                            {collection.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="align-top text-right rounded-r-2xl py-6">
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() =>
+                                setExpandedCollection(isExpanded ? null : collection.id)
+                              }
+                            >
+                              {isExpanded ? 'Hide Bids' : 'Show Bids'}
+                            </Button>
+                            <Button size="sm" variant="outline" asChild>
+                              <a href={`/collections/${collection.id}`}>View</a>
+                            </Button>
+                            {isOwner && (
+                              <>
+                                <DynamicInputDialog
+                                  key={`edit-dialog-${collection.id}`}
+                                  triggerText="Edit"
+                                  dialogTitle="Edit Collection"
+                                  description="Fill out the form to edit the collection."
+                                  modalCategory="collection"
+                                  method="PUT"
+                                  collectionId={collection.id}
+                                  onSuccess={fetchCollections}
+                                />
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={async () => {
+                                    // You may want to add a confirmation dialog here
+                                    await fetch(`${API_ENDPOINTS.collections}/${collection.id}`, {
+                                      method: 'DELETE',
+                                    });
+                                    fetchCollections();
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </>
+                            )}
+                            {!isOwner && collection.status !== 'closed' && (
+                              <DynamicInputDialog
+                                key={`bid-dialog-${collection.id}`}
+                                triggerText="Place Bid"
+                                dialogTitle="Place a Bid"
+                                description="Fill out the form to place a bid on this collection."
+                                modalCategory="bid"
+                                method="POST"
+                                collectionId={collection.id}
+                                onSuccess={fetchCollections}
+                              />
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      {isExpanded && (
+                        <TableRow className="bg-transparent">
+                          <TableCell colSpan={3} className="p-0">
+                            {/* Bids Table for this collection */}
+                            <div className="w-full px-8 pb-8">
+                              {/* Replace with your actual BidList or similar component */}
+                              <div className="rounded-2xl border border-border bg-card/80 p-4 mt-2">
+                                <div className="font-semibold mb-2 text-accent">Bids</div>
+                                {/* TODO: Render bids for this collection here, using a Table or List */}
+                                <div className="text-muted-foreground italic">No bids yet...</div>
+                              </div>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )
         )}
       </Suspense>
       {!loading && !error && visibleCount < collections.length && (
