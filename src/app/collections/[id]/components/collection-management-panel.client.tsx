@@ -2,6 +2,7 @@
 
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
+import PlaceBidDialog from '@/components/place-bid-dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { DELETE } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
                   key={`edit-dialog-${id}`}
                   triggerText="Edit"
                   dialogTitle="Edit Collection"
-                  description="Fill out the form to edit the collection."
+                  dialogDescription="Fill out the form to edit the collection."
                   modalCategory="collection"
                   method="PUT"
                   collectionId={id}
@@ -34,7 +35,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
                   key={`delete-dialog-${id}`}
                   triggerText="Delete"
                   dialogTitle="Delete Collection"
-                  description="Are you sure you want to delete this collection?"
+                  dialogDescription="Are you sure you want to delete this collection?"
                   onConfirm={async () => {
                     console.log('Delete Collection clicked');
                     try {
@@ -71,15 +72,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
         <div className="text-center text-muted-foreground">
           <p>You do not have permission to manage this collection.</p>
           <div className="flex w-full justify-end">
-            <DynamicInputDialog
-              key={`bid-dialog-${id}`}
-              triggerText="Place Bid"
-              dialogTitle="Place a Bid"
-              description="Fill out the form to place a bid on this collection."
-              modalCategory="bid"
-              method="POST"
-              collectionId={id}
-            />
+            <PlaceBidDialog collectionId={id} />
           </div>
         </div>
       )}

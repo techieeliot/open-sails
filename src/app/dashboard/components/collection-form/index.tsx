@@ -10,6 +10,7 @@ import {
   FluidFormElement,
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,6 +24,7 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { formSchema } from './schema';
 import { API_ENDPOINTS, POST, PUT } from '@/lib/constants';
+import { Loader } from 'lucide-react';
 
 export interface CollectionFormProps {
   method: 'POST' | 'PUT';
@@ -40,6 +42,8 @@ export const CollectionForm = ({
   const { user } = useAtomValue(userSessionAtom);
   const setCollections = useSetAtom(collectionsAtom);
   const router = useRouter();
+
+  const submitButtonText = method === POST ? 'Create Collection' : 'Save Changes';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -134,151 +138,171 @@ export const CollectionForm = ({
   return (
     <Form {...form}>
       <FluidFormElement onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 p-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Collection Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="e.g., Antminer S19 Pro"
-                  maxLength={100}
-                  {...field}
-                  value={field.value ?? ''}
-                  onBlur={() => {
-                    field.onBlur(); // Trigger validation
-                    form.trigger('name'); // Explicitly trigger validation
-                  }}
-                  aria-invalid={!!form.formState.errors.name}
-                />
-              </FormControl>
-              <FormMessage className="h-4" />
-              <p className="text-xs text-muted-foreground mt-1">
-                2-100 characters, letters, numbers, spaces, hyphens, and underscores only
-              </p>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="descriptions"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Describe your mining hardware collection in detail..."
-                  maxLength={1000}
-                  rows={4}
-                  {...field}
-                  onBlur={() => {
-                    field.onBlur();
-                    form.trigger('descriptions'); // Explicitly trigger validation
-                  }}
-                  aria-invalid={!!form.formState.errors.descriptions}
-                />
-              </FormControl>
-              <FormMessage />
-              <p className="text-xs text-muted-foreground mt-1">
-                {field.value?.length || 0}/1000 characters (minimum 10 required)
-              </p>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Starting Price ($)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0.01"
-                  max="1000000"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '') {
-                      field.onChange('');
-                      return;
+        <div className="flex flex-col max-h-[50vh] overflow-y-auto">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Collection Name</FormLabel>
+                <FormDescription className="text-xs text-muted-foreground mt-1">
+                  2-100 characters, letters, numbers, spaces, hyphens, parentheses, and underscores
+                  only
+                </FormDescription>
+                <FormControl>
+                  <Input
+                    placeholder="e.g., Antminer S19 Pro"
+                    maxLength={100}
+                    autoComplete="off"
+                    {...field}
+                    value={field.value ?? ''}
+                    onBlur={() => {
+                      field.onBlur(); // Trigger validation
+                      form.trigger('name'); // Explicitly trigger validation
+                    }}
+                    aria-invalid={!!form.formState.errors.name}
+                    aria-describedby={form.formState.errors.name ? 'name-error' : undefined}
+                  />
+                </FormControl>
+                <FormMessage id="name-error" aria-live="polite" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="descriptions"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormDescription className="text-xs text-muted-foreground mt-1">
+                  {field.value?.length || 0}/1000 characters (minimum 10 required)
+                </FormDescription>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe your mining hardware collection in detail..."
+                    maxLength={1000}
+                    rows={4}
+                    autoComplete="off"
+                    {...field}
+                    onBlur={() => {
+                      field.onBlur();
+                      form.trigger('descriptions'); // Explicitly trigger validation
+                    }}
+                    aria-invalid={!!form.formState.errors.descriptions}
+                    aria-describedby={
+                      form.formState.errors.descriptions ? 'descriptions-error' : undefined
                     }
-                    const numValue = parseFloat(value);
-                    if (!isNaN(numValue)) {
-                      field.onChange(numValue);
-                    }
-                  }}
-                  onBlur={() => {
-                    field.onBlur();
-                    form.trigger('price'); // Explicitly trigger validation
-                  }}
-                  aria-invalid={!!form.formState.errors.price}
-                />
-              </FormControl>
-              <FormMessage />
-              <p className="text-xs text-muted-foreground mt-1">
-                Minimum $0.01, maximum $1,000,000 (up to 2 decimal places)
-              </p>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="stocks"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stock Quantity</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="1"
-                  min="1"
-                  max="10000"
-                  step="1"
-                  {...field}
-                  value={field.value ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '') {
-                      field.onChange('');
-                      return;
-                    }
-                    const numValue = parseInt(value, 10);
-                    if (!isNaN(numValue)) {
-                      field.onChange(numValue);
-                    }
-                  }}
-                  onBlur={() => {
-                    field.onBlur();
-                    form.trigger('stocks'); // Explicitly trigger validation
-                  }}
-                  aria-invalid={!!form.formState.errors.stocks}
-                />
-              </FormControl>
-              <FormMessage />
-              <p className="text-xs text-muted-foreground mt-1">
-                Number of units available (1-10,000 whole numbers only)
-              </p>
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting
-            ? method === POST
-              ? 'Creating...'
-              : 'Saving...'
-            : method === POST
-              ? 'Create Collection'
-              : 'Save Changes'}
-        </Button>
+                  />
+                </FormControl>
+                <FormMessage id="descriptions-error" aria-live="polite" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Starting Price ($)</FormLabel>
+                <FormDescription className="text-xs text-muted-foreground mt-1">
+                  Minimum $0.01, maximum $1,000,000 (up to 2 decimal places)
+                </FormDescription>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0.01"
+                    max="1000000"
+                    autoComplete="off"
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '') {
+                        field.onChange('');
+                        return;
+                      }
+                      const numValue = parseFloat(value);
+                      if (!isNaN(numValue)) {
+                        field.onChange(numValue);
+                      }
+                    }}
+                    onBlur={() => {
+                      field.onBlur();
+                      form.trigger('price'); // Explicitly trigger validation
+                    }}
+                    aria-invalid={!!form.formState.errors.price}
+                    aria-describedby={form.formState.errors.price ? 'price-error' : undefined}
+                  />
+                </FormControl>
+                <FormMessage id="price-error" aria-live="polite" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="stocks"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stock Quantity</FormLabel>
+                <FormDescription className="text-xs text-muted-foreground mt-1">
+                  Number of units available (1-10,000 whole numbers only)
+                </FormDescription>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="1"
+                    min="1"
+                    max="10000"
+                    step="1"
+                    autoComplete="off"
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '') {
+                        field.onChange('');
+                        return;
+                      }
+                      const numValue = parseInt(value, 10);
+                      if (!isNaN(numValue)) {
+                        field.onChange(numValue);
+                      }
+                    }}
+                    onBlur={() => {
+                      field.onBlur();
+                      form.trigger('stocks'); // Explicitly trigger validation
+                    }}
+                    aria-invalid={!!form.formState.errors.stocks}
+                    aria-describedby={form.formState.errors.stocks ? 'stocks-error' : undefined}
+                  />
+                </FormControl>
+                <FormMessage id="stocks-error" aria-live="polite" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="pt-4">
+          <Button
+            type="submit"
+            className="w-full flex items-center justify-center"
+            variant="secondary"
+            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            aria-busy={form.formState.isSubmitting}
+            aria-label={submitButtonText}
+          >
+            {form.formState.isSubmitting ? (
+              <Loader
+                className="animate-spin mr-2 h-4 w-4 text-zinc-900 dark:text-zinc-200"
+                aria-hidden="true"
+                focusable="false"
+              />
+            ) : (
+              submitButtonText
+            )}
+          </Button>
+        </div>
       </FluidFormElement>
     </Form>
   );

@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm';
+import { eq, and, not } from 'drizzle-orm';
 import { db, users, collections, bids } from '../db';
 import type { User, NewUser, Collection, NewCollection, Bid, NewBid } from '../db/schema';
 
@@ -174,25 +174,42 @@ export class BidService {
 
   // Accept a bid and reject all others for the same collection
   static async acceptBid(bidId: number, collectionId: number): Promise<void> {
-    await db.transaction(async (tx) => {
-      // Accept the selected bid
-      await tx
-        .update(bids)
-        .set({
-          status: 'accepted',
-          updatedAt: new Date().toISOString(),
-        })
-        .where(eq(bids.id, bidId));
+    console.log('[acceptBid] Accepting bid', { bidId, collectionId });
+    // Accept the selected bid
+    const acceptResult = await db
+      .update(bids)
+      .set({
+        status: 'accepted',
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(bids.id, bidId));
+    console.log('[acceptBid] Accept result:', acceptResult);
 
-      // Reject all other bids for this collection
-      await tx
-        .update(bids)
-        .set({
-          status: 'rejected',
-          updatedAt: new Date().toISOString(),
-        })
-        .where(and(eq(bids.collectionId, collectionId), eq(bids.status, 'pending')));
-    });
+    // Reject all other bids for this collection
+    const rejectResult = await db
+      .update(bids)
+      .set({
+        status: 'rejected',
+        updatedAt: new Date().toISOString(),
+      })
+      .where(
+        and(
+          eq(bids.collectionId, collectionId),
+          eq(bids.status, 'pending'),
+          not(eq(bids.id, bidId)),
+        ),
+      );
+    console.log('[acceptBid] Reject result:', rejectResult);
+
+    // Close the collection
+    const closeResult = await db
+      .update(collections)
+      .set({
+        status: 'closed',
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(collections.id, collectionId));
+    console.log('[acceptBid] Close collection result:', closeResult);
   }
 
   // Get bids with user and collection information

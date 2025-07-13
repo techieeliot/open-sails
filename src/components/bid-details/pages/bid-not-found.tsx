@@ -1,10 +1,7 @@
 import GoBackButton from '@/components/go-back-button.tsx';
 import PageWrapper from '@/components/page-wrapper';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/router';
 
 export default function BidNotFoundPage() {
-  const router = useRouter();
   return (
     <PageWrapper>
       <div className="flex flex-col items-center justify-center min-h-[300px]">

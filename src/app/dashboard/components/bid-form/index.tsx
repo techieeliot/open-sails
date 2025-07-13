@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import { Loader } from 'lucide-react';
 import {
   FluidFormElement,
   Form,
@@ -134,48 +135,69 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
         <h2 className="text-lg font-semibold mb-4 text-center">{formTitle}</h2>
         <Form {...form}>
           <FluidFormElement onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bid Price ($)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      step="0.01"
-                      min="0.01"
-                      max="1000000"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        // Allow empty string for clearing the field
-                        if (value === '') {
-                          field.onChange('');
-                          return;
-                        }
-                        // Parse and validate the number
-                        const numValue = parseFloat(value);
-                        if (!isNaN(numValue)) {
-                          field.onChange(numValue);
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Enter your bid amount (minimum $0.01, maximum $1,000,000)
-                  </p>
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-end gap-4">
+            <div className="flex flex-col max-h-[50vh] overflow-y-auto">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bid Price ($)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        step="0.01"
+                        min="0.01"
+                        max="1000000"
+                        autoComplete="off"
+                        {...field}
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Allow empty string for clearing the field
+                          if (value === '') {
+                            field.onChange('');
+                            return;
+                          }
+                          // Parse and validate the number
+                          const numValue = parseFloat(value);
+                          if (!isNaN(numValue)) {
+                            field.onChange(numValue);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage aria-live="polite" />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter your bid amount (minimum $0.01, maximum $1,000,000)
+                    </p>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex justify-end gap-4 pt-4">
               <Button type="button" variant="outline" onClick={closeDialog}>
                 Cancel
               </Button>
-              <Button type="submit">{method === POST ? 'Create Bid' : 'Save Changes'}</Button>
+              <Button
+                type="submit"
+                className="flex items-center justify-center"
+                disabled={!form.formState.isValid || form.formState.isSubmitting}
+                aria-busy={form.formState.isSubmitting}
+                aria-label={method === POST ? 'Create Bid' : 'Save Changes'}
+              >
+                {form.formState.isSubmitting ? (
+                  <Loader
+                    className="animate-spin mr-2 h-4 w-4 text-zinc-900 dark:text-zinc-200"
+                    aria-hidden="true"
+                    focusable="false"
+                  />
+                ) : method === POST ? (
+                  'Create Bid'
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
             </div>
           </FluidFormElement>
         </Form>

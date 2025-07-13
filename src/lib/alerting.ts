@@ -1,7 +1,7 @@
 import { DANGER, GLOBAL, POST, UNKNOWN, WARNING } from './constants';
 import { logger, MetricsTracker } from './logger';
 import { track } from '@vercel/analytics/server';
-import { toTitleCase } from './utils';
+import { toStartCase } from './utils';
 
 // Alerting configuration
 export const ALERT_THRESHOLDS = {
@@ -152,7 +152,7 @@ export class AlertManager {
                   { title: 'Type', value: context.type, short: true },
                   {
                     title: 'Endpoint',
-                    value: context.endpoint || toTitleCase(GLOBAL),
+                    value: context.endpoint || toStartCase(GLOBAL),
                     short: true,
                   },
                   { title: 'Value', value: context.value.toString(), short: true },

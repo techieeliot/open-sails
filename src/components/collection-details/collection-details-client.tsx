@@ -12,9 +12,10 @@ import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
 import { Collection, User } from '@/types';
 import { BidList } from '@/app/dashboard/components/bids-list';
-import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { API_ENDPOINTS, CONTENT_TYPE_JSON, DELETE } from '@/lib/constants';
 import { Bitcoin } from 'lucide-react';
+import PlaceBidDialog from '../place-bid-dialog';
+import EditCollectionDialog from '../edic-collection-dialog';
 
 export function CollectionDetailsClient() {
   const params = useParams();
@@ -91,10 +92,6 @@ export function CollectionDetailsClient() {
         description: error instanceof Error ? error.message : 'Please try again later',
       });
     }
-  };
-
-  const handleEditCollection = () => {
-    router.push(`/dashboard?edit=${collectionId}`);
   };
 
   const isOwnerOfCollection = !!(user && collection && user.id === collection.ownerId);
@@ -190,32 +187,30 @@ export function CollectionDetailsClient() {
               <p className="text-gray-600">Owner details unavailable</p>
             )}
           </div>
-          {isOwnerOfCollection && (
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handleEditCollection}>
-                Edit Collection
-              </Button>
-              <ConfirmationDialog
-                key={`delete-dialog-${collection.id}`}
-                triggerText="Delete Collection"
-                dialogTitle="Delete Collection"
-                description="Are you sure you want to delete this collection? This action cannot be undone."
-                onConfirm={handleDeleteCollection}
-              />
-            </div>
-          )}{' '}
-          {user && !isOwnerOfCollection && (
-            <div className="flex">
-              <DynamicInputDialog
-                key={`bid-dialog-${collection.id}`}
-                className="bg-zinc-900"
-                triggerText="Place Bid"
-                dialogTitle="Place a Bid"
-                description="Fill out the form to place a bid on this collection."
-                modalCategory="bid"
-                method="POST"
-                collectionId={collection.id}
-              />
+          {collection.status === 'open' && (
+            <div className="flex justify-end items-center gap-4">
+              {isOwnerOfCollection && (
+                <div className="flex gap-2">
+                  <EditCollectionDialog
+                    collectionId={collection.id}
+                    onSuccess={function (): void {
+                      router.refresh();
+                    }}
+                  />
+                  <ConfirmationDialog
+                    key={`delete-dialog-${collection.id}`}
+                    triggerText="Delete"
+                    dialogTitle="Delete Collection"
+                    dialogDescription="Are you sure you want to delete this collection? This action cannot be undone."
+                    onConfirm={handleDeleteCollection}
+                  />
+                </div>
+              )}
+              {user && !isOwnerOfCollection && (
+                <div className="flex">
+                  <PlaceBidDialog collectionId={collection.id} />
+                </div>
+              )}
             </div>
           )}
         </div>

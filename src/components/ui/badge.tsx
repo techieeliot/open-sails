@@ -21,6 +21,13 @@ const badgeVariants = cva(
         struckthrough:
           'border-transparent bg-red-500 text-foreground line-through shadow hover:bg-destructive/80',
       },
+      size: {
+        default: 'h-6',
+        sm: 'h-5 text-xs',
+        lg: 'h-8 text-sm',
+        xl: 'h-10 text-base',
+        '2xl': 'h-12 text-lg',
+      },
     },
     defaultVariants: {
       variant: 'default',

@@ -1,14 +1,13 @@
 import { InfoDialog } from '@/components/info-dialog';
 import { CollectionForm } from '../collection-form';
 import { BidForm, BidFormProps } from '../bid-form';
-import { FormWrapper } from '@/components/ui/form';
-import { HtmlHTMLAttributes, ReactNode } from 'react';
+import { HtmlHTMLAttributes } from 'react';
+import { DialogModalProps } from '@/types';
 
-export interface DynamicInputDialogProps extends HtmlHTMLAttributes<HTMLDivElement> {
+export interface DynamicInputDialogProps
+  extends HtmlHTMLAttributes<HTMLDivElement>,
+    DialogModalProps {
   method: 'POST' | 'PUT';
-  triggerText: ReactNode;
-  dialogTitle: ReactNode;
-  description?: string;
   modalCategory: 'collection' | 'bid';
   onSuccess?: () => void;
 }
@@ -19,34 +18,14 @@ export const DynamicInputDialog = ({
   collectionId,
   bidId,
   onSuccess,
-  className,
   ...props
 }: DynamicInputDialogProps & BidFormProps) => {
-  // Remove closeDialog from ...props so it doesn't leak to DOM
-  const { closeDialog, ...restProps } = props;
   const form =
     modalCategory === 'collection' ? (
-      <CollectionForm
-        method={method}
-        collectionId={collectionId}
-        onSuccess={onSuccess}
-        closeDialog={closeDialog}
-      />
+      <CollectionForm method={method} collectionId={collectionId} onSuccess={onSuccess} />
     ) : (
-      <BidForm
-        method={method}
-        collectionId={collectionId}
-        bidId={bidId}
-        onSuccess={onSuccess}
-        closeDialog={closeDialog}
-      />
+      <BidForm method={method} collectionId={collectionId} bidId={bidId} onSuccess={onSuccess} />
     );
 
-  return (
-    <InfoDialog {...restProps}>
-      <FormWrapper className="flex flex-col gap-6 justify-center items-center min-w-md mx-auto">
-        {form}
-      </FormWrapper>
-    </InfoDialog>
-  );
+  return <InfoDialog {...props}>{form}</InfoDialog>;
 };

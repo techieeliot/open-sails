@@ -1,9 +1,10 @@
 import { track } from '@vercel/analytics';
+import { formattedStack } from './logger';
 
 export const trackError = (error: Error, context?: Record<string, unknown>) => {
   track('error', {
     message: error.message,
-    stack: error.stack?.substring(0, 500) ?? '', // Limit stack trace length
+    stack: formattedStack(error?.stack),
     url: window.location.href,
     ...context,
   });

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { logRequest, logResponse } from '@/lib/api-middleware';
-import { logger, MetricsTracker } from '@/lib/logger';
+import { formattedStack, logger, MetricsTracker } from '@/lib/logger';
 import { alertManager, AlertType, AlertSeverity } from '@/lib/alerting';
 import { API_ENDPOINTS } from '@/lib/constants';
 
@@ -218,7 +218,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
       metadata: {
         error: (error as Error).message,
-        stack: (error as Error).stack,
+        stack: formattedStack((error as Error).stack),
       },
     });
   }

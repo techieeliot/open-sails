@@ -143,7 +143,7 @@ export class MetricsTracker {
       {
         endpoint,
         error: error.message,
-        stack: error.stack,
+        stack: formattedStack(error.stack),
         type: 'api_error',
       },
       `API Error: ${endpoint} - ${error.message}`,
@@ -249,7 +249,7 @@ export const logError = (error: Error, context?: Record<string, unknown>) => {
   logger.error(
     {
       error: error.message,
-      stack: error.stack,
+      stack: formattedStack(error.stack),
       ...context,
       type: 'application_error',
     },
@@ -267,6 +267,16 @@ export const logDatabaseQuery = (query: string, duration: number, rowCount?: num
     },
     `Database query completed in ${duration}ms`,
   );
+};
+
+export const formattedStack = (stack: Error['stack']) => {
+  return stack
+    ? `First 5 lines of stack trace...\n${stack
+        .split('\n')
+        .slice(0, 6) // Error message + top 5 stack lines
+        .map((line) => line.trim())
+        .join('\n')}`
+    : 'No stack trace available';
 };
 
 export default logger;

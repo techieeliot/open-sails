@@ -94,7 +94,7 @@ export default function BidDetailsPage({
             key={`cancel-bid-dialog-${bid.id}`}
             triggerText="Cancel Bid"
             dialogTitle="Cancel Bid"
-            description="Are you sure you want to cancel this bid? This action cannot be undone."
+            dialogDescription="Are you sure you want to cancel this bid? This action cannot be undone."
             onConfirm={async () => {
               try {
                 const response = await fetch(`/api/bids?bid_id=${bid.id}`, {

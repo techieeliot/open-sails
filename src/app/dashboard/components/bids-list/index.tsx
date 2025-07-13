@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { PriceBidStatus } from './components/price-bid-status.client';
 import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
-import { cn, toTitleCase } from '@/lib/utils';
+import { cn, toStartCase } from '@/lib/utils';
 import { toast } from 'sonner';
 import { EditBidDialog } from './components/edit-bid-dialog.client';
 import { DELETE, PUT, UNKNOWN } from '@/lib/constants';
@@ -18,7 +18,7 @@ export interface BidIndexProps {
 
 // Helper function to format user IDs consistently
 const formatUserId = (userId: string | number | null | undefined): string => {
-  if (!userId) return toTitleCase(UNKNOWN);
+  if (!userId) return toStartCase(UNKNOWN);
 
   if (typeof userId === 'string') {
     // For UUIDs, display only the first part
@@ -136,9 +136,10 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                   {isOwner && bid.status === 'pending' ? (
                     <>
                       <ConfirmationDialog
+                        key={`accept-dialog-${bid.id}`}
                         triggerText="Accept"
                         dialogTitle="Accept Bid"
-                        description="Are you sure you want to accept this bid?"
+                        dialogDescription="Are you sure you want to accept this bid?"
                         onConfirm={async () => {
                           try {
                             await resolveBid(bid.id, bid.collectionId, 'accepted');
@@ -157,9 +158,10 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                         }}
                       />
                       <ConfirmationDialog
+                        key={`reject-dialog-${bid.id}`}
                         triggerText="Reject"
                         dialogTitle="Reject Bid"
-                        description="Are you sure you want to reject this bid?"
+                        dialogDescription="Are you sure you want to reject this bid?"
                         onConfirm={async () => {
                           try {
                             await resolveBid(bid.id, bid.collectionId, 'rejected');
@@ -178,6 +180,7 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                     <>
                       <EditBidDialog bid={bid} onBidUpdated={fetchBids} />
                       <ConfirmationDialog
+                        key={`cancel-dialog-${bid.id}`}
                         triggerText="Cancel Bid"
                         dialogTitle="Cancel Bid"
                         onConfirm={async () => {

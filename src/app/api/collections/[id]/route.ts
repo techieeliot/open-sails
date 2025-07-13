@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getCollectionById, updateCollection, deleteCollection } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
-import { logger, PerformanceTracker } from '@/lib/logger';
+import { formattedStack, logger, PerformanceTracker } from '@/lib/logger';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
@@ -202,7 +202,7 @@ export async function DELETE(request: NextRequest) {
       {
         ...deleteCollectionPayload,
         error: (error as Error).cause || (error as Error).message,
-        details: (error as Error).stack,
+        details: formattedStack((error as Error).stack),
         type: 'collection_delete_error',
       },
       `Failed to delete collection: ${(error as Error).message}`,
@@ -211,7 +211,7 @@ export async function DELETE(request: NextRequest) {
     response = Response.json(
       {
         error: 'Failed to delete collection: ' + (error as Error).message,
-        details: (error as Error).stack,
+        details: formattedStack((error as Error).stack),
       },
       { status: 500 },
     );

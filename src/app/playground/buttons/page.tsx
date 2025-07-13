@@ -20,7 +20,7 @@ export default function PlaygroundButtonsPage() {
           <Button size="lg">Large</Button>
           <Button disabled>Disabled</Button>
           <Button asChild>
-            <a href="#">asChild Link</a>
+            <Link href="#">asChild Link</Link>
           </Button>
           <Button>
             With Icon <ChevronRight className="ml-2" />

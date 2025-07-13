@@ -1,20 +1,19 @@
 'use client';
 
 import PageWrapper from '@/components/page-wrapper';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
 import { Collection, User } from '@/types';
 import { BidList } from '@/app/dashboard/components/bids-list';
-import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
-import { DELETE } from '@/lib/constants';
 import { Bitcoin } from 'lucide-react';
+import PlaceBidDialog from '@/components/place-bid-dialog';
+import DeleteCollectionDialog from '@/app/dashboard/components/delete-collection-dialog';
+import EditCollectionDialog from '@/components/edic-collection-dialog';
+import GoBackButton from '@/components/go-back-button.tsx';
 
 export default function CollectionDetailsPage() {
   const params = useParams();
@@ -65,185 +64,138 @@ export default function CollectionDetailsPage() {
     }
   }, [collectionId]);
 
-  const handleBack = () => {
-    router.back();
-  };
-
-  const handleDeleteCollection = async () => {
-    try {
-      const response = await fetch(`/api/collections/${collectionId}`, {
-        method: DELETE,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || 'Failed to delete collection');
-      }
-
-      toast.success('Collection deleted successfully');
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Error deleting collection:', error);
-      toast.error('Failed to delete collection', {
-        description: error instanceof Error ? error.message : 'Please try again later',
-      });
-    }
-  };
-
-  // We're using the DynamicInputDialog for editing instead of navigation
-
   const isOwnerOfCollection = !!(user && collection && user.id === collection.ownerId);
 
-  if (isLoading) {
-    return (
-      <PageWrapper>
+  return (
+    <PageWrapper>
+      {isLoading ? (
         <div className="flex justify-center items-center min-h-[300px]">
           <p className="text-gray-600">
             <Bitcoin className="animate-pulse" height={300} width={300} />
           </p>
         </div>
-      </PageWrapper>
-    );
-  }
-
-  if (error || !collection) {
-    return (
-      <PageWrapper>
-        <div className="flex flex-col items-center justify-center min-h-[300px]">
-          <h1 className="text-2xl font-bold mb-4">Collection Not Found</h1>
-          <p className="text-gray-600 mb-4">
-            {error || "The collection you're looking for doesn't exist or may have been removed."}
-          </p>
-          <Button onClick={handleBack}>Go Back</Button>
-        </div>
-      </PageWrapper>
-    );
-  }
-
-  return (
-    <PageWrapper>
-      <div className="flex flex-col justify-between mb-6 gap-2">
-        <Link href="/dashboard">
-          <Button variant="outline" size="sm">
-            Back to Dashboard
-          </Button>
-        </Link>
-      </div>
-
-      <Card className="p-6 mb-6">
-        <h1 className="text-2xl font-bold mb-4">{collection.name}</h1>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Collection Information</h2>
-            <div className="space-y-2">
-              <p>
-                <span className="font-semibold">ID:</span> {collection.id}
-              </p>
-              <p>
-                <span className="font-semibold">Status:</span>{' '}
-                <span className="capitalize">{collection.status}</span>
-              </p>
-              <p>
-                <span className="font-semibold">Price:</span> ${collection.price?.toLocaleString()}
-              </p>
-              <p>
-                <span className="font-semibold">Available Stock:</span> {collection.stocks} units
-              </p>
-              <p>
-                <span className="font-semibold">Created:</span>{' '}
-                {new Date(collection.createdAt).toLocaleString()}
-              </p>
-              <p>
-                <span className="font-semibold">Updated:</span>{' '}
-                {new Date(collection.updatedAt).toLocaleString()}
-              </p>
-            </div>
-
-            {collection.descriptions && (
-              <div className="mt-4">
-                <h3 className="flex flex-col">
-                  <span className="text-lg font-semibold mb-2">Description:</span>{' '}
-                  <span className="whitespace-pre-wrap max-w-sm">{collection.descriptions}</span>
-                </h3>
+      ) : (
+        <>
+          {collection ? (
+            <>
+              <div className="flex flex-col justify-between mb-6 gap-2">
+                <GoBackButton variant="link" />
               </div>
-            )}
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Owner Information</h2>
-            {owner ? (
-              <div className="space-y-2">
-                <p>
-                  <span className="font-semibold">Name:</span> {owner.name}
-                </p>
-                <p>
-                  <span className="font-semibold">Email:</span> {owner.email}
-                </p>
-                <p>
-                  <span className="font-semibold">Role:</span>{' '}
-                  <span className="capitalize">{owner.role}</span>
-                </p>
-              </div>
-            ) : (
-              <p className="text-gray-600">Owner details unavailable</p>
-            )}
-          </div>
-          {isOwnerOfCollection && (
-            <div className="flex gap-2">
-              <DynamicInputDialog
-                key={`edit-dialog-${collectionId}`}
-                triggerText="Edit Collection"
-                dialogTitle="Edit Collection"
-                description="Update the details for this collection."
-                modalCategory="collection"
-                method="PUT"
-                collectionId={collectionId}
-                onSuccess={() => {
-                  // Refetch collection details after update
-                  if (collectionId) {
-                    setIsLoading(true);
-                    fetch(`/api/collections/${collectionId}`)
-                      .then((response) => response.json())
-                      .then((data) => {
-                        setCollection(data);
-                        toast.success('Collection updated successfully');
-                      })
-                      .catch(() => {
-                        toast.error('Error refreshing collection data');
-                      })
-                      .finally(() => setIsLoading(false));
-                  }
-                }}
-              />
-              <ConfirmationDialog
-                key={`delete-dialog-${collectionId}`}
-                triggerText="Delete Collection"
-                dialogTitle="Delete Collection"
-                description="Are you sure you want to delete this collection? This action cannot be undone."
-                onConfirm={handleDeleteCollection}
-              />
-            </div>
-          )}{' '}
-          {user && !isOwnerOfCollection && collection.status === 'open' && (
-            <div className="flex">
-              <DynamicInputDialog
-                key={`bid-dialog-${collectionId}`}
-                triggerText="Place Bid"
-                dialogTitle="Place a Bid"
-                description="Fill out the form to place a bid on this collection."
-                modalCategory="bid"
-                method="POST"
-                collectionId={collectionId}
-              />
+              <Card className="p-6 mb-6">
+                <h1 className="text-2xl font-bold mb-4">{collection.name}</h1>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4">Collection Information</h2>
+                    <div className="space-y-2">
+                      <p>
+                        <span className="font-semibold">ID:</span> {collection.id}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Status:</span>{' '}
+                        <span className="capitalize">{collection.status}</span>
+                      </p>
+                      <p>
+                        <span className="font-semibold">Price:</span> $
+                        {collection.price?.toLocaleString()}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Available Stock:</span> {collection.stocks}{' '}
+                        units
+                      </p>
+                      <p>
+                        <span className="font-semibold">Created:</span>{' '}
+                        {new Date(collection.createdAt).toLocaleString()}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Updated:</span>{' '}
+                        {new Date(collection.updatedAt).toLocaleString()}
+                      </p>
+                    </div>
+
+                    {collection.descriptions && (
+                      <div className="mt-4">
+                        <h3 className="flex flex-col">
+                          <span className="text-lg font-semibold mb-2">Description:</span>{' '}
+                          <span className="whitespace-pre-wrap max-w-sm">
+                            {collection.descriptions}
+                          </span>
+                        </h3>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4">Owner Information</h2>
+                    {owner ? (
+                      <div className="space-y-2">
+                        <p>
+                          <span className="font-semibold">Name:</span> {owner.name}
+                        </p>
+                        <p>
+                          <span className="font-semibold">Email:</span> {owner.email}
+                        </p>
+                        <p>
+                          <span className="font-semibold">Role:</span>{' '}
+                          <span className="capitalize">{owner.role}</span>
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-gray-600">Owner details unavailable</p>
+                    )}
+                  </div>
+
+                  {collection.status === 'open' && isOwnerOfCollection && (
+                    <div className="flex gap-2">
+                      <EditCollectionDialog
+                        collectionId={collectionId}
+                        onSuccess={() => {
+                          // Refetch collection details after update
+                          if (collectionId) {
+                            setIsLoading(true);
+                            fetch(`/api/collections/${collectionId}`)
+                              .then((response) => response.json())
+                              .then((data) => {
+                                setCollection(data);
+                                toast.success('Collection updated successfully');
+                              })
+                              .catch(() => {
+                                toast.error('Error refreshing collection data');
+                              })
+                              .finally(() => setIsLoading(false));
+                          }
+                        }}
+                      />
+                      <DeleteCollectionDialog
+                        key={`delete-dialog-${collectionId}`}
+                        collectionId={collectionId}
+                        onSuccess={() => {
+                          router.push('/dashboard');
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              <h2 className="text-xl font-semibold mb-4">Bids for this Collection</h2>
+              {user && !isOwnerOfCollection && collection.status === 'open' && (
+                <div className="flex">
+                  <PlaceBidDialog collectionId={collectionId} />
+                </div>
+              )}
+              <BidList collectionId={collectionId} isOwner={isOwnerOfCollection} />
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center min-h-[300px]">
+              <h1 className="text-2xl font-bold mb-4">Collection Not Found</h1>
+              <p className="text-gray-600 mb-4">
+                {error ||
+                  "The collection you're looking for doesn't exist or may have been removed."}
+              </p>
+              <GoBackButton size="sm" variant="link" />
             </div>
           )}
-        </div>
-      </Card>
-
-      <h2 className="text-xl font-semibold mb-4">Bids for this Collection</h2>
-      <BidList collectionId={collectionId} isOwner={isOwnerOfCollection} />
+        </>
+      )}
     </PageWrapper>
   );
 }

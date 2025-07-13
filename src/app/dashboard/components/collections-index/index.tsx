@@ -1,8 +1,7 @@
 'use client';
 
-import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { Button } from '@/components/ui/button';
-import { Collection } from '@/types';
+import { Collection, Bid } from '@/types';
 import { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
@@ -14,18 +13,41 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Bitcoin, FolderPlus } from 'lucide-react';
+import {
+  ArrowDownFromLine,
+  ArrowUpToLine,
+  Bitcoin,
+  CircleChevronRight,
+  Square,
+  SquareCheckBig,
+} from 'lucide-react';
 import { API_ENDPOINTS } from '@/lib/constants';
 import { Badge, BadgeProps } from '@/components/ui/badge';
-import { VariantProps } from 'class-variance-authority';
+import { ConfirmationDialog } from '@/components/confirmation-dialog';
+import { EditBidDialog } from '@/app/dashboard/components/bids-list/components/edit-bid-dialog.client';
+import { toast } from 'sonner';
+import Link from 'next/link';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import CreateCollectionDialog from '@/components/create-collection-dialog';
+import EditCollectionDialog from '@/components/edic-collection-dialog';
+import DeleteCollectionDialog from '../delete-collection-dialog';
+import PlaceBidDialog from '@/components/place-bid-dialog';
+import { safeStringify, toStartCase } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
+  const router = useRouter();
   const [collections, setCollections] = useAtom(collectionsAtom);
   const [expandedCollection, setExpandedCollection] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(25);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Bids state for expanded collection
+  const [bids, setBids] = useState<Bid[]>([]);
+  const [bidsLoading, setBidsLoading] = useState(false);
+  const [bidsError, setBidsError] = useState<string | null>(null);
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
 
   const fetchCollections = useCallback(async () => {
     try {
@@ -69,6 +91,50 @@ export default function CollectionsIndex() {
     fetchCollections();
   }, [fetchCollections]);
 
+  // Fetch bids when a collection is expanded
+  useEffect(() => {
+    if (expandedCollection) {
+      setBidsLoading(true);
+      setBidsError(null);
+      fetch(`/api/bids?collection_id=${expandedCollection}`)
+        .then(async (res) => {
+          if (!res.ok) throw new Error('Failed to fetch bids');
+          const data = await res.json();
+          setBids(Array.isArray(data) ? data : []);
+
+          // Fetch user names for bids
+          const uniqueUserIds = Array.from(
+            new Set((Array.isArray(data) ? data : []).map((bid: Bid) => String(bid.userId))),
+          );
+          if (uniqueUserIds.length > 0) {
+            try {
+              const usersResponse = await fetch('/api/users');
+              if (usersResponse.ok) {
+                const usersData = await usersResponse.json();
+                const userMap: Record<string, string> = {};
+                usersData.forEach((u: { id: string | number; name?: string }) => {
+                  if (u.id) {
+                    userMap[String(u.id)] = u.name || 'Anonymous User';
+                  }
+                });
+                setUserNames(userMap);
+              }
+            } catch (error) {
+              console.error('Error fetching user names:', safeStringify(error));
+            }
+          }
+        })
+        .catch((err) => {
+          setBidsError(err.message || 'Failed to load bids');
+          setBids([]);
+        })
+        .finally(() => setBidsLoading(false));
+    } else {
+      setBids([]);
+      setBidsError(null);
+    }
+  }, [expandedCollection]);
+
   return (
     <div className="flex flex-col gap-6 w-full h-full max-w-8xl mx-auto p-4">
       <Suspense
@@ -79,23 +145,7 @@ export default function CollectionsIndex() {
         }
       >
         <div className="flex w-full items-end justify-end max-w-8xl h-32">
-          {!loading && user && (
-            <DynamicInputDialog
-              key="create-collection-dialog"
-              className="min-w-3xs bg-card"
-              triggerText={
-                <span className="flex items-center gap-2">
-                  <FolderPlus className="mr-2 h-5 w-5" />
-                  Create Collection
-                </span>
-              }
-              dialogTitle="Create Collection"
-              description="Fill out the form to create a new collection."
-              modalCategory="collection"
-              method="POST"
-              onSuccess={fetchCollections}
-            />
-          )}
+          {!loading && user && <CreateCollectionDialog onSuccess={fetchCollections} />}
         </div>
 
         {error && (
@@ -122,7 +172,6 @@ export default function CollectionsIndex() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-1/3 text-lg font-bold">Collection</TableHead>
-                  <TableHead className="w-1/3">Status</TableHead>
                   <TableHead className="w-1/3 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -130,87 +179,284 @@ export default function CollectionsIndex() {
                 {collections.slice(0, visibleCount).map((collection) => {
                   const isOwner = user !== null && user?.id === collection.ownerId;
                   const isExpanded = expandedCollection === collection.id;
-                  const badgeVariant = collection.status === 'open' ? 'default' : 'struckthrough';
+                  const badgeVariant = collection.status === 'open' ? 'info' : 'outline';
                   return (
                     <Fragment key={collection.id}>
                       <TableRow
                         key={collection.id}
                         className="bg-card rounded-2xl shadow-md border border-border align-top"
+                        onClick={() => setExpandedCollection(isExpanded ? null : collection.id)}
                       >
-                        <TableCell className="align-top rounded-l-2xl font-semibold text-base py-6">
-                          {collection.name}
-                        </TableCell>
-                        <TableCell className="align-top py-6">
-                          <Badge variant={badgeVariant as BadgeProps['variant']}>
-                            {collection.status}
+                        <TableCell className="flex gap-8 align-top rounded-l-2xl font-semibold text-base py-6">
+                          {isExpanded ? (
+                            <ArrowUpToLine className="h-4 w-4" />
+                          ) : (
+                            <ArrowDownFromLine className="h-4 w-4" />
+                          )}
+                          {collection.status === 'open' ? (
+                            <Square className="h-4 w-4" />
+                          ) : (
+                            <SquareCheckBig className="h-4 w-4" />
+                          )}
+                          <Badge variant={badgeVariant as BadgeProps['variant']} size="lg">
+                            {collection.price}
                           </Badge>
+                          {collection.name}
                         </TableCell>
                         <TableCell className="align-top text-right rounded-r-2xl py-6">
                           <div className="flex gap-2 justify-end">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() =>
-                                setExpandedCollection(isExpanded ? null : collection.id)
-                              }
-                            >
-                              {isExpanded ? 'Hide Bids' : 'Show Bids'}
-                            </Button>
-                            <Button size="sm" variant="outline" asChild>
-                              <a href={`/collections/${collection.id}`}>View</a>
-                            </Button>
-                            {isOwner && (
-                              <>
-                                <DynamicInputDialog
-                                  key={`edit-dialog-${collection.id}`}
-                                  triggerText="Edit"
-                                  dialogTitle="Edit Collection"
-                                  description="Fill out the form to edit the collection."
-                                  modalCategory="collection"
-                                  method="PUT"
+                            {/* Show edit and delete dialog only if owner */}
+                            {collection.status === 'open' &&
+                              (isOwner ? (
+                                <>
+                                  <EditCollectionDialog
+                                    collectionId={collection.id}
+                                    onSuccess={fetchCollections}
+                                  />
+                                  <DeleteCollectionDialog
+                                    collectionId={collection.id}
+                                    onSuccess={fetchCollections}
+                                  />
+                                </>
+                              ) : (
+                                // Show bid dialog only if not owner and collection is open
+                                <PlaceBidDialog
                                   collectionId={collection.id}
                                   onSuccess={fetchCollections}
                                 />
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={async () => {
-                                    // You may want to add a confirmation dialog here
-                                    await fetch(`${API_ENDPOINTS.collections}/${collection.id}`, {
-                                      method: 'DELETE',
-                                    });
-                                    fetchCollections();
-                                  }}
-                                >
-                                  Delete
-                                </Button>
-                              </>
-                            )}
-                            {!isOwner && collection.status !== 'closed' && (
-                              <DynamicInputDialog
-                                key={`bid-dialog-${collection.id}`}
-                                triggerText="Place Bid"
-                                dialogTitle="Place a Bid"
-                                description="Fill out the form to place a bid on this collection."
-                                modalCategory="bid"
-                                method="POST"
-                                collectionId={collection.id}
-                                onSuccess={fetchCollections}
-                              />
-                            )}
+                              ))}
+
+                            {/* Show Collection Details */}
+                            <Button size="sm" variant="link" asChild>
+                              <Link
+                                href={`/collections/${collection.id}`}
+                                title="View Collection Details"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <CircleChevronRight className="h-5 w-5" />
+                                  <VisuallyHidden>View Collection Details</VisuallyHidden>
+                                </span>
+                              </Link>
+                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
                       {isExpanded && (
                         <TableRow className="bg-transparent">
                           <TableCell colSpan={3} className="p-0">
-                            {/* Bids Table for this collection */}
                             <div className="w-full px-8 pb-8">
-                              {/* Replace with your actual BidList or similar component */}
                               <div className="rounded-2xl border border-border bg-card/80 p-4 mt-2">
                                 <div className="font-semibold mb-2 text-accent">Bids</div>
-                                {/* TODO: Render bids for this collection here, using a Table or List */}
-                                <div className="text-muted-foreground italic">No bids yet...</div>
+                                {bidsLoading ? (
+                                  <div className="text-muted-foreground italic">
+                                    Loading bids...
+                                  </div>
+                                ) : bidsError ? (
+                                  <div className="text-red-500 italic">{bidsError}</div>
+                                ) : bids.length === 0 ? (
+                                  <div className="text-muted-foreground italic">No bids yet...</div>
+                                ) : (
+                                  <Table className="w-full border-spacing-y-2">
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead className="w-1/4">Bidder</TableHead>
+                                        <TableHead className="w-1/4">Amount</TableHead>
+                                        <TableHead className="w-1/4">Status</TableHead>
+                                        <TableHead className="w-1/4">Placed</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {bids.map((bid) => {
+                                        const isBidder = user && bid.userId === user.id;
+                                        return (
+                                          <TableRow key={bid.id} className="bg-transparent">
+                                            <TableCell>
+                                              {userNames[String(bid.userId)]
+                                                ? userNames[String(bid.userId)]
+                                                : `User ${bid.userId}`}
+                                            </TableCell>
+                                            <TableCell>
+                                              $
+                                              {bid.price?.toLocaleString(undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                              })}
+                                            </TableCell>
+                                            <TableCell>
+                                              <Badge
+                                                variant={
+                                                  bid.status === 'rejected'
+                                                    ? 'destructive'
+                                                    : bid.status === 'accepted'
+                                                      ? 'success'
+                                                      : 'outline'
+                                                }
+                                                className="px-2 py-1 text-xs font-semibold"
+                                              >
+                                                {toStartCase(bid.status)}
+                                              </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                              {bid.createdAt
+                                                ? new Date(bid.createdAt).toLocaleString()
+                                                : ''}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                              <div className="flex gap-2 justify-end">
+                                                {/* Owner actions: Accept/Reject pending bids */}
+                                                {isOwner && bid.status === 'pending' && (
+                                                  <>
+                                                    <ConfirmationDialog
+                                                      key={`accept-dialog-${bid.id}`}
+                                                      triggerText="Accept"
+                                                      dialogTitle="Accept Bid"
+                                                      dialogDescription="Are you sure you want to accept this bid?"
+                                                      onConfirm={async () => {
+                                                        try {
+                                                          await fetch(
+                                                            `/api/bids?collection_id=${bid.collectionId}&bid_id=${bid.id}`,
+                                                            {
+                                                              method: 'PUT',
+                                                              headers: {
+                                                                'Content-Type': 'application/json',
+                                                              },
+                                                              body: JSON.stringify({
+                                                                status: 'accepted',
+                                                              }),
+                                                            },
+                                                          );
+                                                          toast.success(
+                                                            'Bid accepted successfully',
+                                                            {
+                                                              description:
+                                                                'The collection is now closed and other bids have been rejected',
+                                                              duration: 5000,
+                                                            },
+                                                          );
+                                                          // Refetch collections and bids to ensure UI is always up-to-date
+                                                          setBidsLoading(true);
+                                                          setLoading(true);
+                                                          // Refetch collections with cache-busting
+                                                          await fetchCollections();
+                                                          setExpandedCollection(null);
+                                                          setBids([]);
+                                                          setBidsLoading(false);
+                                                          setLoading(false);
+                                                          // Redirect to the collection details page
+                                                          router.push(
+                                                            `/collections/${bid.collectionId}`,
+                                                          );
+                                                        } catch {
+                                                          toast.error('Failed to accept bid', {
+                                                            description: 'Please try again later',
+                                                          });
+                                                          setBidsLoading(false);
+                                                          setLoading(false);
+                                                        }
+                                                      }}
+                                                    />
+                                                    <ConfirmationDialog
+                                                      key={`reject-dialog-${bid.id}`}
+                                                      triggerText="Reject"
+                                                      dialogTitle="Reject Bid"
+                                                      dialogDescription="Are you sure you want to reject this bid?"
+                                                      onConfirm={async () => {
+                                                        try {
+                                                          await fetch(
+                                                            `/api/bids?collection_id=${bid.collectionId}&bid_id=${bid.id}`,
+                                                            {
+                                                              method: 'PUT',
+                                                              headers: {
+                                                                'Content-Type': 'application/json',
+                                                              },
+                                                              body: JSON.stringify({
+                                                                status: 'rejected',
+                                                              }),
+                                                            },
+                                                          );
+                                                          toast.success(
+                                                            'Bid rejected successfully',
+                                                          );
+                                                          setBidsLoading(true);
+                                                          const res = await fetch(
+                                                            `/api/bids?collection_id=${expandedCollection}`,
+                                                          );
+                                                          const data = await res.json();
+                                                          setBids(Array.isArray(data) ? data : []);
+                                                          setBidsLoading(false);
+                                                        } catch {
+                                                          toast.error('Failed to reject bid', {
+                                                            description: 'Please try again later',
+                                                          });
+                                                        }
+                                                      }}
+                                                    />
+                                                  </>
+                                                )}
+
+                                                {/* Bidder actions: Edit/Cancel pending bids */}
+                                                {!isOwner &&
+                                                  isBidder &&
+                                                  bid.status === 'pending' && (
+                                                    <>
+                                                      <EditBidDialog
+                                                        bid={bid}
+                                                        onBidUpdated={async () => {
+                                                          setBidsLoading(true);
+                                                          const res = await fetch(
+                                                            `/api/bids?collection_id=${expandedCollection}`,
+                                                          );
+                                                          const data = await res.json();
+                                                          setBids(Array.isArray(data) ? data : []);
+                                                          setBidsLoading(false);
+                                                        }}
+                                                      />
+                                                      <ConfirmationDialog
+                                                        key={`cancel-dialog-${bid.id}`}
+                                                        triggerText="Cancel Bid"
+                                                        dialogTitle="Cancel Bid"
+                                                        dialogDescription="Are you sure you want to cancel your bid?"
+                                                        onConfirm={async () => {
+                                                          try {
+                                                            await fetch(
+                                                              `/api/bids?bid_id=${bid.id}`,
+                                                              {
+                                                                method: 'DELETE',
+                                                                headers: {
+                                                                  'Content-Type':
+                                                                    'application/json',
+                                                                },
+                                                              },
+                                                            );
+                                                            toast.success(
+                                                              'Bid cancelled successfully',
+                                                            );
+                                                            setBidsLoading(true);
+                                                            const res = await fetch(
+                                                              `/api/bids?collection_id=${expandedCollection}`,
+                                                            );
+                                                            const data = await res.json();
+                                                            setBids(
+                                                              Array.isArray(data) ? data : [],
+                                                            );
+                                                            setBidsLoading(false);
+                                                          } catch {
+                                                            toast.error('Failed to cancel bid', {
+                                                              description: 'Please try again later',
+                                                            });
+                                                          }
+                                                        }}
+                                                      />
+                                                    </>
+                                                  )}
+                                              </div>
+                                            </TableCell>
+                                          </TableRow>
+                                        );
+                                      })}
+                                    </TableBody>
+                                  </Table>
+                                )}
                               </div>
                             </div>
                           </TableCell>

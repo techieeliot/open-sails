@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logger, PerformanceTracker, MetricsTracker, logApiCall } from './logger';
+import { logger, PerformanceTracker, MetricsTracker, logApiCall, formattedStack } from './logger';
 import { checkAlerts } from './alerting';
 
 // Type for API handler
@@ -41,7 +41,7 @@ export function withLogging(handler: ApiHandler) {
           method: req.method,
           url: req.nextUrl.pathname,
           error: error.message,
-          stack: error.stack,
+          stack: formattedStack(error.stack),
           type: 'request_error',
         },
         `${req.method} ${req.nextUrl.pathname} - Request failed: ${error.message}`,
@@ -132,15 +132,24 @@ export function logResponse(req: NextRequest, response: Response, startTime: num
 
 // Error handling wrapper
 export function handleApiError(error: Error, req: NextRequest): Response {
+  // Build a more human-readable log message
+  const logMessage = [
+    `API Error on ${req.method} ${req.nextUrl.pathname}:`,
+    `- Error: ${error.message}`,
+    error.stack ? `- Stack (top 5):\n${formattedStack(error.stack)}` : undefined,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
   logger.error(
     {
       method: req.method,
       url: req.nextUrl.pathname,
-      error: error.message,
-      stack: error.stack,
       type: 'api_error',
+      error: error.message,
+      stack: formattedStack,
     },
-    `API Error: ${req.method} ${req.nextUrl.pathname} - ${error.message}`,
+    logMessage,
   );
 
   // Track error metrics
