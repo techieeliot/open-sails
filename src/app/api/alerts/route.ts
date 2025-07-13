@@ -8,10 +8,15 @@ export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
+  const getAlertsPayload = {
+    endpoint: API_ENDPOINTS.alerts,
+    method: API_METHODS.GET,
+    error: '',
+    type: 'initial_get',
+  };
   try {
     // Get current alert status
     const alertStatus = alertManager.getAlertStatus();
-
     // Add health check for alerting system
     const healthData = {
       alertingEnabled: true,
@@ -24,13 +29,10 @@ export async function GET(request: NextRequest) {
       status: alertStatus,
       timestamp: new Date().toISOString(),
     };
-
     response = Response.json(healthData);
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.alerts,
-        method: API_METHODS.GET,
+        ...getAlertsPayload,
         alertsConfigured:
           alertStatus.metrics && typeof alertStatus.metrics === 'object'
             ? Object.keys(alertStatus.metrics).length
@@ -43,14 +45,12 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: API_ENDPOINTS.alerts,
-        method: API_METHODS.GET,
+        ...getAlertsPayload,
         error: (error as Error).message,
         type: 'alerts_status_error',
       },
       `Failed to get alerts status: ${(error as Error).message}`,
     );
-
     response = Response.json(
       {
         error: 'Failed to retrieve alerts status',
@@ -68,10 +68,15 @@ export async function POST(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
+  const postAlertsPayload = {
+    endpoint: API_ENDPOINTS.alerts,
+    method: API_METHODS.POST,
+    error: '',
+    type: 'initial_post',
+  };
   try {
     const body = await request.json();
     const { action, type, endpoint } = body;
-
     if (action === ALERT_ACTIONS.TEST) {
       // Test alert logic
       const alertType = type as AlertType;
@@ -97,11 +102,9 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.alerts,
-        method: POST,
+        ...postAlertsPayload,
         action,
         alertType: type,
         targetEndpoint: endpoint,
@@ -112,14 +115,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: API_ENDPOINTS.alerts,
-        method: API_METHODS.POST,
+        ...postAlertsPayload,
         error: (error as Error).message,
         type: 'alerts_action_error',
       },
       `Failed to execute alert action: ${(error as Error).message}`,
     );
-
     response = Response.json(
       {
         error: 'Failed to execute alert action',

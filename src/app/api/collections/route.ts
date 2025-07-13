@@ -9,21 +9,24 @@ export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
 
+  const getCollectionsPayload = {
+    endpoint: API_ENDPOINTS.collections,
+    method: API_METHODS.GET,
+    error: '',
+    type: 'initial_get',
+  };
+
   try {
     await seedDatabase();
-
     const tracker = new PerformanceTracker(`GET ${API_ENDPOINTS.collections}`);
     const collections = await getCollections();
     tracker.finish({ count: collections.length });
-
     response = new Response(JSON.stringify(collections), {
       headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.GET,
+        ...getCollectionsPayload,
         collectionsCount: collections.length,
         type: 'collections_fetched',
       },
@@ -32,20 +35,17 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.GET,
+        ...getCollectionsPayload,
         error: (error as Error).message,
         type: 'collections_fetch_error',
       },
       `Failed to fetch collections: ${(error as Error).message}`,
     );
-
     response = Response.json(
       { error: `Failed to fetch collections: ${(error as Error).message}` },
       { status: 500 },
     );
   }
-
   logResponse(request, response, startTime);
   return response;
 }
@@ -53,33 +53,32 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
-
+  const postCollectionPayload = {
+    endpoint: API_ENDPOINTS.collections,
+    method: API_METHODS.POST,
+    error: '',
+    type: 'initial_post',
+  };
   try {
     const tracker = new PerformanceTracker(`POST ${API_ENDPOINTS.collections}`);
     const newCollectionData = await request.json();
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.POST,
+        ...postCollectionPayload,
         collectionData: newCollectionData,
         type: 'collection_creation_started',
       },
       'Creating new collection',
     );
-
     const newCollection = await createCollection(newCollectionData);
     tracker.finish({ collectionId: newCollection.id });
-
     response = new Response(JSON.stringify(newCollection), {
       status: 201,
       headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.POST,
+        ...postCollectionPayload,
         collectionId: newCollection.id,
         type: 'collection_created',
       },
@@ -88,20 +87,17 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.POST,
+        ...postCollectionPayload,
         error: (error as Error).message,
         type: 'collection_creation_error',
       },
       `Failed to create collection: ${(error as Error).message}`,
     );
-
     response = Response.json(
       { error: `Failed to create collection: ${(error as Error).message}` },
       { status: 500 },
     );
   }
-
   logResponse(request, response, startTime);
   return response;
 }
@@ -109,40 +105,42 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
-
+  const putCollectionPayload = {
+    endpoint: API_ENDPOINTS.collections,
+    method: API_METHODS.PUT,
+    error: '',
+    type: 'initial_put',
+  };
   try {
     const tracker = new PerformanceTracker(`PUT ${API_ENDPOINTS.collections}`);
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
     const updatedData = await request.json();
-
     if (!collectionId || isNaN(collectionId)) {
+      logger.warn(
+        { ...putCollectionPayload, error: 'Collection ID is required', type: 'validation_error' },
+        'PUT request with invalid collection ID',
+      );
       response = Response.json({ error: 'Collection ID is required' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;
     }
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.PUT,
+        ...putCollectionPayload,
         collectionId: collectionId,
         type: 'collection_update_started',
       },
       `Updating collection: ${collectionId}`,
     );
-
     const updatedCollection = await updateCollection(collectionId, updatedData);
     tracker.finish({ collectionId: collectionId });
-
     response = new Response(JSON.stringify(updatedCollection), {
       headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.PUT,
+        ...putCollectionPayload,
         collectionId: collectionId,
         type: 'collection_updated',
       },
@@ -151,20 +149,17 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.PUT,
+        ...putCollectionPayload,
         error: (error as Error).message,
         type: 'collection_update_error',
       },
       `Failed to update collection: ${(error as Error).message}`,
     );
-
     response = Response.json(
       { error: `Failed to update collection: ${(error as Error).message}` },
       { status: 500 },
     );
   }
-
   logResponse(request, response, startTime);
   return response;
 }
@@ -172,39 +167,45 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
-
+  const deleteCollectionPayload = {
+    endpoint: API_ENDPOINTS.collections,
+    method: API_METHODS.DELETE,
+    error: '',
+    type: 'initial_delete',
+  };
   try {
     const tracker = new PerformanceTracker(`DELETE ${API_ENDPOINTS.collections}`);
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
-
     if (!collectionId || isNaN(collectionId)) {
+      logger.warn(
+        {
+          ...deleteCollectionPayload,
+          error: 'Collection ID is required',
+          type: 'validation_error',
+        },
+        'DELETE request with invalid collection ID',
+      );
       response = Response.json({ error: 'Collection ID is required' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;
     }
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.DELETE,
+        ...deleteCollectionPayload,
         collectionId: collectionId,
         type: 'collection_delete_started',
       },
       `Deleting collection: ${collectionId}`,
     );
-
     await deleteCollection(collectionId);
     tracker.finish({ collectionId: collectionId });
-
     response = new Response(JSON.stringify({ success: true }), {
       headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
-
     logger.info(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.DELETE,
+        ...deleteCollectionPayload,
         collectionId: collectionId,
         type: 'collection_deleted',
       },
@@ -213,20 +214,17 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: API_ENDPOINTS.collections,
-        method: API_METHODS.DELETE,
+        ...deleteCollectionPayload,
         error: (error as Error).message,
         type: 'collection_delete_error',
       },
       `Failed to delete collection: ${(error as Error).message}`,
     );
-
     response = Response.json(
       { error: `Failed to delete collection: ${(error as Error).message}` },
       { status: 500 },
     );
   }
-
   logResponse(request, response, startTime);
   return response;
 }

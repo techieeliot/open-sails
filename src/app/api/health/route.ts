@@ -1,14 +1,19 @@
 import { NextRequest } from 'next/server';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker, MetricsTracker } from '@/lib/logger';
+import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
+  const getHealthPayload = {
+    endpoint: API_ENDPOINTS.health,
+    method: API_METHODS.GET,
+    error: '',
+    type: 'initial_get',
+  };
   let response: Response;
-
   try {
     const tracker = new PerformanceTracker('GET /api/health');
-
     // Get basic health metrics
     const healthData = {
       status: 'healthy',
@@ -18,11 +23,9 @@ export async function GET(request: NextRequest) {
       version: process.env.npm_package_version || '1.0.0',
       environment: process.env.NODE_ENV || 'development',
     };
-
     // Get application metrics
     const metrics = MetricsTracker.getInstance();
     const appMetrics = metrics.getMetrics();
-
     const fullHealthData = {
       ...healthData,
       metrics: {
@@ -30,15 +33,11 @@ export async function GET(request: NextRequest) {
         ...appMetrics,
       },
     };
-
     tracker.finish();
-
     response = Response.json(fullHealthData);
-
     logger.info(
       {
-        endpoint: '/api/health',
-        method: GET,
+        ...getHealthPayload,
         uptime: healthData.uptime,
         memoryUsage: healthData.memory.rss,
         type: 'health_check',
@@ -47,25 +46,16 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     logger.error(
-      {
-        endpoint: '/api/health',
-        method: GET,
-        error: (error as Error).message,
-        type: 'health_check_error',
-      },
+      { ...getHealthPayload, error: (error as Error).message, type: 'health_check_error' },
       `Health check failed: ${(error as Error).message}`,
     );
-
     response = Response.json(
       {
-        status: 'unhealthy',
-        timestamp: new Date().toISOString(),
-        error: (error as Error).message,
+        error: `Health check failed: ${(error as Error).message}`,
       },
       { status: 500 },
     );
   }
-
   logResponse(request, response, startTime);
   return response;
 }

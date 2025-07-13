@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, MetricsTracker } from '@/lib/logger';
 import { alertManager, AlertType, AlertSeverity } from '@/lib/alerting';
+import { API_ENDPOINTS } from '@/lib/constants';
 
 // Health check result type
 interface HealthCheckResult {
@@ -71,6 +72,12 @@ export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
   const healthCheckStart = Date.now();
+  const getUptimePayload = {
+    endpoint: API_ENDPOINTS.uptime,
+    method: 'GET',
+    error: '',
+    type: 'initial_get',
+  };
 
   try {
     // Run all health checks
@@ -147,8 +154,7 @@ export async function GET(request: NextRequest) {
     // Log health check results
     logger.info(
       {
-        endpoint: '/api/uptime',
-        method: GET,
+        ...getUptimePayload,
         status: healthData.status,
         duration: totalDuration,
         checksCount: healthResults.length,
@@ -184,8 +190,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error(
       {
-        endpoint: '/api/uptime',
-        method: GET,
+        ...getUptimePayload,
         error: (error as Error).message,
         type: 'uptime_check_error',
       },
@@ -204,12 +209,12 @@ export async function GET(request: NextRequest) {
 
     // Send critical alert for health check system failure
     await alertManager.sendAlert({
+      ...getUptimePayload,
       type: AlertType.UPTIME,
       severity: AlertSeverity.CRITICAL,
       message: `Health check system failure: ${(error as Error).message}`,
       value: 0,
       threshold: 1,
-      endpoint: '/api/uptime',
       timestamp: new Date().toISOString(),
       metadata: {
         error: (error as Error).message,

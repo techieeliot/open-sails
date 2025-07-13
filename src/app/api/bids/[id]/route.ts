@@ -3,10 +3,19 @@ import { getBidById } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
 import { ensureDatabaseInitialized } from '@/lib/db-init';
+import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
   let response: Response;
+
+  const getBidPayload = {
+    endpoint: `${API_ENDPOINTS.bids}/[id]`,
+    method: API_METHODS.GET,
+    providedId: '',
+    error: '',
+    type: 'initial_get',
+  };
 
   try {
     await ensureDatabaseInitialized();
@@ -19,8 +28,7 @@ export async function GET(request: NextRequest) {
     if (isNaN(bidId)) {
       logger.warn(
         {
-          endpoint: '/api/bids/[id]',
-          method: GET,
+          ...getBidPayload,
           error: 'Invalid bid ID',
           providedId: pathSegments[pathSegments.length - 1],
           type: 'validation_error',
@@ -33,11 +41,12 @@ export async function GET(request: NextRequest) {
       return response;
     }
 
+    getBidPayload.providedId = String(bidId);
+
     logger.info(
       {
-        endpoint: '/api/bids/[id]',
-        method: GET,
-        bidId,
+        ...getBidPayload,
+        providedId: bidId,
         type: 'bid_fetch_started',
       },
       `Fetching bid: ${bidId}`,
@@ -48,9 +57,7 @@ export async function GET(request: NextRequest) {
     if (!bid) {
       logger.warn(
         {
-          endpoint: '/api/bids/[id]',
-          method: GET,
-          bidId,
+          ...getBidPayload,
           type: 'bid_not_found',
         },
         `Bid not found: ${bidId}`,
@@ -69,9 +76,7 @@ export async function GET(request: NextRequest) {
 
     logger.info(
       {
-        endpoint: '/api/bids/[id]',
-        method: GET,
-        bidId,
+        ...getBidPayload,
         type: 'bid_fetched',
       },
       `Successfully fetched bid: ${bidId}`,
