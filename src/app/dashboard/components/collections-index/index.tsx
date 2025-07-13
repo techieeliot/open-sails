@@ -17,7 +17,10 @@ import {
   ArrowDownFromLine,
   ArrowUpToLine,
   Bitcoin,
+  CircleCheckBig,
   CircleChevronRight,
+  CircleX,
+  HardDriveDownload,
   Square,
   SquareCheckBig,
 } from 'lucide-react';
@@ -27,13 +30,13 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { EditBidDialog } from '@/app/dashboard/components/bids-list/components/edit-bid-dialog.client';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import CreateCollectionDialog from '@/components/create-collection-dialog';
 import EditCollectionDialog from '@/components/edic-collection-dialog';
 import DeleteCollectionDialog from '../delete-collection-dialog';
 import PlaceBidDialog from '@/components/place-bid-dialog';
 import { safeStringify, toStartCase } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import TriggerIconButton from '@/components/trigger-icon-button';
 
 export default function CollectionsIndex() {
   const { user } = useAtomValue(userSessionAtom);
@@ -171,7 +174,7 @@ export default function CollectionsIndex() {
             <Table className="w-full border-separate border-spacing-y-6">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-1/3 text-lg font-bold">Collection</TableHead>
+                  <TableHead className="w-1/3 text-lg font-bold">All Collections</TableHead>
                   <TableHead className="w-1/3 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -232,10 +235,8 @@ export default function CollectionsIndex() {
                                 href={`/collections/${collection.id}`}
                                 title="View Collection Details"
                               >
-                                <span className="flex items-center gap-2">
-                                  <CircleChevronRight className="h-5 w-5" />
-                                  <VisuallyHidden>View Collection Details</VisuallyHidden>
-                                </span>
+                                <CircleChevronRight className="h-5 w-5" />
+                                <span className="hidden md:inline">Show more</span>
                               </Link>
                             </Button>
                           </div>
@@ -309,6 +310,8 @@ export default function CollectionsIndex() {
                                                     <ConfirmationDialog
                                                       key={`accept-dialog-${bid.id}`}
                                                       triggerText="Accept"
+                                                      triggerIcon={CircleCheckBig}
+                                                      triggerAriaLabel="open confirmation dialog to accept bid"
                                                       dialogTitle="Accept Bid"
                                                       dialogDescription="Are you sure you want to accept this bid?"
                                                       onConfirm={async () => {
@@ -358,6 +361,8 @@ export default function CollectionsIndex() {
                                                     <ConfirmationDialog
                                                       key={`reject-dialog-${bid.id}`}
                                                       triggerText="Reject"
+                                                      triggerIcon={CircleX}
+                                                      triggerAriaLabel="open confirmation dialog to reject bid"
                                                       dialogTitle="Reject Bid"
                                                       dialogDescription="Are you sure you want to reject this bid?"
                                                       onConfirm={async () => {
@@ -472,9 +477,13 @@ export default function CollectionsIndex() {
       </Suspense>
       {!loading && !error && visibleCount < collections.length && (
         <div className="flex w-full justify-center">
-          <Button onClick={() => setVisibleCount((prev) => prev + 10)} variant="outline">
+          <TriggerIconButton
+            onClick={() => setVisibleCount((prev) => prev + 10)}
+            variant="outline"
+            icon={HardDriveDownload}
+          >
             Load More Collections
-          </Button>
+          </TriggerIconButton>
         </div>
       )}
     </div>

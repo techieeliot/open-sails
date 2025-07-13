@@ -2,7 +2,6 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import RowItem from '@/components/row-item';
 import { Bid } from '@/types';
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { PriceBidStatus } from './components/price-bid-status.client';
 import { useAtomValue } from 'jotai';
 import { userSessionAtom } from '@/lib/atoms';
@@ -10,6 +9,8 @@ import { cn, toStartCase } from '@/lib/utils';
 import { toast } from 'sonner';
 import { EditBidDialog } from './components/edit-bid-dialog.client';
 import { DELETE, PUT, UNKNOWN } from '@/lib/constants';
+import { CheckCircle, CircleX, HardDriveDownload } from 'lucide-react';
+import TriggerIconButton from '@/components/trigger-icon-button';
 
 export interface BidIndexProps {
   isOwner: boolean;
@@ -138,6 +139,8 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                       <ConfirmationDialog
                         key={`accept-dialog-${bid.id}`}
                         triggerText="Accept"
+                        triggerIcon={CheckCircle}
+                        triggerAriaLabel="open confirmation dialog to accept bid"
                         dialogTitle="Accept Bid"
                         dialogDescription="Are you sure you want to accept this bid?"
                         onConfirm={async () => {
@@ -160,6 +163,8 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                       <ConfirmationDialog
                         key={`reject-dialog-${bid.id}`}
                         triggerText="Reject"
+                        triggerAriaLabel="open confirmation dialog to reject bid"
+                        triggerIcon={CircleX}
                         dialogTitle="Reject Bid"
                         dialogDescription="Are you sure you want to reject this bid?"
                         onConfirm={async () => {
@@ -181,7 +186,9 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
                       <EditBidDialog bid={bid} onBidUpdated={fetchBids} />
                       <ConfirmationDialog
                         key={`cancel-dialog-${bid.id}`}
-                        triggerText="Cancel Bid"
+                        triggerText="Cancel"
+                        triggerAriaLabel="open confirmation dialog to cancel bid"
+                        triggerIcon={CircleX}
                         dialogTitle="Cancel Bid"
                         onConfirm={async () => {
                           try {
@@ -206,9 +213,13 @@ export const BidList = ({ isOwner, collectionId }: BidIndexProps) => {
       </Suspense>
       {visibleBidsCount < bids.length && (
         <div className="flex w-full justify-center mt-4">
-          <Button onClick={() => setVisibleBidsCount((prev) => prev + 10)} variant="outline">
+          <TriggerIconButton
+            onClick={() => setVisibleBidsCount((prev) => prev + 10)}
+            variant="outline"
+            icon={HardDriveDownload}
+          >
             Load More Bids
-          </Button>
+          </TriggerIconButton>
         </div>
       )}
     </div>

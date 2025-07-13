@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -11,35 +10,36 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { DialogModalProps } from '@/types';
-import { HTMLAttributes, isValidElement, PropsWithChildren, useId, useState } from 'react';
+import { PropsWithChildren, useId, useState } from 'react';
+import TriggerIconButton from '../trigger-icon-button';
 
 export const InfoDialog = ({
   triggerText,
   dialogTitle,
   dialogDescription,
   triggerVariant = 'outline',
+  triggerAriaLabel,
+  triggerIcon,
   children,
   ...props
 }: PropsWithChildren<DialogModalProps>) => {
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const descId = useId();
-  const dialogTitleText =
-    dialogTitle !== null && isValidElement(dialogTitle) && dialogTitle.props
-      ? (dialogTitle.props as HTMLAttributes<HTMLElement>).children
-      : dialogTitle;
 
   return (
     <Dialog open={open} onOpenChange={setOpen} {...props}>
       <DialogTrigger asChild>
-        <Button
+        <TriggerIconButton
           type="button"
           variant={triggerVariant}
           size="sm"
-          aria-label={`Open ${dialogTitleText || 'info'} dialog`}
+          aria-label={triggerAriaLabel}
+          icon={triggerIcon}
+          title={dialogTitle || 'Information Dialog'}
         >
           {triggerText}
-        </Button>
+        </TriggerIconButton>
       </DialogTrigger>
       <DialogContent
         className="max-w-lg mx-auto flex flex-col items-center justify-center"

@@ -11,15 +11,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { DialogModalProps } from '@/types';
-import { VariantProps } from 'class-variance-authority';
-import { ReactNode, useId, useState } from 'react';
+import { useId, useState } from 'react';
+import TriggerIconButton from '../trigger-icon-button';
 
 interface ConfirmationDialogProps extends DialogModalProps {
   onConfirm: () => void;
-  triggerText: ReactNode;
-  dialogTitle: ReactNode;
-  dialogDescription?: string;
-  triggerVariant?: VariantProps<typeof Button>['variant'];
 }
 
 export const ConfirmationDialog = ({
@@ -28,6 +24,8 @@ export const ConfirmationDialog = ({
   dialogTitle,
   dialogDescription,
   triggerVariant = 'outline',
+  triggerAriaLabel,
+  triggerIcon,
   ...props
 }: ConfirmationDialogProps) => {
   const titleId = useId();
@@ -37,9 +35,16 @@ export const ConfirmationDialog = ({
   return (
     <AlertDialog open={open} onOpenChange={setOpen} {...props}>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant={triggerVariant} size="sm">
+        <TriggerIconButton
+          type="button"
+          variant={triggerVariant}
+          icon={triggerIcon}
+          aria-label={triggerAriaLabel || 'Open confirmation dialog'}
+          size="sm"
+          title={dialogTitle || 'Confirmation Dialog'}
+        >
           {triggerText}
-        </Button>
+        </TriggerIconButton>
       </AlertDialogTrigger>
       <AlertDialogContent
         className="max-w-md mx-auto p-6"

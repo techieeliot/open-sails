@@ -15,6 +15,8 @@ import { Label } from '@/components/ui/label';
 import { Bid } from '@/types';
 import { useRouter } from 'next/navigation';
 import { API_METHODS } from '@/lib/constants';
+import TriggerIconButton from '@/components/trigger-icon-button';
+import { Edit } from 'lucide-react';
 
 interface EditBidDialogProps {
   bid: Bid;
@@ -119,9 +121,15 @@ export function EditBidDialog({ bid, onBidUpdated }: EditBidDialogProps) {
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <TriggerIconButton
+          icon={Edit}
+          size="sm"
+          aria-label="open dialog to edit bid"
+          variant="outline"
+          onClick={() => handleDialogChange(true)}
+        >
           Edit Bid
-        </Button>
+        </TriggerIconButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

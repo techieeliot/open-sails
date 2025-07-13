@@ -5,6 +5,7 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import PlaceBidDialog from '@/components/place-bid-dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { DELETE } from '@/lib/constants';
+import { Edit, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -23,6 +24,8 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
                 <DynamicInputDialog
                   key={`edit-dialog-${id}`}
                   triggerText="Edit"
+                  triggerIcon={Edit}
+                  triggerAriaLabel="open dialog to edit collection"
                   dialogTitle="Edit Collection"
                   dialogDescription="Fill out the form to edit the collection."
                   modalCategory="collection"
@@ -34,6 +37,8 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
                 <ConfirmationDialog
                   key={`delete-dialog-${id}`}
                   triggerText="Delete"
+                  triggerIcon={Trash2}
+                  aria-label="open dialog to confirm collection deletion"
                   dialogTitle="Delete Collection"
                   dialogDescription="Are you sure you want to delete this collection?"
                   onConfirm={async () => {

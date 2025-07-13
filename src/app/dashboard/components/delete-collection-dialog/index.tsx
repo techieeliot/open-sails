@@ -1,7 +1,6 @@
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { CONTENT_TYPE_JSON, DELETE } from '@/lib/constants';
 import { safeStringify } from '@/lib/utils';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -15,12 +14,9 @@ export default function DeleteCollectionDialog({
   return (
     <ConfirmationDialog
       key={`delete-dialog-${collectionId}`}
-      triggerText={
-        <span>
-          <Trash2 className="h-5 w-5" />
-          <VisuallyHidden>Delete Collection</VisuallyHidden>
-        </span>
-      }
+      triggerText="Delete"
+      triggerIcon={Trash2}
+      triggerAriaLabel="open dialog to confirm collection deletion"
       dialogTitle="Delete Collection"
       dialogDescription="Are you sure you want to delete this collection? This action cannot be undone."
       triggerVariant="destructive"

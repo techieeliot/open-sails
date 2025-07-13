@@ -1,6 +1,5 @@
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { API_METHODS } from '@/lib/constants';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Bitcoin } from 'lucide-react';
 
 export default function PlaceBidDialog({
@@ -13,12 +12,9 @@ export default function PlaceBidDialog({
   return (
     <DynamicInputDialog
       key={`bid-dialog-${collectionId}`}
-      triggerText={
-        <span>
-          <Bitcoin className="h-5 w-5" />
-          <VisuallyHidden>Place Bid</VisuallyHidden>
-        </span>
-      }
+      triggerText="Place Bid"
+      triggerIcon={Bitcoin}
+      triggerAriaLabel="open dialog to place a bid on the collection"
       dialogTitle="Place a Bid"
       dialogDescription="Fill out the form to place a bid on this collection."
       modalCategory="bid"

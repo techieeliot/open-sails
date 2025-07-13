@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { DELETE } from '@/lib/constants';
 import { Bid, Collection } from '@/types';
+import { CircleX } from 'lucide-react';
 import router from 'next/router';
 import { toast } from 'sonner';
 
@@ -93,6 +94,8 @@ export default function BidDetailsPage({
           <ConfirmationDialog
             key={`cancel-bid-dialog-${bid.id}`}
             triggerText="Cancel Bid"
+            triggerAriaLabel="open confirmation dialog to cancel bid"
+            triggerIcon={CircleX}
             dialogTitle="Cancel Bid"
             dialogDescription="Are you sure you want to cancel this bid? This action cannot be undone."
             onConfirm={async () => {
