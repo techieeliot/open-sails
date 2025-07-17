@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
-import { getCollectionById, updateCollection, deleteCollection } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
-import { formattedStack, logger, PerformanceTracker } from '@/lib/logger';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
+import { formattedStack, logger, PerformanceTracker } from '@/lib/logger';
+import { getCollectionById, updateCollection, deleteCollection } from '../utils';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

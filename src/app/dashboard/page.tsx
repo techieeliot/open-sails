@@ -1,4 +1,5 @@
 import PageWrapper from '@/components/page-wrapper';
+
 import CollectionsIndex from './components/collections-index';
 
 export default function DashboardPage() {
@@ -12,7 +13,7 @@ export default function DashboardPage() {
 
   return (
     <PageWrapper>
-      <section className="flex flex-col items-center gap-8 min-w-lg">
+      <section className="w-full flex flex-col gap-8 bg-background text-foreground">
         <CollectionsIndex />
       </section>
     </PageWrapper>

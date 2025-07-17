@@ -1,14 +1,18 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { Loader } from 'lucide-react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Loader } from 'lucide-react';
 import {
   FluidFormElement,
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,14 +20,13 @@ import {
   FormWrapper,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { CollectionFormProps } from '../collection-form';
+import { useFetchCollections } from '@/hooks/useFetchCollections';
+import { bidsAtom, collectionsAtom, userSessionAtom } from '@/lib/atoms';
+import { CONTENT_TYPE_JSON, POST, PUT } from '@/lib/constants';
+import { parseNumeric } from '@/lib/utils';
 import { Bid } from '@/types';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { bidsAtom, userSessionAtom } from '@/lib/atoms';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+import { CollectionFormProps } from '../collection-form';
 import { formSchema } from './schema';
-import { POST, PUT } from '@/lib/constants';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
@@ -35,11 +38,22 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   const { user } = useAtomValue(userSessionAtom);
   const setBids = useSetAtom(bidsAtom);
   const bids = useAtomValue(bidsAtom);
+  const collections = useAtomValue(collectionsAtom);
+  const fetchCollections = useFetchCollections();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  // Find the collection by ID or default to an empty object
+  const collection = collections.find((c) => c.id === collectionId);
+  const collectionPrice = collection ? parseNumeric(collection.price) : 0;
+  const minBidPrice = collectionPrice + 0.01;
+
+  const dynamicFormSchema = z.object({
+    price: z.number().min(minBidPrice, 'Bid must be greater than current price $' + minBidPrice),
+  });
+
+  const form = useForm<z.infer<typeof dynamicFormSchema>>({
+    resolver: zodResolver(dynamicFormSchema),
     defaultValues: {
-      price: undefined, // Changed from 0 to undefined to show placeholder
+      price: undefined,
     },
   });
 
@@ -48,7 +62,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
       const bidToEdit = bids.find((bid) => bid.id === bidId);
       if (bidToEdit) {
         form.reset({
-          price: bidToEdit.price,
+          price: parseNumeric(bidToEdit.price),
         });
       }
     }
@@ -70,23 +84,24 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     let data: Partial<Bid> = {
-      price: values.price,
+      price: values.price.toString(),
       status: 'pending',
       collectionId,
       userId: user.id,
-      updatedAt: new Date().toISOString(),
     };
 
     if (method === POST) {
       data = {
         ...data,
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
     }
 
     if (method === PUT) {
       data = {
         ...data,
+        updatedAt: new Date().toISOString(),
         id: bidId,
       };
     }
@@ -94,7 +109,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
     const response = await fetch('/api/bids', {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': CONTENT_TYPE_JSON,
       },
       body: JSON.stringify(data),
     });
@@ -107,12 +122,23 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
         toast.success('Bid placed successfully!', {
           description: 'Your bid has been recorded and is awaiting review.',
           duration: 5000,
+          action: {
+            label: 'View Collections',
+            onClick: () => (window.location.href = '/collections'),
+          },
         });
       } else {
         toast.success('Bid updated successfully!', {
+          description: 'Your bid details have been updated.',
           duration: 3000,
+          action: {
+            label: 'View Bids',
+            onClick: () => (window.location.href = '/bids'),
+          },
         });
       }
+
+      fetchCollections();
 
       if (onSuccess) {
         onSuccess();
@@ -121,7 +147,8 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
         closeDialog();
       }
     } else {
-      console.error('Failed to create or update bid');
+      const errorText = await response.text();
+      console.error('Failed to create or update bid:', errorText);
       toast.error('Failed to process bid', {
         description: 'Please check your bid details and try again.',
         duration: 5000,
@@ -142,6 +169,10 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Bid Price ($)</FormLabel>
+                    <FormDescription className="text-xs text-muted-foreground mt-1">
+                      Enter your bid amount (must be greater than current price ${minBidPrice},
+                      maximum $1,000,000)
+                    </FormDescription>
                     <FormControl>
                       <Input
                         type="number"
@@ -168,9 +199,6 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
                       />
                     </FormControl>
                     <FormMessage aria-live="polite" />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Enter your bid amount (minimum $0.01, maximum $1,000,000)
-                    </p>
                   </FormItem>
                 )}
               />
@@ -205,3 +233,4 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
     </div>
   );
 };
+BidForm.displayName = 'BidForm';

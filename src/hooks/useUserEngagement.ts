@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback } from 'react';
-import { MetricsTracker } from '@/lib/logger';
+
 import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
+import { MetricsTracker } from '@/lib/logger';
 
 interface UserEngagementData {
   action: string;

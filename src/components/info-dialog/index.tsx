@@ -1,5 +1,6 @@
 'use client';
 
+import { PropsWithChildren, useId, useState } from 'react';
 import {
   Dialog,
   DialogTrigger,
@@ -10,7 +11,6 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { DialogModalProps } from '@/types';
-import { PropsWithChildren, useId, useState } from 'react';
 import TriggerIconButton from '../trigger-icon-button';
 
 export const InfoDialog = ({
@@ -20,6 +20,7 @@ export const InfoDialog = ({
   triggerVariant = 'outline',
   triggerAriaLabel,
   triggerIcon,
+  fullWidthTrigger = false,
   children,
   ...props
 }: PropsWithChildren<DialogModalProps>) => {
@@ -37,6 +38,7 @@ export const InfoDialog = ({
           aria-label={triggerAriaLabel}
           icon={triggerIcon}
           title={dialogTitle || 'Information Dialog'}
+          fullWidth={fullWidthTrigger}
         >
           {triggerText}
         </TriggerIconButton>

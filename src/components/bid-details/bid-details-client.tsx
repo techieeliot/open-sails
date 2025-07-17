@@ -1,14 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Bid, Collection, User } from '@/types';
-import { toast } from 'sonner';
 import { useAtomValue } from 'jotai';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
 import { userSessionAtom } from '@/lib/atoms';
-import LoadingPage from './pages/loading';
-import BidNotFoundPage from './pages/bid-not-found';
-import BidDetailsPage from './pages/bid-details';
+import { Bid, Collection, User } from '@/types';
+
+import BidDetailView from './components/bid-details';
+import BidNotFound from './components/bid-not-found';
+import LoadingIndicator from './components/loading';
 
 export function BidDetailsClient() {
   const params = useParams();
@@ -66,13 +68,11 @@ export function BidDetailsClient() {
 
   const isBidder = user && bid && user.id === bid.userId;
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (!bid) {
-    return <BidNotFoundPage />;
-  }
-
-  return <BidDetailsPage collection={collection} bid={bid} isBidder={isBidder} />;
+  return isLoading ? (
+    <LoadingIndicator />
+  ) : !bid ? (
+    <BidNotFound />
+  ) : (
+    <BidDetailView collection={collection} bid={bid} isBidder={isBidder} />
+  );
 }

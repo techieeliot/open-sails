@@ -1,14 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
-import { User } from '@/types';
-import { useSetAtom } from 'jotai';
-import { userSessionAtom } from '@/lib/atoms';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSetAtom } from 'jotai';
+import { Bitcoin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { userSessionAtom } from '@/lib/atoms';
+import { API_ENDPOINTS } from '@/lib/constants';
+import { cn } from '@/lib/utils';
+import { User } from '@/types';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import {
   Form,
   FormField,
@@ -20,12 +24,9 @@ import {
   FormWrapper,
 } from '../ui/form';
 import { formSchema } from './schema';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Bitcoin } from 'lucide-react';
-import { API_ENDPOINTS } from '@/lib/constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
-export const LoginForm = () => {
+export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,50 +82,48 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-w-64">
-      <Card className="w-full max-w-md shadow-lg flex flex-col justify-center">
-        <CardHeader className="text-center">
-          <CardTitle>Login</CardTitle>
-          <p className="text-muted-foreground text-sm">
-            Please select a user to log in and continue
-          </p>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center gap-4 w-full">
-          {error && (
-            <div className="p-4 border border-red-300 rounded-lg bg-red-50 text-red-700 mb-4">
-              <div className="font-medium mb-2">Connection Error</div>
-              <div className="text-sm mb-3">{error}</div>
-              {retryCount < 3 && (
-                <div className="text-xs text-red-600 mb-2">
-                  Auto-retrying... (attempt {retryCount + 1}/3)
-                </div>
-              )}
-              <Button size="sm" variant="outline" onClick={handleManualRetry} disabled={loading}>
-                Retry Now
-              </Button>
-            </div>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
+      {loading ? (
+        <div className="flex flex-col gap-6">
+          <div className="text-gray-600">
+            <Bitcoin className="animate-pulse" height={300} width={300} />
+          </div>
+          {retryCount > 0 && (
+            <div className="text-sm text-gray-500">Retry attempt {retryCount}/3</div>
           )}
-          {loading ? (
-            <div className="flex flex-col items-center gap-2">
-              <div className="text-gray-600">
-                <Bitcoin className="animate-pulse" height={88} width={88} />
+        </div>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Login to your account</CardTitle>
+            <CardDescription>Please select a user to log in</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {error && (
+              <div className="p-4 border border-red-300 rounded-lg bg-red-50 text-red-700 mb-4">
+                <div className="font-medium mb-2">Connection Error</div>
+                <div className="text-sm mb-3">{error}</div>
+                {retryCount < 3 && (
+                  <div className="text-xs text-red-600 mb-2">
+                    Auto-retrying... (attempt {retryCount + 1}/3)
+                  </div>
+                )}
+                <Button size="sm" variant="outline" onClick={handleManualRetry} disabled={loading}>
+                  Retry Now
+                </Button>
               </div>
-              {retryCount > 0 && (
-                <div className="text-sm text-gray-500">Retry attempt {retryCount}/3</div>
-              )}
-            </div>
-          ) : (
-            <FormWrapper className="flex flex-col items-center gap-2 w-full">
+            )}
+            <FormWrapper className="w-full mx-auto">
               <Form {...form}>
                 <FluidFormElement
                   onSubmit={form.handleSubmit(handleLogin)}
-                  className="flex flex-col items-center gap-4 w-full min-w-81"
+                  className="flex flex-col items-center gap-4 w-full min-w-64"
                 >
                   <FormField
                     control={form.control}
                     name="userId"
                     render={({ field }) => (
-                      <FormItem className="w-full">
+                      <FormItem className="w-full min-w-81">
                         <FormLabel>User</FormLabel>
                         <FormControl>
                           <Select
@@ -178,9 +177,9 @@ export const LoginForm = () => {
                 </FluidFormElement>
               </Form>
             </FormWrapper>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
-};
+}

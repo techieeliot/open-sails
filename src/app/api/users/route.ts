@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
-import { getUsers } from './utils';
+import { seedDatabase } from '@/db';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
-import { seedDatabase } from '@/db';
+import { getUsers } from './utils';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

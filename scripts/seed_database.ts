@@ -356,6 +356,17 @@ async function main() {
         `;
         totalBids++;
       }
+
+      // After inserting all bids for this collection, update the collection price to the highest bid
+      const highestBidResult = await sql`
+        SELECT MAX(price) as max_price FROM bids WHERE collection_id = ${collectionId}
+      `;
+      const highestBid = highestBidResult && highestBidResult[0] && highestBidResult[0].max_price;
+      if (highestBid !== null && highestBid !== undefined) {
+        await sql`
+          UPDATE collections SET price = ${highestBid} WHERE id = ${collectionId}
+        `;
+      }
     }
 
     console.log(

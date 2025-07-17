@@ -1,6 +1,6 @@
+import { Bitcoin } from 'lucide-react';
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { API_METHODS } from '@/lib/constants';
-import { Bitcoin } from 'lucide-react';
 
 export default function PlaceBidDialog({
   collectionId,

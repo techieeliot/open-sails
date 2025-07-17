@@ -1,5 +1,5 @@
-import { pgTable, text, integer, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { relations, InferModel } from 'drizzle-orm';
+import { pgTable, text, integer, serial, timestamp, varchar, numeric } from 'drizzle-orm/pg-core';
 
 // Users table
 export const users = pgTable('users', {
@@ -18,7 +18,7 @@ export const collections = pgTable('collections', {
   id: serial('id').primaryKey().notNull(),
   name: text('name').notNull(),
   descriptions: text('descriptions'),
-  price: integer('price').notNull(),
+  price: numeric('price').notNull(),
   stocks: integer('stocks').notNull(),
   status: text('status', { enum: ['open', 'closed'] })
     .notNull()
@@ -33,7 +33,7 @@ export const collections = pgTable('collections', {
 // Bids table
 export const bids = pgTable('bids', {
   id: serial('id').primaryKey().notNull(),
-  price: integer('price').notNull(),
+  price: numeric('price').notNull(),
   collectionId: integer('collection_id')
     .notNull()
     .references(() => collections.id, { onDelete: 'cascade' }),

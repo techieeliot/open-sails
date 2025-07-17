@@ -1,14 +1,14 @@
 'use client';
 
+import { Edit, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import PlaceBidDialog from '@/components/place-bid-dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { DELETE } from '@/lib/constants';
-import { Edit, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
 
 export const CollectionAdminPanel = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -19,7 +19,7 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
       {isOwner ? (
         <div>
           <Card className="flex w-full justify-center items-center gap-4">
-            <CardContent className="flex flex-col">
+            <CardContent className="flex flex-col items-center gap-4">
               <div className="flex w-full justify-end">
                 <DynamicInputDialog
                   key={`edit-dialog-${id}`}
@@ -38,7 +38,8 @@ export const CollectionAdminPanel = ({ id }: { id: number }) => {
                   key={`delete-dialog-${id}`}
                   triggerText="Delete"
                   triggerIcon={Trash2}
-                  aria-label="open dialog to confirm collection deletion"
+                  triggerVariant="destructive"
+                  triggerAriaLabel="open dialog to confirm collection deletion"
                   dialogTitle="Delete Collection"
                   dialogDescription="Are you sure you want to delete this collection?"
                   onConfirm={async () => {

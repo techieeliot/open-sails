@@ -1,8 +1,8 @@
-import { InfoDialog } from '@/components/info-dialog';
-import { CollectionForm } from '../collection-form';
-import { BidForm, BidFormProps } from '../bid-form';
 import { HtmlHTMLAttributes } from 'react';
+import { InfoDialog } from '@/components/info-dialog';
 import { DialogModalProps } from '@/types';
+import { BidForm, BidFormProps } from '../bid-form';
+import { CollectionForm } from '../collection-form';
 
 export interface DynamicInputDialogProps
   extends HtmlHTMLAttributes<HTMLDivElement>,

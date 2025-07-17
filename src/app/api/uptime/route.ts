@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
-import { logRequest, logResponse } from '@/lib/api-middleware';
-import { formattedStack, logger, MetricsTracker } from '@/lib/logger';
 import { alertManager, AlertType, AlertSeverity } from '@/lib/alerting';
+import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS } from '@/lib/constants';
+import { formattedStack, logger, MetricsTracker } from '@/lib/logger';
 
 // Health check result type
 interface HealthCheckResult {

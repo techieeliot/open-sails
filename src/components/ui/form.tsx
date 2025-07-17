@@ -1,8 +1,8 @@
 'use client';
 
-import * as React from 'react';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
+import * as React from 'react';
 import {
   Controller,
   FormProvider,
@@ -12,9 +12,8 @@ import {
   type FieldPath,
   type FieldValues,
 } from 'react-hook-form';
-
-import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 
 const Form = FormProvider;
 
@@ -157,7 +156,7 @@ FluidFormElement.displayName = 'FluidFormElement';
 
 function FormWrapper({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('flex flex-col items-center gap-2 max-w-xs w-full', className)} {...props}>
+    <div className={cn('flex flex-col items-center gap-2 w-full', className)} {...props}>
       {children}
     </div>
   );

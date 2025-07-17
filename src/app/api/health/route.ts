@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { logRequest, logResponse } from '@/lib/api-middleware';
-import { logger, PerformanceTracker, MetricsTracker } from '@/lib/logger';
 import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
+import { logger, PerformanceTracker, MetricsTracker } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

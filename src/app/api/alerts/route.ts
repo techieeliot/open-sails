@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
-import { logRequest, logResponse } from '@/lib/api-middleware';
-import { logger } from '@/lib/logger';
 import { alertManager, ALERT_THRESHOLDS, AlertType, AlertSeverity } from '@/lib/alerting';
+import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_METHODS, API_ENDPOINTS, ALERT_ACTIONS } from '@/lib/constants';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

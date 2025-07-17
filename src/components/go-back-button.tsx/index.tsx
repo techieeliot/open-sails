@@ -1,8 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button } from '../ui/button';
 import { ComponentProps } from 'react';
+import { Button } from '../ui/button';
 
 export default function GoBackButton({
   children = 'Go Back',

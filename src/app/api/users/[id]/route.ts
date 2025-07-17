@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
-import { getUserById } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { getUserById } from '../utils';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

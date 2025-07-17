@@ -1,26 +1,27 @@
 'use client';
 
-import PageWrapper from '@/components/page-wrapper';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { useAtomValue } from 'jotai';
+import { ArrowLeft, Bitcoin, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import BidsTable from '@/app/dashboard/components/collections-index/components/bids-table';
+import { ConfirmationDialog } from '@/components/confirmation-dialog';
+import PageWrapper from '@/components/page-wrapper';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { userSessionAtom } from '@/lib/atoms';
-import { Collection, User } from '@/types';
-import { BidList } from '@/app/dashboard/components/bids-list';
 import { API_ENDPOINTS, CONTENT_TYPE_JSON, DELETE } from '@/lib/constants';
-import { Bitcoin } from 'lucide-react';
-import PlaceBidDialog from '../place-bid-dialog';
+import { Collection, User } from '@/types';
 import EditCollectionDialog from '../edic-collection-dialog';
+import PlaceBidDialog from '../place-bid-dialog';
 
 export function CollectionDetailsClient() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAtomValue(userSessionAtom);
+  const userSession = useAtomValue(userSessionAtom);
+  const isLoggedIn = userSession.user;
   const [collection, setCollection] = useState<Collection | null>(null);
   const [owner, setOwner] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -94,7 +95,7 @@ export function CollectionDetailsClient() {
     }
   };
 
-  const isOwnerOfCollection = !!(user && collection && user.id === collection.ownerId);
+  const isOwnerOfCollection = !!(isLoggedIn && collection && isLoggedIn.id === collection.ownerId);
 
   if (isLoading) {
     return (
@@ -116,7 +117,10 @@ export function CollectionDetailsClient() {
           <p className="text-gray-600 mb-4">
             {error || "The collection you're looking for doesn't exist or may have been removed."}
           </p>
-          <Button onClick={handleBack}>Go Back</Button>
+          <Button onClick={handleBack} className="inline-flex items-center gap-2">
+            <ArrowLeft />
+            Go Back
+          </Button>
         </div>
       </PageWrapper>
     );
@@ -124,6 +128,8 @@ export function CollectionDetailsClient() {
 
   return (
     <PageWrapper>
+      {/* create a wrapper so the page is a minimum of  */}
+
       <div className="flex flex-col justify-between mb-6 gap-2">
         <Link href="/dashboard">
           <Button variant="outline" size="sm">
@@ -200,13 +206,15 @@ export function CollectionDetailsClient() {
                   <ConfirmationDialog
                     key={`delete-dialog-${collection.id}`}
                     triggerText="Delete"
+                    triggerIcon={Trash2}
+                    triggerVariant="destructive"
                     dialogTitle="Delete Collection"
                     dialogDescription="Are you sure you want to delete this collection? This action cannot be undone."
                     onConfirm={handleDeleteCollection}
                   />
                 </div>
               )}
-              {user && !isOwnerOfCollection && (
+              {isLoggedIn && !isOwnerOfCollection && (
                 <div className="flex">
                   <PlaceBidDialog collectionId={collection.id} />
                 </div>
@@ -217,7 +225,7 @@ export function CollectionDetailsClient() {
       </Card>
 
       <h2 className="text-xl font-semibold mb-4">Bids for this Collection</h2>
-      <BidList collectionId={collectionId} isOwner={isOwnerOfCollection} />
+      <BidsTable collection={collection} />
     </PageWrapper>
   );
 }

@@ -25,7 +25,7 @@ collections.forEach((collection) => {
       id: bidId++,
       collectionId: collection.id,
       userId: user.id,
-      amount: parseFloat(amount.toFixed(2)),
+      price: parseFloat(amount.toFixed(2)),
       status: 'pending',
       createdAt: createdAt.toISOString(),
       updatedAt: createdAt.toISOString(),

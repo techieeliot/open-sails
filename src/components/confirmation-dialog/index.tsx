@@ -1,3 +1,4 @@
+import { useId, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -11,7 +12,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { DialogModalProps } from '@/types';
-import { useId, useState } from 'react';
 import TriggerIconButton from '../trigger-icon-button';
 
 interface ConfirmationDialogProps extends DialogModalProps {

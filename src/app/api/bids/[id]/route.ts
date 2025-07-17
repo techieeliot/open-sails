@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
-import { getBidById } from '../utils';
 import { logRequest, logResponse } from '@/lib/api-middleware';
-import { logger, PerformanceTracker } from '@/lib/logger';
-import { ensureDatabaseInitialized } from '@/lib/db-init';
 import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
+import { ensureDatabaseInitialized } from '@/lib/db-init';
+import { logger, PerformanceTracker } from '@/lib/logger';
+import { getBidById } from '../utils';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

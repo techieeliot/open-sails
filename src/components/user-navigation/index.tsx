@@ -1,13 +1,13 @@
 'use client';
 
-import { userSessionAtom } from '@/lib/atoms';
 import { useAtomValue } from 'jotai';
 import { LayoutDashboard, LogIn, LogOut, Settings, User } from 'lucide-react';
 import Link from 'next/link';
+import { userSessionAtom } from '@/lib/atoms';
 
 export const UserMenu = () => {
-  // Simulate authentication state
   const userSession = useAtomValue(userSessionAtom);
+  // Simulate authentication state
   return (
     <nav className="flex items-center justify-around min-w-xs h-20 px-12 gap-8">
       <Link href="/dashboard">

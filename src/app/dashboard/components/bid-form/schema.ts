@@ -8,7 +8,6 @@ export const formSchema = z.object({
     })
     .positive({ message: 'Price must be a positive number' })
     .min(0.01, { message: 'Price must be at least $0.01' })
-    .max(1000000, { message: 'Price cannot exceed $1,000,000' })
     .refine(
       (val) => {
         // Check if number has at most 2 decimal places

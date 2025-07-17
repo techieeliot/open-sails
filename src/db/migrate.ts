@@ -1,8 +1,8 @@
 // src/db/migrate.ts
-import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
-import { migrate } from 'drizzle-orm/neon-http/migrator';
 import { config } from 'dotenv';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { migrate } from 'drizzle-orm/neon-http/migrator';
 
 config({ path: '.env.production' });
 

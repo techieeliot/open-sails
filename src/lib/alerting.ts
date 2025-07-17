@@ -1,6 +1,6 @@
+import { track } from '@vercel/analytics/server';
 import { DANGER, GLOBAL, POST, UNKNOWN, WARNING } from './constants';
 import { logger, MetricsTracker } from './logger';
-import { track } from '@vercel/analytics/server';
 import { toStartCase } from './utils';
 
 // Alerting configuration

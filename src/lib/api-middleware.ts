@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logger, PerformanceTracker, MetricsTracker, logApiCall, formattedStack } from './logger';
 import { checkAlerts } from './alerting';
+import { logger, PerformanceTracker, MetricsTracker, logApiCall, formattedStack } from './logger';
 
 // Type for API handler
 export type ApiHandler = (req: NextRequest, context?: Record<string, unknown>) => Promise<Response>;

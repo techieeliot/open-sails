@@ -1,4 +1,7 @@
 import { NextRequest } from 'next/server';
+import { logRequest, logResponse } from '@/lib/api-middleware';
+import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
+import { logger, PerformanceTracker } from '@/lib/logger';
 import {
   createBid,
   deleteBid,
@@ -7,9 +10,6 @@ import {
   updateBid,
   updateBidStatus,
 } from './utils';
-import { logRequest, logResponse } from '@/lib/api-middleware';
-import { logger, PerformanceTracker } from '@/lib/logger';
-import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

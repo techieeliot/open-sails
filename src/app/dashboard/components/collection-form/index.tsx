@@ -1,11 +1,14 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
-import { Collection } from '@/types';
-import { useEffect } from 'react';
+import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   FluidFormElement,
   Form,
@@ -17,15 +20,22 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { collectionsAtom, userSessionAtom } from '@/lib/atoms';
+import { Collection } from '@/types';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import { formSchema } from './schema';
 import { API_ENDPOINTS, POST, PUT } from '@/lib/constants';
-import { Loader } from 'lucide-react';
+import { parseNumeric } from '@/lib/utils';
+import { useFetchCollections } from '@/hooks/useFetchCollections';
 
+/**
+ * Props for the CollectionForm component
+ * @interface CollectionFormProps
+ * @property {string} method - HTTP method for form submission ('POST' or 'PUT')
+ * @property {number} [collectionId] - ID of the collection to edit (required for PUT)
+ * @property {() => void} [onSuccess] - Callback function to execute on successful submission
+ * @property {() => void} [closeDialog] - Function to close the parent dialog
+ */
 export interface CollectionFormProps {
   method: 'POST' | 'PUT';
   collectionId?: number;
@@ -33,15 +43,26 @@ export interface CollectionFormProps {
   closeDialog?: () => void;
 }
 
+/**
+ * Form component for creating or editing a mining hardware collection
+ *
+ * Handles form validation, submission, and API interaction for collection data.
+ * Displays appropriate form fields with validation and feedback.
+ *
+ * @param {CollectionFormProps} props - Component props
+ * @returns {JSX.Element} Rendered form component
+ */
 export const CollectionForm = ({
   method,
   collectionId,
   onSuccess,
   closeDialog,
 }: CollectionFormProps) => {
-  const { user } = useAtomValue(userSessionAtom);
+  const userSession = useAtomValue(userSessionAtom);
+  const isLoggedIn = userSession.user;
   const setCollections = useSetAtom(collectionsAtom);
   const router = useRouter();
+  const fetchCollections = useFetchCollections();
 
   const submitButtonText = method === POST ? 'Create Collection' : 'Save Changes';
 
@@ -66,7 +87,7 @@ export const CollectionForm = ({
           form.reset({
             name: data.name,
             descriptions: data.descriptions || '',
-            price: data.price,
+            price: parseNumeric(data.price),
             stocks: data.stocks,
           });
         }
@@ -78,12 +99,13 @@ export const CollectionForm = ({
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     const data: Partial<Collection> = {
       ...values,
+      price: String(values.price).replace(/,/g, ''),
       updatedAt: new Date().toISOString(),
     };
 
     if (method === POST) {
-      if (user) {
-        data.ownerId = user.id;
+      if (isLoggedIn) {
+        data.ownerId = isLoggedIn.id;
       }
       data.createdAt = new Date().toISOString();
     } else if (method === PUT) {
@@ -123,7 +145,7 @@ export const CollectionForm = ({
         toast.success('Collection updated successfully!', {
           duration: 3000,
         });
-
+        fetchCollections();
         if (onSuccess) onSuccess();
         if (closeDialog) closeDialog();
       }

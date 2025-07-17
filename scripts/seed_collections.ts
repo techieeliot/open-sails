@@ -109,7 +109,11 @@ async function main() {
 
     // Insert collections
     console.log(`Inserting ${numToGenerate} collections into the database...`);
-    await db.insert(schema.collections).values(newCollections);
+    const collectionsToInsert = newCollections.map((col) => ({
+      ...col,
+      price: col.price.toString(),
+    }));
+    await db.insert(schema.collections).values(collectionsToInsert);
     console.log(`Successfully seeded ${numToGenerate} collections to the database.`);
   } catch (err) {
     console.error('Error seeding collections:', err);
