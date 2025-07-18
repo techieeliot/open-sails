@@ -134,6 +134,9 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
         throw new Error('Failed to accept bid');
       }
 
+      // Wait 500ms before polling to allow backend/cache to update
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // Poll for backend to reflect the accepted status
       const polled = await pollForBidStatus(bid.id, 'accepted');
       if (polled) {

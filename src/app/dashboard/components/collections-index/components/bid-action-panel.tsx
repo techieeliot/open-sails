@@ -81,7 +81,7 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
       {collection?.status === 'open' && isOwner && bid.status === 'pending' && (
         <>
           <Button variant="secondary" size="sm" className="text-xs" onClick={handleAcceptBid}>
-            {bid.status === 'pending' ? 'Pending' : 'Accepted'}
+            Accept
           </Button>
           <Button variant="destructive" size="sm" className="text-xs" onClick={handleRejectBid}>
             Reject

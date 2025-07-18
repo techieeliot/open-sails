@@ -256,9 +256,13 @@ export async function PUT(request: NextRequest) {
     );
     if (status) {
       await updateBidStatus(bidIdNumeric, status, collectionIdNumeric);
+      // Invalidate cache after status update
+      await invalidateBidAndCollectionCache(collectionIdNumeric);
       response = new Response(null, { status: 204 }); // No Content, client should poll
     } else {
       await updateBid(bidIdNumeric, updatedData);
+      // Invalidate cache after update
+      await invalidateBidAndCollectionCache(collectionIdNumeric);
       response = new Response(null, { status: 204 }); // No Content, client should poll
     }
     tracker.finish({ bidId: bidIdNumeric });
