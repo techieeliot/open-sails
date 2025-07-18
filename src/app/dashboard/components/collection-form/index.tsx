@@ -12,7 +12,6 @@ import type * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  FluidFormElement,
   Form,
   FormControl,
   FormDescription,
@@ -141,24 +140,40 @@ export const CollectionForm = ({
     );
 
     if (response.ok) {
-      const updatedItem = await response.json();
+      let updatedItem: unknown = null;
+      // Only parse JSON if not 204 and has content
+      if (response.status !== 204) {
+        try {
+          updatedItem = await response.json();
+        } catch {
+          // If no content, ignore
+        }
+      }
       if (method === POST) {
-        setCollections((prev) => [updatedItem, ...prev]);
-
-        // Show success toast and navigate to the new collection page
+        if (
+          updatedItem &&
+          typeof updatedItem === 'object' &&
+          updatedItem !== null &&
+          'id' in updatedItem
+        ) {
+          setCollections((prev) => [updatedItem as Collection, ...prev]);
+          router.push(`/collections/${(updatedItem as Collection).id}`);
+        }
         toast.success('Collection created successfully! Let the bidding begin.', {
           duration: 5000,
         });
-
-        // Close dialog if provided
         if (closeDialog) closeDialog();
-
-        // Navigate to the new collection page
-        router.push(`/collections/${updatedItem.id}`);
       } else {
-        setCollections((prev) => prev.map((c) => (c.id === collectionId ? updatedItem : c)));
-
-        // Show success toast for updates
+        if (
+          updatedItem &&
+          typeof updatedItem === 'object' &&
+          updatedItem !== null &&
+          'id' in updatedItem
+        ) {
+          setCollections((prev) =>
+            prev.map((c) => (c.id === collectionId ? (updatedItem as Collection) : c)),
+          );
+        }
         toast.success('Collection updated successfully!', {
           duration: 3000,
         });
@@ -167,8 +182,13 @@ export const CollectionForm = ({
         if (closeDialog) closeDialog();
       }
     } else {
+      let errorMsg = 'Failed to process collection.';
+      try {
+        const errJson = await response.json();
+        if (errJson && errJson.error) errorMsg = errJson.error;
+      } catch {}
       console.error('Failed to process collection');
-      toast.error('Failed to process collection. Please try again.', {
+      toast.error(errorMsg + ' Please try again.', {
         duration: 5000,
       });
     }

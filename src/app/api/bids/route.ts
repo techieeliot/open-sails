@@ -256,14 +256,10 @@ export async function PUT(request: NextRequest) {
     );
     if (status) {
       await updateBidStatus(bidIdNumeric, status, collectionIdNumeric);
-      response = new Response(JSON.stringify({ success: true }), {
-        headers: { 'Content-Type': CONTENT_TYPE_JSON },
-      });
+      response = new Response(null, { status: 204 }); // No Content, client should poll
     } else {
-      const updatedBid = await updateBid(bidIdNumeric, updatedData);
-      response = new Response(JSON.stringify(updatedBid), {
-        headers: { 'Content-Type': CONTENT_TYPE_JSON },
-      });
+      await updateBid(bidIdNumeric, updatedData);
+      response = new Response(null, { status: 204 }); // No Content, client should poll
     }
     tracker.finish({ bidId: bidIdNumeric });
     logger.info(
@@ -325,9 +321,7 @@ export async function DELETE(request: NextRequest) {
     }
     await deleteBid(bidIdNumeric);
     tracker.finish({ bidId: bidIdNumeric });
-    response = new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': CONTENT_TYPE_JSON },
-    });
+    response = new Response(null, { status: 204 }); // No Content, client should poll
     logger.info(
       { ...deleteBidPayload, bidId: bidIdNumeric, type: 'bid_deleted' },
       `Successfully deleted bid: ${bidIdNumeric}`,

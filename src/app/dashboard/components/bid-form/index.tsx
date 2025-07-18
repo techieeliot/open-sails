@@ -11,7 +11,6 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  FluidFormElement,
   Form,
   FormControl,
   FormDescription,
@@ -19,7 +18,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormWrapper,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -29,9 +27,9 @@ import { CONTENT_TYPE_JSON, POST, PUT } from '@/lib/constants';
 import { formatPrice, parseNumeric } from '@/lib/utils';
 import type { Bid } from '@/types';
 
+import { BidFormSkeleton } from './bid-form-skeleton';
 import type { CollectionFormProps } from '../collection-form';
 import type { formSchema } from './schema';
-import { BidFormSkeleton } from './bid-form-skeleton';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;

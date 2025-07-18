@@ -6,7 +6,7 @@ import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 import { logger, PerformanceTracker } from '@/lib/logger';
 import { CollectionStatusUpdateSchema } from '@/lib/validation-schemas';
 
-import { createCollection, deleteCollection, getCollections, updateCollection } from './utils';
+import { createCollection, getCollections, updateCollection } from './utils';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);

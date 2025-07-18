@@ -3,6 +3,30 @@
 import { Edit, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+// Poll for collection update or deletion
+async function pollForCollectionUpdateOrDelete(
+  collectionId: number,
+  shouldExist: boolean,
+  maxAttempts = 10,
+  interval = 1500,
+) {
+  let attempts = 0;
+  while (attempts < maxAttempts) {
+    const res = await fetch(`/api/collections/${collectionId}`);
+    if (shouldExist) {
+      if (res.ok) {
+        return true;
+      }
+    } else {
+      if (res.status === 404) {
+        return true;
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, interval));
+    attempts++;
+  }
+  return false;
+}
 import { toast } from 'sonner';
 
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
@@ -51,9 +75,20 @@ export const CollectionAdminPanel = ({
               modalCategory="collection"
               method="PUT"
               collectionId={id}
-              onSuccess={() => {
+              onSuccess={async () => {
                 setShowEditDialog(false);
                 setCollectionToEdit(null);
+                // Show loader while polling for update
+                const toastId = toast.loading('Saving changes and waiting for backend...');
+                const polled = await pollForCollectionUpdateOrDelete(id, true);
+                toast.dismiss(toastId);
+                if (polled) {
+                  toast.success('Collection updated and backend confirmed!');
+                } else {
+                  toast.warning(
+                    'Collection updated, but backend did not confirm in time. Please refresh.',
+                  );
+                }
                 if (onCollectionUpdated) onCollectionUpdated();
               }}
               open={showEditDialog}
@@ -71,7 +106,6 @@ export const CollectionAdminPanel = ({
               dialogTitle="Delete Collection"
               dialogDescription="Are you sure you want to delete this collection?"
               onConfirm={async () => {
-                console.log('Delete Collection clicked');
                 try {
                   const removalConfirmationResponse = await fetch(`/api/collections/${id}`, {
                     method: DELETE,
@@ -79,10 +113,18 @@ export const CollectionAdminPanel = ({
                   if (!removalConfirmationResponse.ok) {
                     throw new Error('Failed to delete collection');
                   }
-                  console.log('Collection deleted successfully');
-                  toast.success('Collection deleted successfully', {
-                    duration: 5000,
-                  });
+                  // Show loader while polling for deletion
+                  const toastId = toast.loading('Deleting collection and waiting for backend...');
+                  const polled = await pollForCollectionUpdateOrDelete(id, false);
+                  toast.dismiss(toastId);
+                  if (polled) {
+                    toast.success('Collection deleted and backend confirmed!', { duration: 5000 });
+                  } else {
+                    toast.warning(
+                      'Collection deleted, but backend did not confirm in time. Please refresh.',
+                      { duration: 5000 },
+                    );
+                  }
                   router.push('/dashboard');
                 } catch (error) {
                   toast.error('Failed to delete collection', {

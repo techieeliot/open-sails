@@ -1,17 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { formatDistanceToNow } from 'date-fns';
-import { useAtomValue } from 'jotai/react';
 import { ArrowLeft, UserIcon, Archive, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useAtomValue } from 'jotai/react';
+import { formatDistanceToNow } from 'date-fns';
+import { useParams, useRouter } from 'next/navigation';
 
+import { Card, CardContent, CardHeader, CardAction } from '@/components/ui/card';
+import GoBackButton from '@/components/go-back-button.tsx';
+import LoadingIndicator from '@/components/bid-details/components/loading';
+import PageWrapper from '@/components/page-wrapper';
 import { useFetchCollections } from '@/hooks/useFetchCollections';
 import BidsTable from '@/app/dashboard/components/collections-index/components/bids-table';
-import LoadingIndicator from '@/components/bid-details/components/loading';
-import GoBackButton from '@/components/go-back-button.tsx';
-import PageWrapper from '@/components/page-wrapper';
-import { Card, CardContent, CardHeader, CardAction } from '@/components/ui/card';
 import { bidsAtom, sortedCollectionsAtom, userLoginStatusAtom, userSessionAtom } from '@/lib/atoms';
 import { formatPrice, parseNumeric } from '@/lib/utils';
 import type { Collection, User } from '@/types';

@@ -63,7 +63,7 @@ function DataTableToolbar<TData>({
               onChange={(event) =>
                 table.getColumn(filterColumn)?.setFilterValue(event.target.value)
               }
-              className="h-8 w-full border border-accent/60 bg-background focus:border-accent focus:ring-0 px-3"
+              className="h-8 w-full border border-accent/60  focus:border-accent focus:ring-0 px-3"
             />
           </div>
         )}
@@ -331,9 +331,12 @@ export function DataTable<TData, TValue>({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-48 text-center"></TableCell>
-                  <Inbox className="mx-auto mb-2 h-6 w-6" />
-                  <span className="inline text-muted-foreground">No results.</span>
+                  <TableCell colSpan={columns.length} className="h-48 text-center">
+                    <div className="flex flex-col items-center justify-center w-full h-full py-8">
+                      <Inbox className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
+                      <span className="inline text-muted-foreground">No results.</span>
+                    </div>
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

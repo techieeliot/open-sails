@@ -5,7 +5,7 @@ import { useAtom } from 'jotai/react';
 import { AlertCircle, FileStack, Inbox } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DataTable } from '@/components/data-table';
 import PlaceBidDialog from '@/components/place-bid-dialog';
@@ -38,6 +38,9 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
   const isLoggedIn = useAtomValue(userLoginStatusAtom);
   const userSession = useAtomValue(userSessionAtom);
   const { user } = userSession;
+  // Polling state for bid actions
+  const [isPolling, setIsPolling] = useState(false);
+  const [pollingMessage, setPollingMessage] = useState<string | null>(null);
 
   const isOwner = isLoggedIn && user?.id === collection.ownerId;
 
@@ -86,7 +89,37 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
     );
   }
 
-  // Accept bid handler
+  // Poll for updated bids after mutation
+  const pollForBidStatus = async (
+    bidId: number,
+    expectedStatus: string,
+    maxAttempts = 10,
+    interval = 1500,
+  ) => {
+    let attempts = 0;
+    setIsPolling(true);
+    setPollingMessage('Waiting for backend to confirm bid update...');
+    while (attempts < maxAttempts) {
+      const res = await fetch(`/api/bids?collection_id=${collection.id}`);
+      if (res.ok) {
+        const updatedBids = await res.json();
+        setBids(updatedBids);
+        const found = updatedBids.find((b: Bid) => b.id === bidId);
+        if (found && found.status === expectedStatus) {
+          setIsPolling(false);
+          setPollingMessage(null);
+          return true;
+        }
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+      attempts++;
+    }
+    setIsPolling(false);
+    setPollingMessage(null);
+    return false;
+  };
+
+  // Accept bid handler with polling
   const handleAcceptBid = async (bid: Bid) => {
     try {
       const response = await fetch(`/api/bids/${bid.id}`, {
@@ -101,12 +134,13 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
         throw new Error('Failed to accept bid');
       }
 
-      // Refresh bids after accepting
-      const updatedBidsResponse = await fetch(`/api/bids?collection_id=${collection.id}`);
-      const updatedBids = await updatedBidsResponse.json();
-      setBids(updatedBids);
-
-      toast.success('Bid accepted successfully');
+      // Poll for backend to reflect the accepted status
+      const polled = await pollForBidStatus(bid.id, 'accepted');
+      if (polled) {
+        toast.success('Bid accepted and backend confirmed!');
+      } else {
+        toast.warning('Bid accepted, but backend did not confirm in time. Please refresh.');
+      }
     } catch (error) {
       console.error('Error accepting bid:', error);
       toast.error('Failed to accept bid', {
@@ -115,7 +149,7 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
     }
   };
 
-  // Reject bid handler
+  // Reject bid handler with polling
   const handleRejectBid = async (bid: Bid) => {
     try {
       const response = await fetch(`/api/bids/${bid.id}`, {
@@ -130,12 +164,13 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
         throw new Error('Failed to reject bid');
       }
 
-      // Refresh bids after rejecting
-      const updatedBidsResponse = await fetch(`/api/bids?collection_id=${collection.id}`);
-      const updatedBids = await updatedBidsResponse.json();
-      setBids(updatedBids);
-
-      toast.success('Bid rejected successfully');
+      // Poll for backend to reflect the rejected status
+      const polled = await pollForBidStatus(bid.id, 'rejected');
+      if (polled) {
+        toast.success('Bid rejected and backend confirmed!');
+      } else {
+        toast.warning('Bid rejected, but backend did not confirm in time. Please refresh.');
+      }
     } catch (error) {
       console.error('Error rejecting bid:', error);
       toast.error('Failed to reject bid', {
@@ -159,17 +194,13 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
 
   const columns = bidColumnsDefinition;
 
-  if (bidsLoading) {
+  if (bidsLoading || isPolling) {
     return (
       <Card className="w-full">
         <CardContent className="p-4">
           <CardTitle className="mb-4">Bids</CardTitle>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-8 w-[20vw] flex-inline" />
-              <Skeleton className="h-8 w-[10vw] flex-inline" />
-            </div>
-
+          <div className="flex flex-col items-center gap-4">
+            <Skeleton className="h-8 w-[20vw] flex-inline" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
@@ -179,7 +210,9 @@ export default function BidsTable({ collection, showPlaceBidButtonAtTop = false 
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
-            <Skeleton className="h-8 w-full" />
+            {pollingMessage && (
+              <div className="text-center text-blue-400 animate-pulse mt-4">{pollingMessage}</div>
+            )}
           </div>
         </CardContent>
       </Card>

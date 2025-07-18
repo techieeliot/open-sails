@@ -111,11 +111,9 @@ export async function PUT(request: NextRequest) {
       `Updating collection: ${collectionId}`,
     );
     // Update the collection
-    const updatedCollection = await updateCollection(collectionId, updatedData);
+    await updateCollection(collectionId, updatedData);
     tracker.finish({ collectionId });
-    response = new Response(JSON.stringify(updatedCollection), {
-      headers: { 'Content-Type': CONTENT_TYPE_JSON },
-    });
+    response = new Response(null, { status: 204 }); // No Content, client should poll
 
     await invalidateBidAndCollectionCache(collectionId);
     logger.info(
@@ -191,9 +189,7 @@ export async function DELETE(request: NextRequest) {
 
     tracker.finish({ collectionId });
 
-    response = new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': CONTENT_TYPE_JSON },
-    });
+    response = new Response(null, { status: 204 }); // No Content, client should poll
 
     logger.info(
       {
