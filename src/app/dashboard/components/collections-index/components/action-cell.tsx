@@ -18,8 +18,6 @@ import type { Collection } from '@/types';
 
 import DeleteCollectionDialog from '../../delete-collection-dialog';
 
-
-
 // Actions cell renderer as a component
 interface ActionsCellProps {
   row: {
@@ -55,6 +53,7 @@ export default function ActionsCell({ row, table }: ActionsCellProps) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
+            size="sm"
             className="flex w-[60vw] items-center justify-center rounded-full p-0 hover:bg-accent/50 md:h-10 md:w-10 md:border-none"
             aria-label="Open actions menu"
           >

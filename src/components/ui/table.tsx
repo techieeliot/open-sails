@@ -190,7 +190,7 @@ function MobileCards(
 
   return (
     <div
-      className="grid w-full max-w-full gap-x-4 gap-y-6 overflow-visible px-1 py-6 sm:grid-cols-2 md:hidden"
+      className="grid w-full max-w-full gap-x-4 gap-y-6 overflow-visible px-4 py-6 sm:grid-cols-2 md:hidden"
       data-slot="mobile-cards"
     >
       {rows.map((row, i) => {
@@ -266,7 +266,7 @@ function MobileTableRowCard({
   return (
     <Card
       className={cn(
-        'flex w-full flex-col gap-4 overflow-visible rounded-xl bg-card p-6 shadow-lg',
+        'flex w-full flex-col gap-4 overflow-visible rounded-xl bg-zinc-900 border-zinc-700 p-6 shadow-xl',
         className,
       )}
       data-slot="table-mobile-row-card"
@@ -286,18 +286,18 @@ function MobileTableCell({
   return (
     <div
       className={cn(
-        'flex w-full flex-col items-center gap-3 border-muted border-b py-3 last:border-b-0',
+        'flex w-full flex-col items-center gap-3 border-zinc-700 border-b py-3 last:border-b-0',
         className,
       )}
       data-slot="table-mobile-cell"
     >
       {header && (
-        <span className="mb-1 flex w-auto items-center justify-center gap-1 rounded-md bg-muted/30 px-2 py-1 font-semibold text-muted-foreground text-sm tracking-wide">
+        <span className="mb-1 flex w-auto items-center justify-center gap-1 rounded-md bg-zinc-800/50 px-3 py-1.5 font-semibold text-zinc-300 text-sm tracking-wide">
           {header}
         </span>
       )}
       <div className="flex w-full flex-row items-center justify-center overflow-visible">
-        <div className="w-full overflow-visible break-words text-center text-base text-foreground leading-normal [&>*]:justify-center [&_.lucide+span]:inline [&_a]:min-h-10 [&_a]:min-w-24 [&_a_.lucide]:mr-1.5 [&_button]:min-h-10 [&_button]:min-w-24 [&_button_.lucide]:mr-1.5">
+        <div className="w-full overflow-visible break-words text-center text-base text-white leading-normal [&>*]:justify-center [&_.lucide+span]:inline [&_a]:min-h-10 [&_a]:min-w-24 [&_a_.lucide]:mr-1.5 [&_button]:min-h-10 [&_button]:min-w-24 [&_button_.lucide]:mr-1.5">
           {children}
         </div>
       </div>

@@ -4,6 +4,7 @@ import { seedDatabase } from '@/db';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { CollectionStatusUpdateSchema } from '@/lib/validation-schemas';
 
 import { createCollection, deleteCollection, getCollections, updateCollection } from './utils';
 
@@ -118,6 +119,7 @@ export async function PUT(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
     const updatedData = await request.json();
+
     if (!collectionId || Number.isNaN(collectionId)) {
       logger.warn(
         { ...putCollectionPayload, error: 'Collection ID is required', type: 'validation_error' },
@@ -127,6 +129,32 @@ export async function PUT(request: NextRequest) {
       logResponse(request, response, startTime);
       return response;
     }
+
+    // Validate status updates if present
+    if (updatedData.status) {
+      const validation = CollectionStatusUpdateSchema.safeParse(updatedData);
+      if (!validation.success) {
+        logger.warn(
+          {
+            ...putCollectionPayload,
+            error: 'Invalid status value',
+            validationErrors: validation.error.errors,
+            type: 'validation_error',
+          },
+          'PUT request with invalid status',
+        );
+        response = Response.json(
+          {
+            error: 'Invalid input',
+            details: validation.error.errors,
+          },
+          { status: 400 },
+        );
+        logResponse(request, response, startTime);
+        return response;
+      }
+    }
+
     logger.info(
       {
         ...putCollectionPayload,
@@ -168,65 +196,27 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   const startTime = logRequest(request);
-  let response: Response;
   const deleteCollectionPayload = {
     endpoint: API_ENDPOINTS.collections,
     method: API_METHODS.DELETE,
     error: '',
     type: 'initial_delete',
   };
-  try {
-    const tracker = new PerformanceTracker(`DELETE ${API_ENDPOINTS.collections}`);
-    const { searchParams } = new URL(request.url);
-    const collectionId = Number(searchParams.get('id'));
-    if (!collectionId || Number.isNaN(collectionId)) {
-      logger.warn(
-        {
-          ...deleteCollectionPayload,
-          error: 'Collection ID is required',
-          type: 'validation_error',
-        },
-        'DELETE request with invalid collection ID',
-      );
-      response = Response.json({ error: 'Collection ID is required' }, { status: 400 });
-      logResponse(request, response, startTime);
-      return response;
-    }
-    logger.info(
-      {
-        ...deleteCollectionPayload,
-        collectionId: collectionId,
-        type: 'collection_delete_started',
-      },
-      `Deleting collection: ${collectionId}`,
-    );
-    await deleteCollection(collectionId);
-    tracker.finish({ collectionId: collectionId });
-    response = new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': CONTENT_TYPE_JSON },
-    });
-    logger.info(
-      {
-        ...deleteCollectionPayload,
-        collectionId: collectionId,
-        type: 'collection_deleted',
-      },
-      `Successfully deleted collection: ${collectionId}`,
-    );
-  } catch (error) {
-    logger.error(
-      {
-        ...deleteCollectionPayload,
-        error: (error as Error).message,
-        type: 'collection_delete_error',
-      },
-      `Failed to delete collection: ${(error as Error).message}`,
-    );
-    response = Response.json(
-      { error: `Failed to delete collection: ${(error as Error).message}` },
-      { status: 500 },
-    );
-  }
+  // This route does not support DELETE without an id. Instruct user to use /api/collections/[id] for single deletes.
+  logger.warn(
+    {
+      ...deleteCollectionPayload,
+      error: 'DELETE on /api/collections requires an id. Use /api/collections/[id] instead.',
+      type: 'unsupported_delete',
+    },
+    'DELETE request to /api/collections without id is not supported',
+  );
+  const response = Response.json(
+    {
+      error: 'DELETE on /api/collections requires an id. Use /api/collections/[id] instead.',
+    },
+    { status: 405 },
+  );
   logResponse(request, response, startTime);
   return response;
 }

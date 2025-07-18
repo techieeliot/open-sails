@@ -4,45 +4,81 @@ import { getBidsByCollectionId } from '@/app/api/bids/utils';
 import { getCollectionById } from '@/app/api/collections/utils';
 import type { Collection } from '@/types';
 
-import logger from './logger';
+import { logger } from './logger';
 import { getErrorMessage } from './utils';
 
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+  maxRetriesPerRequest: 3,
+  lazyConnect: true,
+  connectTimeout: 10000,
+});
+
+// Test connection on startup
+redis.ping().catch((error: Error) => {
+  logger.error({ error: error.message }, 'Failed to connect to Redis');
+});
 
 const COLLECTION_TTL = 60; // seconds
 
 export async function getCollectionWithCache(collectionId: number) {
   const cacheKey = `collections:${collectionId}`;
-  const cached = await redis.get(cacheKey);
-  logger.info(
-    { collectionId, type: 'collection_cache_check' },
-    `Checking cache for collection: ${collectionId}`,
-  );
-  if (cached) return JSON.parse(cached);
 
-  const collection = await getCollectionFromDB(collectionId); // your DB fetch
-  if (collection) await redis.set(cacheKey, JSON.stringify(collection), 'EX', COLLECTION_TTL);
+  try {
+    const cached = await redis.get(cacheKey);
+    logger.info(
+      { collectionId, type: 'collection_cache_check' },
+      `Checking cache for collection: ${collectionId}`,
+    );
+    if (cached) return JSON.parse(cached);
+  } catch (error) {
+    logger.warn({ error: getErrorMessage(error) }, 'Cache miss, falling back to database');
+  }
 
-  logger.info({ collectionId, type: 'collection_cache_set' }, `Cached collection: ${collectionId}`);
+  const collection = await getCollectionFromDB(collectionId);
+
+  if (collection) {
+    try {
+      await redis.set(cacheKey, JSON.stringify(collection), 'EX', COLLECTION_TTL);
+      logger.info(
+        { collectionId, type: 'collection_cache_set' },
+        `Cached collection: ${collectionId}`,
+      );
+    } catch (error) {
+      logger.warn({ error: getErrorMessage(error) }, 'Failed to cache collection');
+    }
+  }
+
   return collection;
 }
 
 export async function getBidsWithCache(collectionId: number) {
   const cacheKey = `bids:${collectionId}`;
-  const cached = await redis.get(cacheKey);
-  logger.info(
-    { collectionId, type: 'bids_cache_check' },
-    `Checking cache for bids of collection: ${collectionId}`,
-  );
-  if (cached) return JSON.parse(cached);
 
-  const bids = await getBidsByCollectionId(collectionId); // your DB fetch
-  if (bids) await redis.set(cacheKey, JSON.stringify(bids), 'EX', COLLECTION_TTL);
+  try {
+    const cached = await redis.get(cacheKey);
+    logger.info(
+      { collectionId, type: 'bids_cache_check' },
+      `Checking cache for bids of collection: ${collectionId}`,
+    );
+    if (cached) return JSON.parse(cached);
+  } catch (error) {
+    logger.warn({ error: getErrorMessage(error) }, 'Cache miss, falling back to database');
+  }
 
-  logger.info(
-    { collectionId, type: 'bids_cache_set' },
-    `Cached bids for collection: ${collectionId}`,
-  );
+  const bids = await getBidsByCollectionId(collectionId);
+
+  if (bids) {
+    try {
+      await redis.set(cacheKey, JSON.stringify(bids), 'EX', COLLECTION_TTL);
+      logger.info(
+        { collectionId, type: 'bids_cache_set' },
+        `Cached bids for collection: ${collectionId}`,
+      );
+    } catch (error) {
+      logger.warn({ error: getErrorMessage(error) }, 'Failed to cache bids');
+    }
+  }
+
   return bids;
 }
 

@@ -1,11 +1,12 @@
 import type { Row } from '@tanstack/react-table';
 import { useAtomValue } from 'jotai';
 import { User } from 'lucide-react';
+import React from 'react';
 
 import { userNamesAtom } from '@/lib/atoms';
 import type { Bid } from '@/types';
 
-export const BidderInfo = ({ row }: { row: Row<Bid> }) => {
+export const BidderInfo = React.memo(({ row }: { row: Row<Bid> }) => {
   const userId = row.getValue('userId') as number;
   const userNames = useAtomValue(userNamesAtom);
   const bidderName = userNames[userId] || `User ${userId}`;
@@ -18,4 +19,6 @@ export const BidderInfo = ({ row }: { row: Row<Bid> }) => {
       </div>
     </div>
   );
-};
+});
+
+BidderInfo.displayName = 'BidderInfo';

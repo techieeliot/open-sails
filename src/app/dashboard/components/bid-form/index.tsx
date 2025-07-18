@@ -2,13 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { Loader } from 'lucide-react';
-import { useEffect } from 'react';
+import { Loader, DollarSign, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   FluidFormElement,
   Form,
@@ -21,14 +22,16 @@ import {
   FormWrapper,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useFetchCollections } from '@/hooks/useFetchCollections';
 import { bidsAtom, collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { CONTENT_TYPE_JSON, POST, PUT } from '@/lib/constants';
-import { parseNumeric } from '@/lib/utils';
+import { formatPrice, parseNumeric } from '@/lib/utils';
 import type { Bid } from '@/types';
 
 import type { CollectionFormProps } from '../collection-form';
 import type { formSchema } from './schema';
+import { BidFormSkeleton } from './bid-form-skeleton';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
@@ -42,14 +45,31 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   const bids = useAtomValue(bidsAtom);
   const collections = useAtomValue(collectionsAtom);
   const fetchCollections = useFetchCollections();
+  const [isLoading, setIsLoading] = useState(method === PUT); // Start loading if editing
+  const [isCollectionLoading, setIsCollectionLoading] = useState(true);
 
   // Find the collection by ID or default to an empty object
   const collection = collections.find((c) => c.id === collectionId);
   const collectionPrice = collection ? parseNumeric(collection.price) : 0;
   const minBidPrice = collectionPrice + 0.01;
 
+  // Check if collection data is available
+  useEffect(() => {
+    if (collectionId && collections.length > 0) {
+      const foundCollection = collections.find((c) => c.id === collectionId);
+      if (foundCollection) {
+        setIsCollectionLoading(false);
+      }
+    } else if (collectionId && collections.length === 0) {
+      // If we have a collectionId but no collections loaded yet, keep loading
+      setIsCollectionLoading(true);
+    }
+  }, [collectionId, collections]);
+
   const dynamicFormSchema = z.object({
-    price: z.number().min(minBidPrice, 'Bid must be greater than current price $' + minBidPrice),
+    price: z
+      .number()
+      .min(minBidPrice, `Bid must be greater than current price $${formatPrice(minBidPrice)}`),
   });
 
   const form = useForm<z.infer<typeof dynamicFormSchema>>({
@@ -61,27 +81,57 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
 
   useEffect(() => {
     if (method === PUT && bidId) {
-      const bidToEdit = bids.find((bid) => bid.id === bidId);
-      if (bidToEdit) {
-        form.reset({
-          price: parseNumeric(bidToEdit.price),
-        });
-      }
+      setIsLoading(true);
+
+      // Simulate loading time for better UX
+      const timer = setTimeout(() => {
+        const bidToEdit = bids.find((bid) => bid.id === bidId);
+        if (bidToEdit) {
+          form.reset({
+            price: parseNumeric(bidToEdit.price),
+          });
+        }
+        setIsLoading(false);
+      }, 300); // Small delay to show skeleton
+
+      return () => clearTimeout(timer);
     }
   }, [bidId, method, bids, form]);
 
-  const formTitle = method === POST ? 'Create a new bid' : `Edit bid ${bidId}`;
+  const formTitle = method === POST ? 'Place Your Bid' : `Edit Bid #${bidId}`;
+  const formDescription =
+    method === POST
+      ? 'Enter your bid amount to compete for this collection'
+      : 'Update your bid amount below';
 
   if (!user) {
-    return <div className="text-center text-muted-foreground">Please log in to place a bid.</div>;
+    return (
+      <Card className="max-w-md mx-auto bg-zinc-900 border-slate-700">
+        <CardContent className="text-center py-8">
+          <p className="text-slate-400">Please log in to place a bid.</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (!collectionId) {
-    return <div className="text-center text-muted-foreground">No collection selected.</div>;
+    return (
+      <Card className="max-w-md mx-auto bg-zinc-900 border-slate-700">
+        <CardContent className="text-center py-8">
+          <p className="text-slate-400">No collection selected.</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (!user.id) {
-    return <div className="text-center text-muted-foreground">User ID is not available.</div>;
+    return (
+      <Card className="max-w-md mx-auto bg-zinc-900 border-slate-700">
+        <CardContent className="text-center py-8">
+          <p className="text-slate-400">User ID is not available.</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -159,79 +209,132 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <FormWrapper>
-        <h2 className="mb-4 text-center font-semibold text-lg">{formTitle}</h2>
-        <Form {...form}>
-          <FluidFormElement onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex max-h-[50vh] flex-col overflow-y-auto">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bid Price ($)</FormLabel>
-                    <FormDescription className="mt-1 text-muted-foreground text-xs">
-                      Enter your bid amount (must be greater than current price ${minBidPrice},
-                      maximum $1,000,000)
-                    </FormDescription>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="0.00"
-                        step="0.01"
-                        min="0.01"
-                        max="1000000"
-                        autoComplete="off"
-                        {...field}
-                        value={field.value ?? ''}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          // Allow empty string for clearing the field
-                          if (value === '') {
-                            field.onChange('');
-                            return;
-                          }
-                          // Parse and validate the number
-                          const numValue = parseFloat(value);
-                          if (!Number.isNaN(numValue)) {
-                            field.onChange(numValue);
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage aria-live="polite" />
-                  </FormItem>
-                )}
-              />
+    <div className="max-w-lg mx-auto">
+      <Card className="border-0 shadow-xl bg-zinc-900 text-white">
+        <CardHeader className="pb-4 bg-zinc-900">
+          {isLoading || isCollectionLoading ? (
+            <div className="flex items-center gap-3">
+              <Skeleton className="p-2 bg-emerald-500/20 rounded-lg h-9 w-9" />
+              <div>
+                <Skeleton className="h-6 w-32 mb-2 bg-slate-600/70" />
+                <Skeleton className="h-4 w-48 bg-slate-700/70" />
+              </div>
             </div>
-            <div className="flex justify-end gap-4 pt-4">
-              <Button type="button" variant="outline" onClick={closeDialog}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex items-center justify-center"
-                disabled={!form.formState.isValid || form.formState.isSubmitting}
-                aria-busy={form.formState.isSubmitting}
-                aria-label={method === POST ? 'Create Bid' : 'Save Changes'}
-              >
-                {form.formState.isSubmitting ? (
-                  <Loader
-                    className="mr-2 h-4 w-4 animate-spin text-zinc-900 dark:text-zinc-200"
-                    aria-hidden="true"
-                    focusable="false"
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-500/20 rounded-lg">
+                <DollarSign className="h-5 w-5 text-emerald-400" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-white">{formTitle}</CardTitle>
+                <CardDescription className="text-sm text-slate-400">
+                  {formDescription}
+                </CardDescription>
+              </div>
+            </div>
+          )}
+        </CardHeader>
+
+        <CardContent className="pt-0 bg-zinc-900">
+          {isLoading || isCollectionLoading ? (
+            <BidFormSkeleton closeDialog={closeDialog} />
+          ) : (
+            <>
+              {/* Collection Context */}
+              <div className="mb-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-slate-400">Current Price</p>
+                    <p className="text-2xl font-bold text-white">{formatPrice(collectionPrice)}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-slate-400">Minimum Bid</p>
+                    <p className="text-lg font-semibold text-emerald-400">
+                      {formatPrice(minBidPrice)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold flex items-center gap-2 text-white">
+                          <TrendingUp className="h-4 w-4 text-emerald-400" />
+                          Your Bid Amount
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-semibold">
+                              $
+                            </div>
+                            <Input
+                              className="pl-8 text-xl font-semibold h-14 border-2 border-slate-600 bg-slate-800 text-white focus:border-emerald-500 focus:ring-emerald-500/20 transition-colors placeholder:text-slate-500"
+                              placeholder="0.00"
+                              type="number"
+                              step="0.01"
+                              min={minBidPrice}
+                              max="1000000"
+                              autoComplete="off"
+                              {...field}
+                              value={field.value ?? ''}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '') {
+                                  field.onChange('');
+                                  return;
+                                }
+                                const numValue = parseFloat(value);
+                                if (!Number.isNaN(numValue)) {
+                                  field.onChange(numValue);
+                                }
+                              }}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription className="text-sm text-slate-400">
+                          Enter an amount greater than ${minBidPrice.toLocaleString()} to place your
+                          bid
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                ) : method === POST ? (
-                  'Create Bid'
-                ) : (
-                  'Save Changes'
-                )}
-              </Button>
-            </div>
-          </FluidFormElement>
-        </Form>
-      </FormWrapper>
+
+                  <div className="flex gap-3 pt-4">
+                    {closeDialog && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={closeDialog}
+                        className="flex-1 h-12 border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                        disabled={form.formState.isSubmitting}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                    <Button
+                      type="submit"
+                      disabled={!form.formState.isValid || form.formState.isSubmitting}
+                      className="flex-1 h-12 font-semibold text-base bg-emerald-600 hover:bg-emerald-700 text-white border-0 transition-colors disabled:bg-slate-700 disabled:text-slate-400"
+                      aria-label={method === POST ? 'Create Bid' : 'Save Changes'}
+                    >
+                      {form.formState.isSubmitting && (
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      {method === POST ? 'Place Bid' : 'Update Bid'}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 'use client';
 
-
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -54,15 +53,19 @@ function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
-      <div className="flex flex-1 flex-col items-center gap-4 space-x-2 md:flex-row">
+    <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between w-full">
+      <div className="flex flex-1 flex-col items-center gap-4 md:flex-row w-full">
         {filterColumn && (
-          <Input
-            placeholder={filterPlaceholder || `Filter by ${filterColumn}...`}
-            value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
-            className="h-8 w-[87vw] border border-accent/60 bg-background focus:border-accent focus:ring-0 md:w-72"
-          />
+          <div className="w-full md:w-72">
+            <Input
+              placeholder={filterPlaceholder || `Filter by ${filterColumn}...`}
+              value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ''}
+              onChange={(event) =>
+                table.getColumn(filterColumn)?.setFilterValue(event.target.value)
+              }
+              className="h-8 w-full border border-accent/60 bg-background focus:border-accent focus:ring-0 px-3"
+            />
+          </div>
         )}
         {isFiltered && (
           <Button
@@ -209,11 +212,33 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  // Sort data so that the most recently updated (or created) item is at the top
+  const sortedData = React.useMemo(() => {
+    if (!data || !Array.isArray(data)) return data;
+    return [...data].sort((a, b) => {
+      // Use type assertion to TData & Record<string, unknown> for safe property access
+      const aObj = a as TData & Record<string, unknown>;
+      const bObj = b as TData & Record<string, unknown>;
+      const aDate =
+        (aObj.updatedAt as string | undefined) || (aObj.createdAt as string | undefined);
+      const bDate =
+        (bObj.updatedAt as string | undefined) || (bObj.createdAt as string | undefined);
+      if (!aDate || !bDate) return 0;
+      return new Date(bDate).getTime() - new Date(aDate).getTime();
+    });
+  }, [data]);
+
+  // Use sortedData for the table
+  const tableWithSortedData = useReactTable({
+    ...table.options,
+    data: sortedData,
+  });
+
   return (
     <div className="w-full space-y-4 overflow-hidden">
       {filterColumn && (
         <DataTableToolbar
-          table={table}
+          table={tableWithSortedData}
           filterColumn={filterColumn}
           filterPlaceholder={filterPlaceholder}
         />
@@ -223,7 +248,7 @@ export function DataTable<TData, TValue>({
         <div className="hidden w-full md:block">
           <Table>
             <TableHeader>
-              {table.getHeaderGroups().map((headerGroup: HeaderGroup<TData>) => (
+              {tableWithSortedData.getHeaderGroups().map((headerGroup: HeaderGroup<TData>) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
@@ -242,13 +267,15 @@ export function DataTable<TData, TValue>({
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row: Row<TData>) => (
+              {tableWithSortedData.getRowModel().rows?.length ? (
+                tableWithSortedData.getRowModel().rows.map((row: Row<TData>) => (
                   <React.Fragment key={row.id}>
                     <TableRow
                       data-state={row.getIsSelected() && 'selected'}
                       onClick={() => {
-                        const customMeta = table.options.meta as DataTableMeta<TData> | undefined;
+                        const customMeta = tableWithSortedData.options.meta as
+                          | DataTableMeta<TData>
+                          | undefined;
                         if (customMeta?.onRowClick && row.original) {
                           const id = (row.original as { id?: number })?.id;
                           if (id !== undefined) {
@@ -257,7 +284,7 @@ export function DataTable<TData, TValue>({
                         }
                       }}
                       className={
-                        (table.options.meta as DataTableMeta<TData> | undefined)
+                        (tableWithSortedData.options.meta as DataTableMeta<TData> | undefined)
                           ?.expandedCollectionId === (row.original as { id?: number })?.id
                           ? 'cursor-pointer bg-accent/30'
                           : 'cursor-pointer hover:bg-accent/10'
@@ -285,13 +312,16 @@ export function DataTable<TData, TValue>({
                     </TableRow>
 
                     {/* Render expanded content inline if this row is expanded */}
-                    {(table.options.meta as DataTableMeta<TData> | undefined)
+                    {(tableWithSortedData.options.meta as DataTableMeta<TData> | undefined)
                       ?.expandedCollectionId === (row.original as { id?: number })?.id && (
                       <TableRow className="bg-muted/50">
                         <TableCell colSpan={columns.length} className="p-0">
                           <div className="w-full overflow-x-auto p-4">
                             <div className="max-w-full overflow-x-hidden">
-                              {(table.options.meta as DataTableMeta<TData>)?.expandedRowContent}
+                              {
+                                (tableWithSortedData.options.meta as DataTableMeta<TData>)
+                                  ?.expandedRowContent
+                              }
                             </div>
                           </div>
                         </TableCell>
@@ -312,19 +342,21 @@ export function DataTable<TData, TValue>({
 
         {/* Mobile Card View */}
         <div className="w-full overflow-visible md:hidden">
-          {table.getRowModel().rows?.length ? (
-            <div className="grid w-full gap-4 overflow-visible p-2">
-              {table.getRowModel().rows.map((row: Row<TData>) => (
+          {tableWithSortedData.getRowModel().rows?.length ? (
+            <div className="grid w-full gap-4 overflow-visible p-2 max-w-[88vw]">
+              {tableWithSortedData.getRowModel().rows.map((row: Row<TData>) => (
                 <div
                   key={row.id}
-                  className={`w-full rounded-lg border bg-card p-0 shadow-sm md:p-4 ${
-                    (table.options.meta as DataTableMeta<TData> | undefined)
+                  className={`w-full rounded-lg border bg-card p-0 shadow-sm md:p-4 max-w-[85vw] ${
+                    (tableWithSortedData.options.meta as DataTableMeta<TData> | undefined)
                       ?.expandedCollectionId === (row.original as { id?: number })?.id
                       ? 'border-primary/50 bg-accent/30'
                       : 'border-border'
                   }`}
                   onClick={() => {
-                    const customMeta = table.options.meta as DataTableMeta<TData> | undefined;
+                    const customMeta = tableWithSortedData.options.meta as
+                      | DataTableMeta<TData>
+                      | undefined;
                     if (customMeta?.onRowClick && row.original) {
                       const id = (row.original as { id?: number })?.id;
                       if (id !== undefined) {
@@ -333,13 +365,16 @@ export function DataTable<TData, TValue>({
                     }
                   }}
                 >
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-3 pt-4 max-w-[85vw]">
                     {/* Row header with select checkbox and expander */}
-                    <div className="mb-2 flex items-center justify-between overflow-visible px-2">
+                    <div className="mb-2 flex items-center justify-between overflow-visible px-2 max-w-[82vw]">
                       {row.getVisibleCells().map((cell: Cell<TData, unknown>) => {
                         if (cell.column.id === 'select') {
                           return (
-                            <div key={cell.id} className="flex items-center gap-2 overflow-visible">
+                            <div
+                              key={cell.id}
+                              className="flex items-center gap-2 overflow-visible pr-4"
+                            >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               <span className="whitespace-nowrap text-muted-foreground text-xs">
                                 Select
@@ -349,11 +384,14 @@ export function DataTable<TData, TValue>({
                         }
                         if (cell.column.id === 'expander') {
                           return (
-                            <div key={cell.id} className="flex items-center gap-2">
+                            <div key={cell.id} className="flex items-center gap-2 pl-4">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               <span className="text-muted-foreground text-xs">
-                                {(table.options.meta as DataTableMeta<TData> | undefined)
-                                  ?.expandedCollectionId === (row.original as { id?: number })?.id
+                                {(
+                                  tableWithSortedData.options.meta as
+                                    | DataTableMeta<TData>
+                                    | undefined
+                                )?.expandedCollectionId === (row.original as { id?: number })?.id
                                   ? 'Collapse'
                                   : 'Expand'}
                               </span>
@@ -406,11 +444,14 @@ export function DataTable<TData, TValue>({
                   </div>
 
                   {/* Expanded content */}
-                  {(table.options.meta as DataTableMeta<TData> | undefined)
+                  {(tableWithSortedData.options.meta as DataTableMeta<TData> | undefined)
                     ?.expandedCollectionId === (row.original as { id?: number })?.id && (
                     <div className="mt-4 overflow-hidden border-border border-t pt-4">
                       <div className="w-full overflow-x-auto">
-                        {(table.options.meta as DataTableMeta<TData>)?.expandedRowContent}
+                        {
+                          (tableWithSortedData.options.meta as DataTableMeta<TData>)
+                            ?.expandedRowContent
+                        }
                       </div>
                     </div>
                   )}
@@ -425,7 +466,7 @@ export function DataTable<TData, TValue>({
           )}
         </div>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={tableWithSortedData} />
     </div>
   );
 }

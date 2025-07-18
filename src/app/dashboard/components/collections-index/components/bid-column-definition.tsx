@@ -17,6 +17,7 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
       return (
         <Button
           variant="ghost"
+          size="sm"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Bidder
@@ -34,9 +35,10 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
       return (
         <Button
           variant="ghost"
+          size="sm"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Amount
+          <span className="text-xs text-muted-foreground">Amount</span>
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -47,7 +49,7 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
 
       return (
         <div className="flex flex-col text-center sm:block">
-          <span className="mb-1 hidden font-medium text-muted-foreground text-xs md:inline">
+          <span className="mb-1 md:hidden font-medium text-muted-foreground text-xs inline">
             Amount:
           </span>
           <Badge
@@ -64,40 +66,28 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Status
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const status = row.getValue('status') as string;
-
-      if (status === 'accepted') {
-        return (
-          <Badge
-            variant="secondary"
-            className="inline-flex justify-center px-2 py-1 font-semibold text-base"
-          >
-            <Handshake className="mr-1 h-4 w-4" /> Accepted
-          </Badge>
-        );
-      } else if (status === 'rejected') {
-        return (
-          <Badge
-            variant="destructive"
-            className="inline-flex justify-center px-2 py-1 font-semibold text-base"
-          >
-            <Ban className="mr-1 h-4 w-4" /> Rejected
-          </Badge>
-        );
-      } else if (status === 'pending') {
-        return (
-          <Badge
-            variant="outline"
-            className="inline-flex justify-center px-2 py-1 font-semibold text-base"
-          >
-            <Hourglass className="mr-1 h-4 w-4" /> Pending
-          </Badge>
-        );
-      }
-
-      return null;
+      return (
+        <Badge
+          variant={
+            status === 'accepted' ? 'secondary' : status === 'rejected' ? 'struckthrough' : 'info'
+          }
+          className="inline-flex justify-center px-2 py-1 font-semibold text-base"
+        >
+          {status}
+        </Badge>
+      );
     },
   },
   {
@@ -106,6 +96,7 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
       return (
         <Button
           variant="ghost"
+          size="sm"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Date
@@ -116,10 +107,12 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <span className="hidden font-medium text-muted-foreground text-xs md:inline">
+          <span className="md:hidden font-medium text-muted-foreground text-xs inline">
             Posted:
           </span>
-          <span className="ml-1">{formatDistanceToNow(row.getValue('createdAt'))}</span>
+          <span className="ml-1">
+            {formatDistanceToNow(row.getValue('createdAt'), { addSuffix: true })}
+          </span>
         </div>
       );
     },

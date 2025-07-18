@@ -4,6 +4,7 @@ import { invalidateBidAndCollectionCache } from '@/db/cache-invalidation';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 import { logger, PerformanceTracker } from '@/lib/logger';
+import { BidStatusUpdateSchema } from '@/lib/validation-schemas';
 
 import {
   createBid,
@@ -216,6 +217,32 @@ export async function PUT(request: NextRequest) {
       return response;
     }
     const requestBody = await request.json();
+
+    // Validate input for status updates
+    if (requestBody.status) {
+      const validation = BidStatusUpdateSchema.safeParse(requestBody);
+      if (!validation.success) {
+        logger.warn(
+          {
+            ...putBidPayload,
+            error: 'Invalid status value',
+            validationErrors: validation.error.errors,
+            type: 'validation_error',
+          },
+          'PUT request with invalid status',
+        );
+        response = Response.json(
+          {
+            error: 'Invalid input',
+            details: validation.error.errors,
+          },
+          { status: 400 },
+        );
+        logResponse(request, response, startTime);
+        return response;
+      }
+    }
+
     const { status, ...updatedData } = requestBody;
     logger.info(
       {

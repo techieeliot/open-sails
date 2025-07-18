@@ -1,11 +1,12 @@
 import type { NextRequest } from 'next/server';
 
+import { invalidateBidAndCollectionCache } from '@/db/cache-invalidation';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
 import { ensureDatabaseInitialized } from '@/lib/db-init';
 import { logger, PerformanceTracker } from '@/lib/logger';
 
-import { getBidById } from '../utils';
+import { getBidById, deleteBid } from '../utils';
 
 export async function GET(request: NextRequest) {
   const startTime = logRequest(request);
@@ -92,6 +93,103 @@ export async function GET(request: NextRequest) {
         type: 'bid_fetch_error',
       },
       `Failed to fetch bid: ${(error as Error).message}`,
+    );
+
+    response = Response.json({ error: (error as Error).message }, { status: 500 });
+  }
+
+  logResponse(request, response, startTime);
+  return response;
+}
+
+export async function DELETE(request: NextRequest) {
+  const startTime = logRequest(request);
+  let response: Response;
+
+  const deleteBidPayload = {
+    endpoint: `${API_ENDPOINTS.bids}/[id]`,
+    method: API_METHODS.DELETE,
+    providedId: '',
+    error: '',
+    type: 'initial_delete',
+  };
+
+  try {
+    await ensureDatabaseInitialized();
+
+    const tracker = new PerformanceTracker('DELETE /api/bids/[id]');
+    const url = new URL(request.url);
+    const pathSegments = url.pathname.split('/');
+    const bidId = Number(pathSegments[pathSegments.length - 1]);
+
+    if (Number.isNaN(bidId)) {
+      logger.warn(
+        {
+          ...deleteBidPayload,
+          error: 'Invalid bid ID',
+          providedId: pathSegments[pathSegments.length - 1],
+          type: 'validation_error',
+        },
+        'DELETE request with invalid bid ID',
+      );
+
+      response = Response.json({ error: 'Invalid bid ID' }, { status: 400 });
+      logResponse(request, response, startTime);
+      return response;
+    }
+
+    deleteBidPayload.providedId = String(bidId);
+
+    logger.info(
+      {
+        ...deleteBidPayload,
+        providedId: bidId,
+        type: 'bid_delete_started',
+      },
+      `Deleting bid: ${bidId}`,
+    );
+
+    // Get the bid first to get the collection ID for cache invalidation
+    const bid = await getBidById(bidId);
+    if (!bid) {
+      logger.warn(
+        {
+          ...deleteBidPayload,
+          type: 'bid_not_found',
+        },
+        `Bid not found for deletion: ${bidId}`,
+      );
+
+      response = Response.json({ error: 'Bid not found' }, { status: 404 });
+      logResponse(request, response, startTime);
+      return response;
+    }
+
+    await deleteBid(bidId);
+
+    // Invalidate cache
+    await invalidateBidAndCollectionCache(bid.collectionId, bid.userId);
+
+    tracker.finish({ bidId });
+
+    response = Response.json({ success: true }, { status: 200 });
+
+    logger.info(
+      {
+        ...deleteBidPayload,
+        type: 'bid_deleted',
+      },
+      `Successfully deleted bid: ${bidId}`,
+    );
+  } catch (error) {
+    logger.error(
+      {
+        endpoint: '/api/bids/[id]',
+        method: 'DELETE',
+        error: (error as Error).message,
+        type: 'bid_delete_error',
+      },
+      `Failed to delete bid: ${(error as Error).message}`,
     );
 
     response = Response.json({ error: (error as Error).message }, { status: 500 });
