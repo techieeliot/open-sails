@@ -1,1 +1,1 @@
-export { CollectionDetailsClient } from './collection-details-client';
+export { CollectionDetailsClient } from './collection-details-client'

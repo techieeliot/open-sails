@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const usersFilePath = path.join(__dirname, 'src/db/users.json');
 const collectionsFilePath = path.join(__dirname, 'src/db/collections.json');

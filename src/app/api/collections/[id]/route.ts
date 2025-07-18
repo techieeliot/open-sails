@@ -1,7 +1,10 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+import { invalidateBidAndCollectionCache } from '@/db/cache-invalidation';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 import { formattedStack, logger, PerformanceTracker } from '@/lib/logger';
+
 import { getCollectionById, updateCollection, deleteCollection } from '../utils';
 
 export async function GET(request: NextRequest) {
@@ -21,7 +24,7 @@ export async function GET(request: NextRequest) {
   try {
     const tracker = new PerformanceTracker(`GET ${API_ENDPOINTS.collections}/[id]`);
     const collectionId = Number(id);
-    if (isNaN(collectionId)) {
+    if (Number.isNaN(collectionId)) {
       logger.warn(
         { ...getCollectionPayload, error: 'Invalid collection ID', type: 'validation_error' },
         'GET request with invalid collection ID',
@@ -81,7 +84,7 @@ export async function PUT(request: NextRequest) {
   try {
     const tracker = new PerformanceTracker(`PUT ${API_ENDPOINTS.collections}/[id]`);
     const collectionId = Number(id);
-    if (isNaN(collectionId)) {
+    if (Number.isNaN(collectionId)) {
       logger.warn(
         { ...putCollectionPayload, error: 'Invalid collection ID', type: 'validation_error' },
         'PUT request with invalid collection ID',
@@ -113,6 +116,8 @@ export async function PUT(request: NextRequest) {
     response = new Response(JSON.stringify(updatedCollection), {
       headers: { 'Content-Type': CONTENT_TYPE_JSON },
     });
+
+    await invalidateBidAndCollectionCache(collectionId);
     logger.info(
       { ...putCollectionPayload, collectionId, type: 'collection_updated' },
       `Successfully updated collection: ${collectionId}`,
@@ -148,7 +153,7 @@ export async function DELETE(request: NextRequest) {
     const tracker = new PerformanceTracker(`DELETE ${API_ENDPOINTS.collections}/[id]`);
     const collectionId = Number(id);
 
-    if (isNaN(collectionId)) {
+    if (Number.isNaN(collectionId)) {
       logger.warn(
         { ...deleteCollectionPayload, error: 'Invalid collection ID', type: 'validation_error' },
         'DELETE request with invalid collection ID',
@@ -197,6 +202,9 @@ export async function DELETE(request: NextRequest) {
       },
       `Successfully deleted collection: ${collectionId}`,
     );
+
+    // Invalidate cache after deletion
+    await invalidateBidAndCollectionCache(collectionId);
   } catch (error) {
     logger.error(
       {

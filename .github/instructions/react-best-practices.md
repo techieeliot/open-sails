@@ -59,25 +59,11 @@ export const collectionsAtom = atom<Collection[]>([]);
 export const expandedCollectionAtom = atom<number | null>(null);
 export const collectionsLoadingAtom = atom<boolean>(false);
 export const collectionsErrorAtom = atom<string | null>(null);
-
-// Derived atoms
-export const sortedCollectionsAtom = atom((get) => {
-  const collections = get(collectionsAtom);
-  return collections
-    .slice()
-    .sort((a, b) => compareAsc(parseISO(a.updatedAt), parseISO(b.updatedAt)));
-});
 ```
 
 ### Responsive Design Strategy
 
-The project uses a custom responsive table implementation that renders as traditional tables on larger screens and cards on mobile:
-
 1. `src/components/ui/table.tsx` contains base table components with responsive logic
-2. Tables switch to a card-based layout on mobile screens for better usability
-3. Use `overflow-visible` instead of `overflow-hidden` to prevent content cutoff in mobile card views
-
-### Mobile-First Conventions
 
 When implementing UI components:
 
@@ -85,8 +71,6 @@ When implementing UI components:
 2. Use utility classes like `md:hidden` and `hidden md:block` to toggle between mobile/desktop views
 3. Ensure action buttons are full-width on mobile with `md:w-auto w-full`
 4. Add text labels beside icons on mobile views
-
-## Common Development Workflows
 
 ### Adding a New Data Table
 
@@ -150,10 +134,6 @@ Following Kent C. Dodds' specific recommendations for React development:
 ```tsx
 // Good example - clear destructuring
 function BidCard({ bid, onAccept, isOwner }) {
-  const { id, price, userId } = bid;
-  // ...component implementation
-}
-
 // Avoid - overly nested destructuring
 function BidCard({ bid: { id, price, userId }, onAccept, isOwner }) {
   // ...harder to trace props origin

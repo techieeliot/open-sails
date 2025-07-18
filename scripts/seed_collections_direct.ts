@@ -16,14 +16,14 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Define schema structure inline to avoid import issues
-const pgTableSymbol = Symbol('pgTable');
+export const pgTableSymbol = Symbol('pgTable');
 
 // Connect directly to database
 const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql);
+export const db = drizzle(sql);
 
 // Define types
-type User = {
+export type User = {
   id: string; // UUID string
   name: string;
   email: string;

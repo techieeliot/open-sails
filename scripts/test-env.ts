@@ -1,7 +1,7 @@
 // Simple test script to verify environment loading
 import { config } from 'dotenv';
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 
 // Log script startup
 console.log('Script started');

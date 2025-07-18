@@ -1,8 +1,8 @@
 import { BidDetailsClient } from '@/components/bid-details';
 import PageWrapper from '@/components/page-wrapper';
 
-// create dynamic metadata for the page
-export const dynamicMetadata = {
+// Correct Next.js metadata export
+export const metadata = {
   title: 'Bid Details | Open Sails',
   description: 'View and manage bid details',
 };

@@ -1,4 +1,7 @@
+'use client';
+
 import { useId, useState } from 'react';
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -11,7 +14,8 @@ import {
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { DialogModalProps } from '@/types';
+import type { DialogModalProps } from '@/types';
+
 import TriggerIconButton from '../trigger-icon-button';
 
 interface ConfirmationDialogProps extends DialogModalProps {
@@ -47,12 +51,12 @@ export const ConfirmationDialog = ({
         </TriggerIconButton>
       </AlertDialogTrigger>
       <AlertDialogContent
-        className="max-w-md mx-auto p-6"
+        className="mx-auto max-w-md p-6"
         aria-labelledby={titleId}
         aria-describedby={descId}
         autoFocus
       >
-        <AlertDialogHeader className="text-center flex flex-col justify-center items-center min-h-32">
+        <AlertDialogHeader className="flex min-h-32 flex-col items-center justify-center text-center">
           <AlertDialogTitle id={titleId}>{dialogTitle || 'Confirmation'}</AlertDialogTitle>
           {dialogDescription ? (
             <AlertDialogDescription id={descId}>{dialogDescription}</AlertDialogDescription>

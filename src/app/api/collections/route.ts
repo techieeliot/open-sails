@@ -1,8 +1,10 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import { seedDatabase } from '@/db';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 import { logger, PerformanceTracker } from '@/lib/logger';
+
 import { createCollection, deleteCollection, getCollections, updateCollection } from './utils';
 
 export async function GET(request: NextRequest) {
@@ -116,7 +118,7 @@ export async function PUT(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
     const updatedData = await request.json();
-    if (!collectionId || isNaN(collectionId)) {
+    if (!collectionId || Number.isNaN(collectionId)) {
       logger.warn(
         { ...putCollectionPayload, error: 'Collection ID is required', type: 'validation_error' },
         'PUT request with invalid collection ID',
@@ -177,7 +179,7 @@ export async function DELETE(request: NextRequest) {
     const tracker = new PerformanceTracker(`DELETE ${API_ENDPOINTS.collections}`);
     const { searchParams } = new URL(request.url);
     const collectionId = Number(searchParams.get('id'));
-    if (!collectionId || isNaN(collectionId)) {
+    if (!collectionId || Number.isNaN(collectionId)) {
       logger.warn(
         {
           ...deleteCollectionPayload,

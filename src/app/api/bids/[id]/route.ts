@@ -1,8 +1,10 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS } from '@/lib/constants';
 import { ensureDatabaseInitialized } from '@/lib/db-init';
 import { logger, PerformanceTracker } from '@/lib/logger';
+
 import { getBidById } from '../utils';
 
 export async function GET(request: NextRequest) {
@@ -25,7 +27,7 @@ export async function GET(request: NextRequest) {
     const pathSegments = url.pathname.split('/');
     const bidId = Number(pathSegments[pathSegments.length - 1]);
 
-    if (isNaN(bidId)) {
+    if (Number.isNaN(bidId)) {
       logger.warn(
         {
           ...getBidPayload,

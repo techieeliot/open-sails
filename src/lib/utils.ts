@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+
 import { UNKNOWN } from './constants';
 
 export function cn(...inputs: ClassValue[]) {
@@ -30,7 +31,7 @@ export function safeStringify(input: unknown): string {
   try {
     return JSON.stringify(
       input,
-      function (key, value) {
+      (_key, value) => {
         if (typeof value === 'object' && value !== null) {
           if (seen.has(value)) {
             return '[Circular]';
@@ -95,7 +96,7 @@ export function parseNumeric(value: string | number | null | undefined): number 
   if (typeof value === 'number') return value;
   if (typeof value === 'string') {
     const parsed = parseFloat(value);
-    if (!isNaN(parsed)) return parsed;
+    if (!Number.isNaN(parsed)) return parsed;
   }
   return 0;
 }
@@ -114,6 +115,6 @@ export function getErrorMessage(error: unknown): string {
       ? error.message
       : typeof error === 'string'
         ? error
-        : 'An unknown error occurred: ' + safeStringify(error);
+        : `An unknown error occurred: ${safeStringify(error)}`;
   return message;
 }

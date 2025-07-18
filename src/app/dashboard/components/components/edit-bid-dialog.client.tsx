@@ -2,11 +2,11 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Edit } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+
 import TriggerIconButton from '@/components/trigger-icon-button';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { API_METHODS } from '@/lib/constants';
 import { parseNumeric } from '@/lib/utils';
-import { Bid } from '@/types';
+import type { Bid } from '@/types';
 
 interface EditBidDialogProps {
   bid: Bid;
@@ -106,7 +106,7 @@ export function EditBidDialog({ bid, onBidUpdated }: EditBidDialogProps) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Your Bid</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
+          <DialogDescription className="text-muted-foreground text-sm">
             Current Bid: ${bidPrice.toLocaleString()}
           </DialogDescription>
         </DialogHeader>
@@ -119,7 +119,7 @@ export function EditBidDialog({ bid, onBidUpdated }: EditBidDialogProps) {
               render={({ field }) => (
                 <div className="space-y-2">
                   <Label htmlFor="price">New Bid Price</Label>
-                  <FormDescription className="text-sm text-muted-foreground">
+                  <FormDescription className="text-muted-foreground text-sm">
                     New Bid must be greater than ${bidPrice + 0.01}
                   </FormDescription>
                   <Input

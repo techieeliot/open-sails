@@ -1,0 +1,81 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main",
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/.idea/**",
+      "!**/.next/**",
+      "!**/.cache/**",
+      "!**/dist/**",
+      "!**/node_modules/**",
+    ],
+  },
+  "formatter": {
+    "enabled": true,
+    "lineWidth": 110,
+  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "a11y": {
+        "noLabelWithoutControl": {
+          "level": "warn",
+          "options": {
+            "inputComponents": ["Input"],
+          },
+        },
+      },
+      "nursery": {
+        "useSortedClasses": {
+          "fix": "safe",
+          "level": "error",
+          "options": { "functions": ["cn"] },
+        },
+      },
+      "complexity": {
+        "noVoid": "off",
+      },
+      "correctness": {
+        "noNodejsModules": "off",
+        "noUndeclaredDependencies": "off",
+      },
+      "style": {
+        "noDefaultExport": "off",
+        "noImplicitBoolean": "off",
+        "useNamingConvention": "off",
+        "noParameterProperties": "off",
+        "useConsistentCurlyBraces": "warn",
+      },
+      "suspicious": {
+        "noConsole": "off",
+        "noReactSpecificProps": "off",
+        "useAwait": "off",
+      },
+      "performance": {
+        "noNamespaceImport": "off",
+      },
+    },
+  },
+  "css": {
+    "formatter": {
+      "enabled": true,
+    },
+    "linter": {
+      "enabled": true,
+    },
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+    },
+  },
+}

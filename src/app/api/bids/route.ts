@@ -1,7 +1,10 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+import { invalidateBidAndCollectionCache } from '@/db/cache-invalidation';
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { API_ENDPOINTS, API_METHODS, CONTENT_TYPE_JSON } from '@/lib/constants';
 import { logger, PerformanceTracker } from '@/lib/logger';
+
 import {
   createBid,
   deleteBid,
@@ -30,7 +33,7 @@ export async function GET(request: NextRequest) {
     // Check if we're fetching a single bid
     if (bidId) {
       const bidIdNum = Number(bidId);
-      if (isNaN(bidIdNum)) {
+      if (Number.isNaN(bidIdNum)) {
         logger.warn(
           {
             ...getBidsPayload,
@@ -76,7 +79,7 @@ export async function GET(request: NextRequest) {
       return response;
     }
     const collectionIdNum = Number(collectionId);
-    if (isNaN(collectionIdNum)) {
+    if (Number.isNaN(collectionIdNum)) {
       logger.warn(
         {
           ...getBidsPayload,
@@ -149,6 +152,8 @@ export async function POST(request: NextRequest) {
       { ...postBidPayload, bidId: newBid.id, type: 'bid_created' },
       `Created bid: ${newBid.id}`,
     );
+    // Invalidate cache after creation
+    await invalidateBidAndCollectionCache(newBid.id, newBid.userId);
   } catch (error) {
     logger.error(
       { ...postBidPayload, error: (error as Error).message, type: 'bid_creation_error' },
@@ -195,7 +200,7 @@ export async function PUT(request: NextRequest) {
     }
     const bidIdNumeric = Number(bidId);
     const collectionIdNumeric = Number(collectionId);
-    if (isNaN(bidIdNumeric) || isNaN(collectionIdNumeric)) {
+    if (Number.isNaN(bidIdNumeric) || Number.isNaN(collectionIdNumeric)) {
       logger.warn(
         {
           ...putBidPayload,
@@ -300,6 +305,8 @@ export async function DELETE(request: NextRequest) {
       { ...deleteBidPayload, bidId: bidIdNumeric, type: 'bid_deleted' },
       `Successfully deleted bid: ${bidIdNumeric}`,
     );
+    // Invalidate cache after deletion
+    await invalidateBidAndCollectionCache(bidIdNumeric);
   } catch (error) {
     logger.error(
       { ...deleteBidPayload, error: (error as Error).message, type: 'bid_delete_error' },

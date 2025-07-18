@@ -1,6 +1,8 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import { logRequest, logResponse } from '@/lib/api-middleware';
 import { logger, PerformanceTracker } from '@/lib/logger';
+
 import { getUserById } from '../utils';
 
 export async function GET(request: NextRequest) {
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
     const tracker = new PerformanceTracker('GET /api/users/[id]');
     const userId = parseInt(id, 10);
 
-    if (isNaN(userId)) {
+    if (Number.isNaN(userId)) {
       response = Response.json({ error: 'Invalid user ID' }, { status: 400 });
       logResponse(request, response, startTime);
       return response;

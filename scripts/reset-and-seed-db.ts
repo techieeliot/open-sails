@@ -7,15 +7,14 @@
  * 3. Run any pending migrations
  * 4. Seed the database with test data
  */
-
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import { config } from 'dotenv';
 import { sql } from 'drizzle-orm';
 import { migrate } from 'drizzle-orm/neon-http/migrator';
 import * as schema from '../src/db/schema';
-import { spawn } from 'child_process';
-import path from 'path';
+import { spawn } from 'node:child_process';
+import path from 'node:path';
 
 // Load environment variables
 console.log('Loading environment variables...');
@@ -107,7 +106,7 @@ async function initializeSchema() {
 /**
  * Run migrations
  */
-async function runMigrations() {
+export async function runMigrations() {
   try {
     console.log('\n==== Step 3: Running migrations ====');
     await migrate(db, { migrationsFolder: './drizzle' });

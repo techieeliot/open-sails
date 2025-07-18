@@ -39,8 +39,8 @@ export const UserLogoutHandler = () => {
 
   // Show message before redirect
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold">You're logged out.</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="font-bold text-2xl">You&apos;re logged out.</h1>
       <p className="mt-2">Redirecting to home page...</p>
     </div>
   );

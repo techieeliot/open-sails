@@ -1,12 +1,11 @@
 'use client';
 
+
 import {
-  Column,
-  ColumnDef,
-  ColumnFiltersState,
-  NoInfer,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
@@ -16,8 +15,12 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type Table as ReactTable,
+  type Row,
+  type Cell,
+  type HeaderGroup,
 } from '@tanstack/react-table';
-import { ChevronLeftCircle, ChevronRightCircle, Inbox } from 'lucide-react';
+import { Inbox } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -36,10 +39,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import TriggerIconButton from '../trigger-icon-button';
 
 interface DataTableToolbarProps<TData> {
-  table: any;
+  table: ReactTable<TData>;
   filterColumn?: string;
   filterPlaceholder?: string;
 }
@@ -52,14 +54,14 @@ function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex flex-col gap-4 md:flex-row items-center md:justify-between">
-      <div className="flex flex-col gap-4 md:flex-row flex-1 items-center space-x-2">
+    <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+      <div className="flex flex-1 flex-col items-center gap-4 space-x-2 md:flex-row">
         {filterColumn && (
           <Input
             placeholder={filterPlaceholder || `Filter by ${filterColumn}...`}
             value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ''}
             onChange={(event) => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
-            className="h-8 md:w-72 w-[87vw] bg-background border border-accent/60 focus:border-accent focus:ring-0"
+            className="h-8 w-[87vw] border border-accent/60 bg-background focus:border-accent focus:ring-0 md:w-72"
           />
         )}
         {isFiltered && (
@@ -78,7 +80,7 @@ function DataTableToolbar<TData>({
 }
 
 interface DataTableViewOptionsProps<TData> {
-  table: any;
+  table: ReactTable<TData>;
 }
 
 function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
@@ -89,15 +91,15 @@ function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>
           Columns
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px] bg-popover border shadow-md">
+      <DropdownMenuContent align="end" className="w-[150px] border bg-popover shadow-md">
         {table
           .getAllColumns()
-          .filter((column: any) => column.getCanHide())
-          .map((column: any) => {
+          .filter((column) => column.getCanHide())
+          .map((column) => {
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize bg-background hover:bg-accent"
+                className="bg-background capitalize hover:bg-accent"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
@@ -110,35 +112,35 @@ function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>
   );
 }
 
-function DataTablePagination<TData>({ table }: { table: any }) {
+function DataTablePagination<TData>({ table }: { table: ReactTable<TData> }) {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-      <div className="text-sm text-muted-foreground w-full sm:flex-1 text-center sm:text-left">
+    <>
+      <div className="flex flex-col items-center justify-between gap-4 py-4 sm:flex-row"></div>
+      <div className="w-full text-center text-muted-foreground text-sm sm:flex-1 sm:text-left">
         {table.getFilteredSelectedRowModel().rows.length} of{' '}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
-      <div className="flex flex-col md:flex-row gap-2 w-full sm:w-auto justify-center">
-        <TriggerIconButton
+      <div className="flex w-full flex-col justify-center gap-2 sm:w-auto md:flex-row">
+        <Button
           variant="secondary"
-          icon={ChevronLeftCircle}
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="min-w-[100px]"
         >
           Previous
-        </TriggerIconButton>
-        <TriggerIconButton
+        </Button>
+        <Button
           variant="secondary"
-          icon={ChevronRightCircle}
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          isIconLeading={false}
+          className="min-w-[100px]"
         >
           Next
-        </TriggerIconButton>
+        </Button>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -150,17 +152,7 @@ interface DataTableMeta<TData> {
   onDeleteCollection?: (id: number) => void;
   expandedCollectionId?: number | null;
   expandedRowContent?: React.ReactNode;
-}
-
-interface DataTableMeta<TData> {
-  userNames?: Record<number, string>;
-  fetchCollections?: () => void;
-  onRowClick?: (id: number) => void;
-  onEditCollection?: (id: number) => void;
-  onDeleteCollection?: (id: number) => void;
-  expandedCollectionId?: number | null;
-  expandedRowContent?: React.ReactNode;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -170,30 +162,15 @@ interface DataTableMeta<TData> {
  * @template TValue - The type of values in the table cells
  */
 interface DataTableProps<TData, TValue> {
-  /** Column definitions for the table */
   columns: ColumnDef<TData, TValue>[];
-  /** Data array to be displayed in the table */
   data: TData[];
-  /** Optional column key to enable filtering on */
   filterColumn?: string;
-  /** Custom placeholder text for the filter input */
   filterPlaceholder?: string;
-  /** Additional metadata and customization options */
   meta?: DataTableMeta<TData>;
 }
 
 /**
  * A responsive data table component with filtering, sorting, and pagination
- *
- * Features:
- * - Responsive design (displays as cards on mobile, table on desktop)
- * - Column filtering and sorting
- * - Pagination
- * - Expandable rows
- * - Column visibility toggle
- *
- * @template TData - The type of data being displayed
- * @template TValue - The type of values in the cells
  */
 export function DataTable<TData, TValue>({
   columns,
@@ -233,7 +210,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4 w-full overflow-hidden">
+    <div className="w-full space-y-4 overflow-hidden">
       {filterColumn && (
         <DataTableToolbar
           table={table}
@@ -241,19 +218,19 @@ export function DataTable<TData, TValue>({
           filterPlaceholder={filterPlaceholder}
         />
       )}
-      <div className="rounded-md border w-full overflow-visible">
+      <div className="w-full overflow-visible rounded-md border">
         {/* Desktop view */}
-        <div className="hidden md:block w-full">
+        <div className="hidden w-full md:block">
           <Table>
             <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
+              {table.getHeaderGroups().map((headerGroup: HeaderGroup<TData>) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead
                         key={header.id}
                         colSpan={header.colSpan}
-                        className="px-2 py-2 whitespace-nowrap font-medium text-sm"
+                        className="whitespace-nowrap px-2 py-2 font-medium text-sm"
                       >
                         {header.isPlaceholder
                           ? null
@@ -266,16 +243,14 @@ export function DataTable<TData, TValue>({
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map((row: Row<TData>) => (
                   <React.Fragment key={row.id}>
                     <TableRow
                       data-state={row.getIsSelected() && 'selected'}
                       onClick={() => {
-                        // Use type assertion to access custom properties
                         const customMeta = table.options.meta as DataTableMeta<TData> | undefined;
                         if (customMeta?.onRowClick && row.original) {
-                          // Access id with type assertion if needed
-                          const id = (row.original as any).id;
+                          const id = (row.original as { id?: number })?.id;
                           if (id !== undefined) {
                             customMeta.onRowClick(id);
                           }
@@ -283,12 +258,12 @@ export function DataTable<TData, TValue>({
                       }}
                       className={
                         (table.options.meta as DataTableMeta<TData> | undefined)
-                          ?.expandedCollectionId === (row.original as any)?.id
-                          ? 'bg-accent/30 cursor-pointer'
+                          ?.expandedCollectionId === (row.original as { id?: number })?.id
+                          ? 'cursor-pointer bg-accent/30'
                           : 'cursor-pointer hover:bg-accent/10'
                       }
                     >
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map((cell: Cell<TData, unknown>) => (
                         <TableCell
                           key={cell.id}
                           colSpan={1}
@@ -311,11 +286,10 @@ export function DataTable<TData, TValue>({
 
                     {/* Render expanded content inline if this row is expanded */}
                     {(table.options.meta as DataTableMeta<TData> | undefined)
-                      ?.expandedCollectionId === (row.original as any)?.id && (
+                      ?.expandedCollectionId === (row.original as { id?: number })?.id && (
                       <TableRow className="bg-muted/50">
                         <TableCell colSpan={columns.length} className="p-0">
-                          <div className="p-4 overflow-x-auto w-full">
-                            {/* Use expandedRowContent from meta if provided */}
+                          <div className="w-full overflow-x-auto p-4">
                             <div className="max-w-full overflow-x-hidden">
                               {(table.options.meta as DataTableMeta<TData>)?.expandedRowContent}
                             </div>
@@ -327,10 +301,9 @@ export function DataTable<TData, TValue>({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-48 text-center">
-                    <Inbox className="h-6 w-6 mx-auto mb-2" />
-                    <span className="text-muted-foreground inline">No results.</span>
-                  </TableCell>
+                  <TableCell colSpan={columns.length} className="h-48 text-center"></TableCell>
+                  <Inbox className="mx-auto mb-2 h-6 w-6" />
+                  <span className="inline text-muted-foreground">No results.</span>
                 </TableRow>
               )}
             </TableBody>
@@ -338,22 +311,22 @@ export function DataTable<TData, TValue>({
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden w-full overflow-visible">
+        <div className="w-full overflow-visible md:hidden">
           {table.getRowModel().rows?.length ? (
-            <div className="grid gap-4 p-2 w-full overflow-visible">
-              {table.getRowModel().rows.map((row) => (
+            <div className="grid w-full gap-4 overflow-visible p-2">
+              {table.getRowModel().rows.map((row: Row<TData>) => (
                 <div
                   key={row.id}
-                  className={`rounded-lg border bg-card shadow-sm p-0 md:p-4 w-full ${
+                  className={`w-full rounded-lg border bg-card p-0 shadow-sm md:p-4 ${
                     (table.options.meta as DataTableMeta<TData> | undefined)
-                      ?.expandedCollectionId === (row.original as any)?.id
-                      ? 'bg-accent/30 border-primary/50'
+                      ?.expandedCollectionId === (row.original as { id?: number })?.id
+                      ? 'border-primary/50 bg-accent/30'
                       : 'border-border'
                   }`}
                   onClick={() => {
                     const customMeta = table.options.meta as DataTableMeta<TData> | undefined;
                     if (customMeta?.onRowClick && row.original) {
-                      const id = (row.original as any).id;
+                      const id = (row.original as { id?: number })?.id;
                       if (id !== undefined) {
                         customMeta.onRowClick(id);
                       }
@@ -362,14 +335,13 @@ export function DataTable<TData, TValue>({
                 >
                   <div className="flex flex-col gap-3">
                     {/* Row header with select checkbox and expander */}
-                    <div className="flex items-center justify-between mb-2 overflow-visible px-2">
-                      {row.getVisibleCells().map((cell) => {
-                        // Only render select and expander in the header area
+                    <div className="mb-2 flex items-center justify-between overflow-visible px-2">
+                      {row.getVisibleCells().map((cell: Cell<TData, unknown>) => {
                         if (cell.column.id === 'select') {
                           return (
                             <div key={cell.id} className="flex items-center gap-2 overflow-visible">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                              <span className="whitespace-nowrap text-muted-foreground text-xs">
                                 Select
                               </span>
                             </div>
@@ -379,9 +351,9 @@ export function DataTable<TData, TValue>({
                           return (
                             <div key={cell.id} className="flex items-center gap-2">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-muted-foreground text-xs">
                                 {(table.options.meta as DataTableMeta<TData> | undefined)
-                                  ?.expandedCollectionId === (row.original as any)?.id
+                                  ?.expandedCollectionId === (row.original as { id?: number })?.id
                                   ? 'Collapse'
                                   : 'Expand'}
                               </span>
@@ -394,25 +366,22 @@ export function DataTable<TData, TValue>({
 
                     {/* Main content cells */}
                     <div className="grid gap-3">
-                      {row.getVisibleCells().map((cell) => {
-                        // Skip select and expander since they're in the header
+                      {row.getVisibleCells().map((cell: Cell<TData, unknown>) => {
                         if (cell.column.id === 'select' || cell.column.id === 'expander') {
                           return null;
                         }
 
-                        // Get column header text
                         const headerText = cell.column.columnDef.header
                           ? typeof cell.column.columnDef.header === 'string'
                             ? cell.column.columnDef.header
                             : cell.column.id.charAt(0).toUpperCase() + cell.column.id.slice(1)
                           : cell.column.id.charAt(0).toUpperCase() + cell.column.id.slice(1);
 
-                        // Special handling for actions column
                         if (cell.column.id === 'actions') {
                           return (
                             <div
                               key={cell.id}
-                              className="flex flex-row justify-center items-center py-2 mt-2 border-t border-border"
+                              className="mt-2 flex flex-row items-center justify-center border-border border-t py-2"
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </div>
@@ -422,12 +391,12 @@ export function DataTable<TData, TValue>({
                         return (
                           <div
                             key={cell.id}
-                            className="flex flex-col gap-1 items-center justify-center py-2"
+                            className="flex flex-col items-center justify-center gap-1 py-2"
                           >
-                            <div className="text-sm font-medium text-muted-foreground">
+                            <div className="font-medium text-muted-foreground text-sm">
                               {headerText}
                             </div>
-                            <div className="text-base w-full text-center">
+                            <div className="w-full text-center text-base">
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </div>
                           </div>
@@ -438,8 +407,8 @@ export function DataTable<TData, TValue>({
 
                   {/* Expanded content */}
                   {(table.options.meta as DataTableMeta<TData> | undefined)
-                    ?.expandedCollectionId === (row.original as any)?.id && (
-                    <div className="mt-4 pt-4 border-t border-border overflow-hidden">
+                    ?.expandedCollectionId === (row.original as { id?: number })?.id && (
+                    <div className="mt-4 overflow-hidden border-border border-t pt-4">
                       <div className="w-full overflow-x-auto">
                         {(table.options.meta as DataTableMeta<TData>)?.expandedRowContent}
                       </div>
@@ -449,8 +418,8 @@ export function DataTable<TData, TValue>({
               ))}
             </div>
           ) : (
-            <div className="h-48 flex flex-col items-center justify-center">
-              <Inbox className="h-12 w-12 text-muted-foreground mb-4" />
+            <div className="flex h-48 flex-col items-center justify-center">
+              <Inbox className="mb-4 h-12 w-12 text-muted-foreground" />
               <span className="text-muted-foreground">No results.</span>
             </div>
           )}

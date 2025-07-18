@@ -1,7 +1,9 @@
 'use client';
 
 import * as React from 'react';
+
 import { cn } from '@/lib/utils';
+
 import { Card } from './card';
 
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
@@ -9,7 +11,7 @@ function Table({ className, ...props }: React.ComponentProps<'table'>) {
   return (
     <div data-slot="table-container" className="relative w-full">
       {/* Table for md+ screens */}
-      <div className="hidden md:block w-full overflow-x-auto">
+      <div className="hidden w-full overflow-x-auto md:block">
         <table
           data-slot="table"
           className={cn('w-full caption-bottom text-sm', className)}
@@ -38,7 +40,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        'bg-muted/50 border-t font-medium [&>tr]:last:border-b-0',
+        'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
         'hidden md:table-footer-group',
         className,
       )}
@@ -64,7 +66,7 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
     <tr
       data-slot="table-row"
       className={cn(
-        'hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors',
+        'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
         'hidden md:table-row',
         className,
       )}
@@ -79,7 +81,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
     <th
       data-slot="table-head"
       className={cn(
-        'text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'h-10 whitespace-nowrap px-2 text-left align-middle font-medium text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         'hidden md:table-cell',
         className,
       )}
@@ -94,7 +96,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
     <td
       data-slot="table-cell"
       className={cn(
-        'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'whitespace-nowrap p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         'hidden md:table-cell',
         className,
       )}
@@ -108,7 +110,7 @@ function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) 
   return (
     <caption
       data-slot="table-caption"
-      className={cn('text-muted-foreground mt-4 text-sm', className)}
+      className={cn('mt-4 text-muted-foreground text-sm', className)}
       {...props}
     />
   );
@@ -125,30 +127,33 @@ function MobileCards(
   let body: React.ReactElement | undefined;
   React.Children.forEach(props.children, (child) => {
     if (React.isValidElement(child)) {
-      if ((child.type as any).displayName === 'TableHeader') {
+      if ((child.type as { displayName?: string }).displayName === 'TableHeader') {
         // Find TableHead children
-        const tr = React.Children.toArray((child as React.ReactElement<any>).props.children)[0] as
-          | React.ReactElement<any>
-          | undefined;
-        if (tr && React.isValidElement(tr)) {
-          headers = React.Children.toArray((tr as React.ReactElement<any>).props.children).map(
-            (th) => {
-              if (React.isValidElement(th)) {
-                const thEl = th as React.ReactElement<any>;
-                if (typeof thEl.props.children === 'string') return thEl.props.children;
-                if (Array.isArray(thEl.props.children)) {
-                  return thEl.props.children
-                    .map((c: any) => (typeof c === 'string' ? c : ''))
-                    .join(' ');
-                }
-                return '';
+        const childProps = child.props as { children?: React.ReactNode };
+        const trCandidate = React.Children.toArray(childProps.children)[0];
+        if (React.isValidElement(trCandidate)) {
+          const trProps = trCandidate.props as { children?: React.ReactNode };
+          headers = React.Children.toArray(trProps.children).map((th) => {
+            if (
+              React.isValidElement(th) &&
+              th.props &&
+              typeof th.props === 'object' &&
+              'children' in (th.props as object)
+            ) {
+              const thChildren = (th.props as { children?: React.ReactNode }).children;
+              if (typeof thChildren === 'string') return thChildren;
+              if (Array.isArray(thChildren)) {
+                return thChildren.map((c) => (typeof c === 'string' ? c : '')).join(' ');
               }
               return '';
-            },
-          );
+            }
+            return '';
+          });
         }
-      } else if ((child.type as any).displayName === 'TableBody') {
-        body = child as React.ReactElement<any>;
+      } else if ((child.type as { displayName?: string }).displayName === 'TableBody') {
+        if (React.isValidElement(child)) {
+          body = child;
+        }
       }
     }
   });
@@ -156,16 +161,16 @@ function MobileCards(
   // Helper to flatten fragments and filter out falsy children
   function flattenChildren(children: React.ReactNode): React.ReactElement[] {
     const result: React.ReactElement[] = [];
-    React.Children.forEach(children, (child) => {
+    React.Children.forEach(children, (child: React.ReactNode) => {
       if (!child) return;
       if (Array.isArray(child)) {
         result.push(...flattenChildren(child));
       } else if (React.isValidElement(child)) {
-        const el = child as React.ReactElement<any>;
-        if (el.type === React.Fragment) {
-          result.push(...flattenChildren(el.props.children));
+        if (child.type === React.Fragment) {
+          const fragProps = child.props as { children?: React.ReactNode };
+          result.push(...flattenChildren(fragProps.children));
         } else {
-          result.push(el);
+          result.push(child);
         }
       }
     });
@@ -173,38 +178,71 @@ function MobileCards(
   }
 
   if (!body) return null;
-  const rows = flattenChildren((body as React.ReactElement<any>).props.children);
+  // Type guard for body.props
+  const bodyChildren =
+    React.isValidElement(body) &&
+    body.props &&
+    typeof body.props === 'object' &&
+    'children' in body.props
+      ? (body.props as { children?: React.ReactNode }).children
+      : null;
+  const rows = flattenChildren(bodyChildren);
 
   return (
     <div
-      className="grid sm:grid-cols-2 gap-x-4 gap-y-6 py-6 px-1 md:hidden w-full max-w-full overflow-visible"
+      className="grid w-full max-w-full gap-x-4 gap-y-6 overflow-visible px-1 py-6 sm:grid-cols-2 md:hidden"
       data-slot="mobile-cards"
     >
       {rows.map((row, i) => {
-        if (React.isValidElement(row)) {
-          const rowEl = row as React.ReactElement<any>;
+        if (
+          React.isValidElement(row) &&
+          row.props &&
+          typeof row.props === 'object' &&
+          'children' in row.props
+        ) {
+          const rowEl = row;
+          type RowProps = {
+            id?: string;
+            className?: string;
+            children?: React.ReactNode;
+            [key: string]: unknown;
+          };
+          const rowPropsTyped = rowEl.props as RowProps;
+          const rowChildren = rowPropsTyped.children;
           // Flatten row children to get all TableCell elements
-          const cells = flattenChildren(rowEl.props.children);
-          const { className: rowClassName, ...rowProps } = rowEl.props;
+          const cells = flattenChildren(rowChildren);
+          const { className: rowClassName, ...rowProps } = rowPropsTyped;
           return (
             <MobileTableRowCard
-              key={rowEl.props.id || rowEl.key || i}
+              key={rowPropsTyped.id || rowEl.key || i}
               className={rowClassName}
               {...rowProps}
             >
               {cells.map((cell, j) => {
-                if (React.isValidElement(cell) && (cell.type as any).displayName === 'TableCell') {
-                  const cellEl = cell as React.ReactElement<any>;
+                if (
+                  React.isValidElement(cell) &&
+                  cell.props &&
+                  typeof cell.props === 'object' &&
+                  (cell.type as { displayName?: string }).displayName === 'TableCell'
+                ) {
+                  const cellEl = cell;
+                  type CellProps = {
+                    id?: string;
+                    className?: string;
+                    children?: React.ReactNode;
+                    [key: string]: unknown;
+                  };
+                  const cellPropsTyped = cellEl.props as CellProps;
                   const header = headers[j] || '';
-                  const { className: cellClassName, ...cellProps } = cellEl.props;
+                  const { className: cellClassName, ...cellProps } = cellPropsTyped;
                   return (
                     <MobileTableCell
-                      key={cellEl.props.id || cellEl.key || j}
+                      key={cellPropsTyped.id || cellEl.key || j}
                       header={header}
                       className={cn('w-full', cellClassName)}
                       {...cellProps}
                     >
-                      {cellEl.props.children}
+                      {cellPropsTyped.children}
                     </MobileTableCell>
                   );
                 }
@@ -228,7 +266,7 @@ function MobileTableRowCard({
   return (
     <Card
       className={cn(
-        'rounded-xl bg-card p-6 shadow-lg flex flex-col gap-4 w-full overflow-visible',
+        'flex w-full flex-col gap-4 overflow-visible rounded-xl bg-card p-6 shadow-lg',
         className,
       )}
       data-slot="table-mobile-row-card"
@@ -248,18 +286,18 @@ function MobileTableCell({
   return (
     <div
       className={cn(
-        'flex flex-col items-center gap-3 py-3 border-b border-muted last:border-b-0 w-full',
+        'flex w-full flex-col items-center gap-3 border-muted border-b py-3 last:border-b-0',
         className,
       )}
       data-slot="table-mobile-cell"
     >
       {header && (
-        <span className="flex items-center justify-center gap-1 text-sm font-semibold mb-1 tracking-wide text-muted-foreground bg-muted/30 py-1 px-2 rounded-md w-auto">
+        <span className="mb-1 flex w-auto items-center justify-center gap-1 rounded-md bg-muted/30 px-2 py-1 font-semibold text-muted-foreground text-sm tracking-wide">
           {header}
         </span>
       )}
-      <div className="flex flex-row items-center justify-center w-full overflow-visible">
-        <div className="text-base text-foreground break-words leading-normal text-center w-full [&>*]:justify-center [&_button]:min-w-24 [&_button]:min-h-10 [&_button_.lucide]:mr-1.5 [&_.lucide+span]:inline [&_a]:min-w-24 [&_a]:min-h-10 [&_a_.lucide]:mr-1.5 overflow-visible">
+      <div className="flex w-full flex-row items-center justify-center overflow-visible">
+        <div className="w-full overflow-visible break-words text-center text-base text-foreground leading-normal [&>*]:justify-center [&_.lucide+span]:inline [&_a]:min-h-10 [&_a]:min-w-24 [&_a_.lucide]:mr-1.5 [&_button]:min-h-10 [&_button]:min-w-24 [&_button_.lucide]:mr-1.5">
           {children}
         </div>
       </div>

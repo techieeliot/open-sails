@@ -1,27 +1,27 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1752221105533,
-      "tag": "0000_skinny_iceman",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1752238769864,
-      "tag": "0001_silky_blue_blade",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1752338634187,
-      "tag": "0002_whole_nitro",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1752221105533,
+			"tag": "0000_skinny_iceman",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1752238769864,
+			"tag": "0001_silky_blue_blade",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1752338634187,
+			"tag": "0002_whole_nitro",
+			"breakpoints": true
+		}
+	]
 }

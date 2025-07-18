@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
+
 import { Button } from '@/components/ui/button';
 import {
   FluidFormElement,
@@ -24,9 +25,10 @@ import { useFetchCollections } from '@/hooks/useFetchCollections';
 import { bidsAtom, collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { CONTENT_TYPE_JSON, POST, PUT } from '@/lib/constants';
 import { parseNumeric } from '@/lib/utils';
-import { Bid } from '@/types';
-import { CollectionFormProps } from '../collection-form';
-import { formSchema } from './schema';
+import type { Bid } from '@/types';
+
+import type { CollectionFormProps } from '../collection-form';
+import type { formSchema } from './schema';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
@@ -157,19 +159,19 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   };
 
   return (
-    <div className="flex flex-col justify-center items-center p-4">
+    <div className="flex flex-col items-center justify-center p-4">
       <FormWrapper>
-        <h2 className="text-lg font-semibold mb-4 text-center">{formTitle}</h2>
+        <h2 className="mb-4 text-center font-semibold text-lg">{formTitle}</h2>
         <Form {...form}>
           <FluidFormElement onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col max-h-[50vh] overflow-y-auto">
+            <div className="flex max-h-[50vh] flex-col overflow-y-auto">
               <FormField
                 control={form.control}
                 name="price"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Bid Price ($)</FormLabel>
-                    <FormDescription className="text-xs text-muted-foreground mt-1">
+                    <FormDescription className="mt-1 text-muted-foreground text-xs">
                       Enter your bid amount (must be greater than current price ${minBidPrice},
                       maximum $1,000,000)
                     </FormDescription>
@@ -192,7 +194,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
                           }
                           // Parse and validate the number
                           const numValue = parseFloat(value);
-                          if (!isNaN(numValue)) {
+                          if (!Number.isNaN(numValue)) {
                             field.onChange(numValue);
                           }
                         }}
@@ -216,7 +218,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
               >
                 {form.formState.isSubmitting ? (
                   <Loader
-                    className="animate-spin mr-2 h-4 w-4 text-zinc-900 dark:text-zinc-200"
+                    className="mr-2 h-4 w-4 animate-spin text-zinc-900 dark:text-zinc-200"
                     aria-hidden="true"
                     focusable="false"
                   />

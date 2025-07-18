@@ -1,147 +1,125 @@
-import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, Car, CircleX } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { EditBidDialog } from '@/app/dashboard/components/edit-bid-dialog.client/index';
-import { ConfirmationDialog } from '@/components/confirmation-dialog';
-import GoBackButton from '@/components/go-back-button.tsx';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { DELETE } from '@/lib/constants';
-import { Bid, Collection } from '@/types';
+import { ArrowLeft, CircleX } from 'lucide-react'
+import router from 'next/router'
+import { toast } from 'sonner'
+
+import { ConfirmationDialog } from '@/components/confirmation-dialog'
+import GoBackButton from '@/components/go-back-button.tsx'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { DELETE } from '@/lib/constants'
+import type { Bid, Collection } from '@/types'
 
 export default function BidDetailView({
-  collection,
-  bid,
-  isBidder,
+	collection,
+	bid,
+	isBidder,
 }: {
-  collection: Collection | null;
-  bid: Bid;
-  isBidder: boolean | null;
+	collection: Collection | null
+	bid: Bid
+	isBidder: boolean | null
 }) {
-  const router = useRouter();
+	return (
+		<>
+			<div className="mb-6 flex flex-col justify-between">
+				<h1 className="font-bold text-2xl">Bid Details</h1>
+				<GoBackButton icon={ArrowLeft} />
+			</div>
 
-  const handleDeleteBid = async () => {
-    try {
-      const response = await fetch(`/api/bids/${bid.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+			<Card className="mb-6 p-6">
+				<div className="grid gap-4 md:grid-cols-2">
+					<div>
+						<h2 className="mb-4 font-semibold text-xl">Bid Information</h2>
+						<div className="space-y-2">
+							<p>
+								<span className="font-semibold">ID:</span> {bid.id}
+							</p>
+							<p>
+								<span className="font-semibold">Price:</span> ${bid.price.toLocaleString()}
+							</p>
+							<p>
+								<span className="font-semibold">Status:</span>{' '}
+								<span className="capitalize">{bid.status}</span>
+							</p>
+							<p>
+								<span className="font-semibold">Created:</span> {new Date(bid.createdAt).toLocaleString()}
+							</p>
+							<p>
+								<span className="font-semibold">Updated:</span> {new Date(bid.updatedAt).toLocaleString()}
+							</p>
+						</div>
+					</div>
 
-      if (!response.ok) {
-        throw new Error('Failed to cancel bid');
-      }
+					<div>
+						<h2 className="mb-4 font-semibold text-xl">Collection</h2>
+						{collection ? (
+							<div className="space-y-2">
+								<p>
+									<span className="font-semibold">Name:</span> {collection.name}
+								</p>
+								<p>
+									<span className="font-semibold">Price:</span> ${collection.price?.toLocaleString()}
+								</p>
+								<p>
+									<span className="font-semibold">Status:</span>{' '}
+									<span className="capitalize">{collection.status}</span>
+								</p>
+								<Button
+									variant="outline"
+									className="mt-2"
+									onClick={() => router.push(`/collections/${collection.id}`)}
+								>
+									View Collection
+								</Button>
+							</div>
+						) : (
+							<p className="text-gray-600">Collection details unavailable</p>
+						)}
+					</div>
+				</div>
+			</Card>
 
-      toast.success('Bid cancelled successfully');
-      router.push(`/collections/${bid.collectionId}`);
-    } catch (error) {
-      console.error('Error cancelling bid:', error);
-      toast.error('Failed to cancel bid', {
-        description: 'Please try again later',
-      });
-    }
-  };
-  return (
-    <>
-      <div className="flex flex-col justify-between mb-6">
-        <GoBackButton icon={ArrowLeft} />
-      </div>
+			{/* Show bidder actions if the current user is the bid owner */}
+			{isBidder && bid.status === 'pending' && (
+				<div className="mt-4 flex gap-3">
+					<Button
+						variant="outline"
+						onClick={() => router.push(`/collections/${bid.collectionId}?edit=${bid.id}`)}
+					>
+						Edit Bid
+					</Button>
 
-      <div className="grid grid-cols-1 gap-4 px-4 lg:px-6">
-        <Card className="bg-zinc-200 dark:bg-zinc-800">
-          <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-2xl font-bold">Bid Details</CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4">
-            <div>
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold mb-4">Bid Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p>
-                  <span className="font-semibold">Price:</span> ${bid.price.toLocaleString()}
-                </p>
-                <p>
-                  <span className="font-semibold">Status:</span>{' '}
-                  <span className="capitalize">{bid.status}</span>
-                </p>
-                <p>
-                  <span className="font-semibold">Created:</span>{' '}
-                  {formatDistanceToNow(bid.createdAt, { addSuffix: true })}
-                </p>
-                <p>
-                  <span className="font-semibold">Updated:</span>{' '}
-                  {formatDistanceToNow(bid.updatedAt, { addSuffix: true })}
-                </p>
-              </CardContent>
-            </div>
+					<ConfirmationDialog
+						key={`cancel-bid-dialog-${bid.id}`}
+						triggerText="Cancel Bid"
+						triggerAriaLabel="open confirmation dialog to cancel bid"
+						triggerIcon={CircleX}
+						dialogTitle="Cancel Bid"
+						dialogDescription="Are you sure you want to cancel this bid? This action cannot be undone."
+						onConfirm={async () => {
+							try {
+								const response = await fetch(`/api/bids?bid_id=${bid.id}`, {
+									method: DELETE,
+									headers: {
+										'Content-Type': 'application/json',
+									},
+								})
 
-            <div>
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold mb-4">Collection</CardTitle>
-              </CardHeader>
-              {collection ? (
-                <CardContent className="space-y-2">
-                  <p>
-                    <span className="font-semibold">Name:</span> {collection.name}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Price:</span> $
-                    {collection.price?.toLocaleString()}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Status:</span>{' '}
-                    <span className="capitalize">{collection.status}</span>
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="mt-2"
-                    onClick={() => router.push(`/collections/${collection.id}`)}
-                  >
-                    View Collection
-                  </Button>
-                </CardContent>
-              ) : (
-                <CardContent>
-                  <p className="text-gray-600">Collection details unavailable</p>
-                </CardContent>
-              )}
-            </div>
-          </CardContent>
-          {/* Show bidder actions if the current user is the bid owner */}
-          {true && bid.status === 'pending' && (
-            <CardFooter>
-              <CardAction className="flex gap-3 mt-4">
-                <EditBidDialog
-                  bid={bid}
-                  onBidUpdated={function (): void {
-                    router.refresh();
-                  }}
-                />
-                <ConfirmationDialog
-                  key={`cancel-bid-dialog-${bid.id}`}
-                  triggerText="Cancel"
-                  triggerAriaLabel="open confirmation dialog to cancel bid"
-                  triggerIcon={CircleX}
-                  triggerVariant="destructive"
-                  dialogTitle="Cancel Bid"
-                  dialogDescription="Are you sure you want to cancel this bid? This action cannot be undone."
-                  onConfirm={handleDeleteBid}
-                />
-              </CardAction>
-            </CardFooter>
-          )}
-        </Card>
-      </div>
-    </>
-  );
+								if (!response.ok) {
+									throw new Error('Failed to cancel bid')
+								}
+
+								toast.success('Bid cancelled successfully')
+								router.push(`/collections/${bid.collectionId}`)
+							} catch (error) {
+								console.error('Error cancelling bid:', error)
+								toast.error('Failed to cancel bid', {
+									description: 'Please try again later',
+								})
+							}
+						}}
+					/>
+				</div>
+			)}
+		</>
+	)
 }

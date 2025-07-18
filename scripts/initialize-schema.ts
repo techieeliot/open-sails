@@ -4,33 +4,32 @@
  * This script creates the initial schema structure for the database.
  * It should be run before migrations or seeding if the tables don't exist.
  */
-
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon } from '@neondatabase/serverless';
-import { config } from 'dotenv';
-import * as schema from '../src/db/schema';
-import { sql } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/neon-http'
+import { neon } from '@neondatabase/serverless'
+import { config } from 'dotenv'
+import * as schema from '../src/db/schema'
+import { sql } from 'drizzle-orm'
 
 // Load environment variables
-console.log('Loading environment variables...');
-config({ path: '.env.production' });
+console.log('Loading environment variables...')
+config({ path: '.env.production' })
 
 // Check if DATABASE_URL is available
 if (!process.env.DATABASE_URL) {
-  console.error('Missing DATABASE_URL in environment variables');
-  process.exit(1);
+	console.error('Missing DATABASE_URL in environment variables')
+	process.exit(1)
 }
 
 // Connect to database
-const client = neon(process.env.DATABASE_URL);
-const db = drizzle({ client, schema });
+const client = neon(process.env.DATABASE_URL)
+const db = drizzle({ client, schema })
 
 async function initializeSchema() {
-  try {
-    console.log("Creating tables if they don't exist...");
+	try {
+		console.log("Creating tables if they don't exist...")
 
-    // Create users table
-    await db.execute(sql`
+		// Create users table
+		await db.execute(sql`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -39,11 +38,11 @@ async function initializeSchema() {
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
-    `);
-    console.log('- Users table created');
+    `)
+		console.log('- Users table created')
 
-    // Create collections table
-    await db.execute(sql`
+		// Create collections table
+		await db.execute(sql`
       CREATE TABLE IF NOT EXISTS collections (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
@@ -55,11 +54,11 @@ async function initializeSchema() {
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
-    `);
-    console.log('- Collections table created');
+    `)
+		console.log('- Collections table created')
 
-    // Create bids table
-    await db.execute(sql`
+		// Create bids table
+		await db.execute(sql`
       CREATE TABLE IF NOT EXISTS bids (
         id SERIAL PRIMARY KEY,
         price INTEGER NOT NULL,
@@ -69,24 +68,24 @@ async function initializeSchema() {
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
-    `);
-    console.log('- Bids table created');
+    `)
+		console.log('- Bids table created')
 
-    console.log('Schema initialization completed successfully');
-  } catch (error) {
-    console.error('Schema initialization failed:', error);
-    throw error;
-  }
+		console.log('Schema initialization completed successfully')
+	} catch (error) {
+		console.error('Schema initialization failed:', error)
+		throw error
+	}
 }
 
 if (require.main === module) {
-  initializeSchema()
-    .then(() => {
-      console.log('Schema initialization script completed');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('Schema initialization script failed:', error);
-      process.exit(1);
-    });
+	initializeSchema()
+		.then(() => {
+			console.log('Schema initialization script completed')
+			process.exit(0)
+		})
+		.catch((error) => {
+			console.error('Schema initialization script failed:', error)
+			process.exit(1)
+		})
 }

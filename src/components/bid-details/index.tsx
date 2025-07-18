@@ -1,1 +1,1 @@
-export { BidDetailsClient } from './bid-details-client';
+export { BidDetailsClient } from './bid-details-client'

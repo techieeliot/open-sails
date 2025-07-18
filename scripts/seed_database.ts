@@ -6,7 +6,6 @@
  * - 100 collections (Bitcoin mining hardware with various conditions)
  * - At least 10 bids per collection (with realistic price variations)
  */
-
 import * as dotenv from 'dotenv';
 import { neon } from '@neondatabase/serverless';
 
@@ -33,6 +32,18 @@ type User = {
   updated_at?: string;
 };
 
+// Example usage: convert NewUser[] to User[] after inserting users and getting their IDs
+export function toUserArray(newUsers: NewUser[], userIds: (string | number)[]): User[] {
+  return newUsers.map((user, idx) => ({
+    id: userIds[idx],
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  }));
+}
+
 type NewUser = {
   name: string;
   email: string;
@@ -52,6 +63,24 @@ type Collection = {
   created_at: string;
   updated_at: string;
 };
+
+// Helper to convert inserted collections to Collection[]
+export function toCollectionArray(
+  newCollections: NewCollection[],
+  collectionIds: number[],
+): Collection[] {
+  return newCollections.map((collection, idx) => ({
+    id: collectionIds[idx],
+    name: collection.name,
+    descriptions: collection.descriptions,
+    price: collection.price,
+    stocks: collection.stocks,
+    status: collection.status,
+    owner_id: collection.owner_id,
+    created_at: collection.created_at,
+    updated_at: collection.updated_at,
+  }));
+}
 
 type NewCollection = {
   name: string;
