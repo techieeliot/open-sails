@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { formatPrice, toStartCase } from '@/lib/utils';
 import type { Collection } from '@/types';
 
-import ActionsCell from './action-cell';
+import CollectionActionCell from './collection-action-cell';
 import OwnerCell from './owner-cell';
 
 export const collectionColumnDefinition: ColumnDef<Collection>[] = [
@@ -41,7 +41,11 @@ export const collectionColumnDefinition: ColumnDef<Collection>[] = [
             className="flex h-10 w-10 items-center justify-center rounded-full p-0 hover:bg-accent/50 md:border-none"
             aria-label={isExpanded ? 'Collapse row' : 'Expand row'}
           >
-            {isExpanded ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+            {isExpanded ? (
+              <ChevronDown className="h-5 w-5" />
+            ) : (
+              <ChevronRight className="h-5 w-5" />
+            )}
           </Button>
         </div>
       );
@@ -95,11 +99,36 @@ export const collectionColumnDefinition: ColumnDef<Collection>[] = [
       const id = row.original.id;
 
       return (
-        <div className="font-medium">
-          <Link href={`/collections/${id}`} className="text-accent hover:underline">
-            {name}
+        <div className="font-medium flex flex-col md:flex-row items-center gap-2">
+          <Link href={`/collections/${id}`} className="text-accent hover:underline fle">
+            {toStartCase(name)}
           </Link>
+          <span className="text-muted-foreground text-xs">ID# {id}</span>
         </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Status
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const status = row.getValue('status') as string;
+      return (
+        <Badge
+          variant={status === 'open' ? 'default' : status === 'closed' ? 'secondary' : 'info'}
+          className="inline-flex justify-center px-2 py-1 font-semibold text-base"
+        >
+          {toStartCase(status)}
+        </Badge>
       );
     },
   },
@@ -159,6 +188,6 @@ export const collectionColumnDefinition: ColumnDef<Collection>[] = [
   },
   {
     id: 'actions',
-    cell: ActionsCell,
+    cell: CollectionActionCell,
   },
 ];

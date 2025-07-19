@@ -17,6 +17,7 @@ import { userSessionAtom } from '@/lib/atoms';
 import type { Collection } from '@/types';
 
 import DeleteCollectionDialog from '../../delete-collection-dialog';
+import PlaceBidDialog from '@/components/place-bid-dialog';
 
 // Actions cell renderer as a component
 interface ActionsCellProps {
@@ -26,7 +27,7 @@ interface ActionsCellProps {
   table: Table<Collection>;
 }
 
-export default function ActionsCell({ row, table }: ActionsCellProps) {
+export default function CollectionActionCell({ row, table }: ActionsCellProps) {
   const collection = row.original;
   const userSession = useAtomValue(userSessionAtom);
   const currentUser = userSession.user;
@@ -39,16 +40,23 @@ export default function ActionsCell({ row, table }: ActionsCellProps) {
   };
 
   return (
-    <div className="flex items-center justify-end space-x-2">
+    <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-end space-x-2">
       <Button variant="ghost" size="sm" asChild className="hidden items-center md:flex">
         <Link href={`/collections/${collection.id}`}>View</Link>
       </Button>
-      {isOwner && isDesktop && (
-        <>
-          <EditCollectionDialog collectionId={collection.id} onSuccess={meta.fetchCollections} />
-          <DeleteCollectionDialog collectionId={collection.id} onSuccess={meta.fetchCollections} />
-        </>
-      )}
+      {collection.status == 'open' &&
+        (isOwner ? (
+          <>
+            <EditCollectionDialog collectionId={collection.id} onSuccess={meta.fetchCollections} />
+            <DeleteCollectionDialog
+              collectionId={collection.id}
+              onSuccess={meta.fetchCollections}
+            />
+          </>
+        ) : (
+          <PlaceBidDialog collectionId={collection.id} onSuccess={meta.fetchCollections} />
+        ))}
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -57,7 +65,7 @@ export default function ActionsCell({ row, table }: ActionsCellProps) {
             className="flex w-[60vw] items-center justify-center rounded-full p-0 hover:bg-accent/50 md:h-10 md:w-10 md:border-none"
             aria-label="Open actions menu"
           >
-            <span className="inline md:hidden">Open menu</span>
+            <span className="inline md:hidden">All actions</span>
             <MoreHorizontal className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
@@ -73,7 +81,7 @@ export default function ActionsCell({ row, table }: ActionsCellProps) {
           <DropdownMenuItem asChild className="bg-background hover:bg-accent md:hidden">
             <Link href={`/collections/${collection.id}`}>View details</Link>
           </DropdownMenuItem>
-          {isOwner && !isDesktop && (
+          {collection.status == 'open' && isOwner && !isDesktop && (
             <>
               <DropdownMenuSeparator className="md:hidden" />
               <DropdownMenuItem

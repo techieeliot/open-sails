@@ -9,8 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import type { DialogModalProps } from '@/types';
 
 import TriggerIconButton from '../trigger-icon-button';
@@ -45,19 +45,16 @@ export const InfoDialog = ({
           {triggerText}
         </TriggerIconButton>
       </DialogTrigger>
-      <DialogContent
-        className="mx-auto flex max-w-lg flex-col items-center justify-center"
-        aria-labelledby={titleId}
-        aria-describedby={dialogDescription ? descId : undefined}
-        autoFocus
-      >
-        <DialogHeader className="text-center">
+      <DialogContent className="mx-auto flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden">
+        <DialogHeader className="text-center pt-6 px-6 pb-4 shrink-0">
           <DialogTitle id={titleId}>{dialogTitle || 'Information'}</DialogTitle>
           {dialogDescription ? (
             <DialogDescription id={descId}>{dialogDescription}</DialogDescription>
           ) : null}
         </DialogHeader>
-        <DialogFooter>{children}</DialogFooter>
+        <ScrollArea className="flex-1 w-full">
+          <section className="px-6 pb-6">{children}</section>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

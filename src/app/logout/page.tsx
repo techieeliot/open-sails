@@ -1,14 +1,15 @@
-import PageWrapper from '@/components/page-wrapper'
+import PageWrapper from '@/components/page-wrapper';
+import { UserLogoutHandler } from './logout-handler-client';
+import type { Metadata } from 'next';
 
-import { UserLogoutHandler } from './logout-handler-client'
-
+export const metadata: Metadata = {
+  title: 'Logout - Open Sails',
+  description: 'User logout page for Open Sails',
+};
 export default function LogoutPage() {
-	// This page is for logging out users. It can be used to display a message or redirect them.
-	// In a real application, you would also handle the logout logic here, such as clearing
-	// authentication tokens or session data.
-	return (
-		<PageWrapper>
-			<UserLogoutHandler />
-		</PageWrapper>
-	)
+  return (
+    <PageWrapper>
+      <UserLogoutHandler />
+    </PageWrapper>
+  );
 }

@@ -86,6 +86,7 @@ export default function CollectionDetailsPage() {
     }
   }, [collectionId, isValidIdParam, router]);
 
+  // If collection is not found or ID is invalid, show a not found message
   if (!isValidIdParam) {
     return (
       <PageWrapper>
@@ -100,7 +101,6 @@ export default function CollectionDetailsPage() {
     );
   }
 
-  // Redirect if ID is invalid
   return (
     <PageWrapper>
       {isLoading ? (

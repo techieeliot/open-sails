@@ -48,19 +48,14 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
       const status = row.getValue('status') as string;
 
       return (
-        <div className="flex flex-col text-center sm:block">
-          <span className="mb-1 md:hidden font-medium text-muted-foreground text-xs inline">
-            Amount:
-          </span>
-          <Badge
-            variant={
-              status === 'accepted' ? 'secondary' : status === 'rejected' ? 'struckthrough' : 'info'
-            }
-            className="inline-flex justify-center px-2 py-1 font-semibold text-base"
-          >
-            {formatPrice(price)}
-          </Badge>
-        </div>
+        <Badge
+          variant={
+            status === 'accepted' ? 'secondary' : status === 'rejected' ? 'struckthrough' : 'info'
+          }
+          className="inline-flex justify-center px-2 py-1 font-semibold text-base"
+        >
+          {formatPrice(price)}
+        </Badge>
       );
     },
   },

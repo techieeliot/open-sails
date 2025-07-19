@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import LoadingIndicator from '@/components/bid-details/components/loading';
 import { userSessionAtom } from '@/lib/atoms';
+import { logout } from '@/lib/session-manager';
 
 export const UserLogoutHandler = () => {
   const [userSession, setUserSession] = useAtom(userSessionAtom);
@@ -18,6 +19,10 @@ export const UserLogoutHandler = () => {
   // Always log out and redirect to home page, with message
   useEffect(() => {
     if (isLoggedIn && !hasLoggedOutRef.current) {
+      // Clear session storage
+      logout();
+
+      // Clear Jotai atom
       setUserSession({ user: null, loginTimestamp: null });
       hasLoggedOutRef.current = true;
     }
@@ -25,6 +30,7 @@ export const UserLogoutHandler = () => {
       toast.warning('You have been logged out. Redirecting to home page...', {
         duration: 2000,
         onDismiss: () => router.push('/'),
+        id: 'logout-warning',
       });
       // Fallback redirect in case toast is not dismissed
       const timer = setTimeout(() => router.push('/'), 2200);
@@ -32,16 +38,5 @@ export const UserLogoutHandler = () => {
     }
   }, [isLoggedIn, setUserSession, router]);
 
-  // Show loading indicator while processing logout
-  if (isLoggedIn) {
-    return <LoadingIndicator />;
-  }
-
-  // Show message before redirect
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <h1 className="font-bold text-2xl">You&apos;re logged out.</h1>
-      <p className="mt-2">Redirecting to home page...</p>
-    </div>
-  );
+  return <LoadingIndicator />;
 };

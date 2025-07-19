@@ -10,6 +10,7 @@ import type * as z from 'zod';
 
 import { userSessionAtom } from '@/lib/atoms';
 import { API_ENDPOINTS } from '@/lib/constants';
+import { login } from '@/lib/session-manager';
 import { cn } from '@/lib/utils';
 import type { User } from '@/types';
 
@@ -78,7 +79,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
   const handleLogin = (values: z.infer<typeof formSchema>) => {
     const user = users.find((u) => u.id.toString() === values.userId);
     if (user) {
+      // Store session in sessionStorage via session manager
+      login(user);
+
+      // Update Jotai atom for immediate UI update
       setUserSession({ user, loginTimestamp: new Date().toISOString() });
+
       router.push('/dashboard');
     }
   };

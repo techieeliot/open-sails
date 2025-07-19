@@ -30,6 +30,7 @@ import { parseNumeric } from '@/lib/utils';
 import type { Collection } from '@/types';
 
 import { formSchema } from './schema';
+import { CollectionFormLoadingSkeleton } from './collection-form-loading-skeleton';
 
 /**
  * Props for the CollectionForm component
@@ -194,74 +195,26 @@ export const CollectionForm = ({
     }
   };
 
-  // Skeleton loading component for form fields
-  const FormFieldSkeleton = ({
-    hasIcon = false,
-    isTextarea = false,
-    isGridLayout = false,
-  }: {
-    hasIcon?: boolean;
-    isTextarea?: boolean;
-    isGridLayout?: boolean;
-  }) => (
-    <div className={isGridLayout ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-6'}>
-      {isGridLayout ? (
-        <>
-          {/* Price Field Skeleton */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-5 w-24" />
-            </div>
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-4 w-32" />
-          </div>
-          {/* Stock Field Skeleton */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-5 w-28" />
-            </div>
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-4 w-24" />
-          </div>
-        </>
-      ) : (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            {hasIcon && <Skeleton className="h-4 w-4" />}
-            <Skeleton className="h-5 w-32" />
-          </div>
-          <Skeleton className={`w-full ${isTextarea ? 'h-[120px]' : 'h-12'}`} />
-          <div className={isTextarea ? 'flex justify-between' : ''}>
-            <Skeleton className="h-4 w-48" />
-            {isTextarea && <Skeleton className="h-4 w-20" />}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
   return (
-    <div className="max-w-2xl mx-auto">
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="pb-4">
+    <div className="w-full">
+      <Card className="border-0 shadow-xl bg-zinc-900 text-white">
+        <CardHeader className="pb-4 bg-zinc-900">
           {isLoading ? (
             <div className="flex items-center gap-3">
-              <Skeleton className="p-2 bg-primary/10 rounded-lg h-9 w-9" />
+              <Skeleton className="p-2 bg-primary/20 rounded-lg h-9 w-9" />
               <div>
-                <Skeleton className="h-6 w-48 mb-2" />
-                <Skeleton className="h-4 w-64" />
+                <Skeleton className="h-6 w-48 mb-2 bg-slate-600/70" />
+                <Skeleton className="h-4 w-64 bg-slate-700/70" />
               </div>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+              <div className="p-2 bg-primary/20 rounded-lg">
                 <Package className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-xl font-semibold">{formTitle}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">
+                <CardTitle className="text-xl font-semibold text-white">{formTitle}</CardTitle>
+                <CardDescription className="text-sm text-slate-400">
                   {formDescription}
                 </CardDescription>
               </div>
@@ -269,18 +222,18 @@ export const CollectionForm = ({
           )}
         </CardHeader>
 
-        <CardContent className="pt-0">
+        <CardContent className="pt-0 bg-zinc-900">
           {isLoading ? (
             // Skeleton loading state
             <div className="space-y-6">
               {/* Collection Name Skeleton */}
-              <FormFieldSkeleton hasIcon />
+              <CollectionFormLoadingSkeleton hasIcon />
 
               {/* Description Skeleton */}
-              <FormFieldSkeleton hasIcon isTextarea />
+              <CollectionFormLoadingSkeleton hasIcon isTextarea />
 
               {/* Price and Stock Skeleton */}
-              <FormFieldSkeleton isGridLayout />
+              <CollectionFormLoadingSkeleton isGridLayout />
 
               {/* Submit Button Skeleton */}
               <div className="flex gap-3 pt-6">
@@ -298,13 +251,13 @@ export const CollectionForm = ({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-semibold flex items-center gap-2">
+                      <FormLabel className="text-base font-semibold flex items-center gap-2 text-white">
                         <Package className="h-4 w-4 text-primary" />
                         Collection Name
                       </FormLabel>
                       <FormControl>
                         <Input
-                          className="h-12 text-base border-2 focus:border-primary transition-colors"
+                          className="h-12 text-base border-2 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 focus:border-primary transition-colors"
                           placeholder="e.g., Antminer S19 Pro Collection"
                           maxLength={100}
                           autoComplete="off"
@@ -318,7 +271,7 @@ export const CollectionForm = ({
                           aria-describedby={form.formState.errors.name ? 'name-error' : undefined}
                         />
                       </FormControl>
-                      <FormDescription className="text-sm">
+                      <FormDescription className="text-sm text-slate-400">
                         2-100 characters, letters, numbers, and basic punctuation
                       </FormDescription>
                       <FormMessage id="name-error" aria-live="polite" />
@@ -332,13 +285,13 @@ export const CollectionForm = ({
                   name="descriptions"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-semibold flex items-center gap-2">
+                      <FormLabel className="text-base font-semibold flex items-center gap-2 text-white">
                         <FileText className="h-4 w-4 text-primary" />
                         Description
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          className="min-h-[120px] text-base border-2 focus:border-primary transition-colors resize-none"
+                          className="min-h-[120px] text-base border-2 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 focus:border-primary transition-colors resize-none"
                           placeholder="Describe your mining hardware collection in detail... Include specifications, condition, and any notable features."
                           maxLength={1000}
                           autoComplete="off"
@@ -353,9 +306,9 @@ export const CollectionForm = ({
                           }
                         />
                       </FormControl>
-                      <FormDescription className="text-sm flex justify-between">
+                      <FormDescription className="text-sm flex justify-between text-slate-400">
                         <span>Minimum 10 characters required</span>
-                        <span className="text-muted-foreground">
+                        <span className="text-slate-400">
                           {field.value?.length || 0}/1000 characters
                         </span>
                       </FormDescription>
@@ -372,17 +325,17 @@ export const CollectionForm = ({
                     name="price"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-base font-semibold flex items-center gap-2">
+                        <FormLabel className="text-base font-semibold flex items-center gap-2 text-white">
                           <DollarSign className="h-4 w-4 text-primary" />
                           Starting Price
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400">
                               $
                             </div>
                             <Input
-                              className="pl-8 h-12 text-lg font-semibold border-2 focus:border-primary transition-colors"
+                              className="pl-8 h-12 text-lg font-semibold border-2 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 focus:border-primary transition-colors"
                               type="number"
                               placeholder="0.00"
                               step="0.01"
@@ -413,7 +366,9 @@ export const CollectionForm = ({
                             />
                           </div>
                         </FormControl>
-                        <FormDescription className="text-sm">$0.01 - $1,000,000</FormDescription>
+                        <FormDescription className="text-sm text-slate-400">
+                          $0.01 - $1,000,000
+                        </FormDescription>
                         <FormMessage id="price-error" aria-live="polite" />
                       </FormItem>
                     )}
@@ -425,43 +380,47 @@ export const CollectionForm = ({
                     name="stocks"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-base font-semibold flex items-center gap-2">
+                        <FormLabel className="text-base font-semibold flex items-center gap-2 text-white">
                           <Hash className="h-4 w-4 text-primary" />
                           Stock Quantity
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            className="h-12 text-lg font-semibold border-2 focus:border-primary transition-colors"
-                            type="number"
-                            placeholder="1"
-                            min="1"
-                            max="10000"
-                            step="1"
-                            autoComplete="off"
-                            {...field}
-                            value={field.value ?? ''}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (value === '') {
-                                field.onChange('');
-                                return;
+                          <div className="relative">
+                            <Input
+                              className="h-12 text-lg font-semibold border-2 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 focus:border-primary transition-colors"
+                              type="number"
+                              placeholder="1"
+                              min="1"
+                              max="10000"
+                              step="1"
+                              autoComplete="off"
+                              {...field}
+                              value={field.value ?? ''}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '') {
+                                  field.onChange('');
+                                  return;
+                                }
+                                const numValue = parseInt(value, 10);
+                                if (!isNaN(numValue)) {
+                                  field.onChange(numValue);
+                                }
+                              }}
+                              onBlur={() => {
+                                field.onBlur();
+                                form.trigger('stocks');
+                              }}
+                              aria-invalid={!!form.formState.errors.stocks}
+                              aria-describedby={
+                                form.formState.errors.stocks ? 'stocks-error' : undefined
                               }
-                              const numValue = parseInt(value, 10);
-                              if (!isNaN(numValue)) {
-                                field.onChange(numValue);
-                              }
-                            }}
-                            onBlur={() => {
-                              field.onBlur();
-                              form.trigger('stocks');
-                            }}
-                            aria-invalid={!!form.formState.errors.stocks}
-                            aria-describedby={
-                              form.formState.errors.stocks ? 'stocks-error' : undefined
-                            }
-                          />
+                            />
+                          </div>
                         </FormControl>
-                        <FormDescription className="text-sm">1 - 10,000 units</FormDescription>
+                        <FormDescription className="text-sm text-slate-400">
+                          1 - 10,000 units
+                        </FormDescription>
                         <FormMessage id="stocks-error" aria-live="polite" />
                       </FormItem>
                     )}
@@ -475,7 +434,7 @@ export const CollectionForm = ({
                       type="button"
                       variant="outline"
                       onClick={closeDialog}
-                      className="flex-1 h-12"
+                      className="flex-1 h-12 border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
                       disabled={form.formState.isSubmitting}
                     >
                       Cancel
@@ -483,7 +442,7 @@ export const CollectionForm = ({
                   )}
                   <Button
                     type="submit"
-                    className="flex-1 h-12 font-semibold text-base"
+                    className="flex-1 h-12 font-semibold text-base bg-emerald-600 hover:bg-emerald-700 text-white border-0 transition-colors disabled:bg-slate-700 disabled:text-slate-400"
                     disabled={!form.formState.isValid || form.formState.isSubmitting}
                     aria-label={submitButtonText}
                   >

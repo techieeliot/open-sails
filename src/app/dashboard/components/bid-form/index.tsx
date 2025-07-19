@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -26,7 +25,6 @@ import { bidsAtom, collectionsAtom, userSessionAtom } from '@/lib/atoms';
 import { CONTENT_TYPE_JSON, POST, PUT } from '@/lib/constants';
 import { formatPrice, parseNumeric } from '@/lib/utils';
 import type { Bid } from '@/types';
-
 import { BidFormSkeleton } from './bid-form-skeleton';
 import type { CollectionFormProps } from '../collection-form';
 import type { formSchema } from './schema';
@@ -156,17 +154,52 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
       };
     }
 
-    const response = await fetch('/api/bids', {
-      method,
-      headers: {
-        'Content-Type': CONTENT_TYPE_JSON,
+    const response = await fetch(
+      method === PUT ? `/api/bids?bid_id=${bidId}&collection_id=${collectionId}` : '/api/bids',
+      {
+        method,
+        headers: {
+          'Content-Type': CONTENT_TYPE_JSON,
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
 
     if (response.ok) {
-      const updatedBids = await response.json();
-      setBids(updatedBids);
+      // Only parse JSON if response has content and is not 204
+      let updatedBids = null;
+      if (response.status !== 204) {
+        try {
+          updatedBids = await response.json();
+        } catch {
+          // If JSON parsing fails, ignore and continue
+        }
+      }
+
+      if (updatedBids) {
+        setBids(updatedBids);
+      } else {
+        // If no updated bids in response, fetch the latest bids for this collection
+        try {
+          const bidsResponse = await fetch(`/api/bids?collection_id=${collectionId}`);
+          if (bidsResponse.ok) {
+            const latestBids = await bidsResponse.json();
+            setBids(latestBids);
+
+            // If we're editing, update the form with the latest bid data
+            if (method === PUT && bidId) {
+              const updatedBid = latestBids.find((bid: Bid) => bid.id === bidId);
+              if (updatedBid) {
+                form.reset({
+                  price: parseNumeric(updatedBid.price),
+                });
+              }
+            }
+          }
+        } catch (error) {
+          console.warn('Failed to fetch updated bids:', error);
+        }
+      }
 
       if (method === POST) {
         toast.success('Bid placed successfully!', {
@@ -194,7 +227,10 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
         onSuccess();
       }
       if (closeDialog) {
-        closeDialog();
+        // Add a small delay to ensure the user sees the success message
+        setTimeout(() => {
+          closeDialog();
+        }, 1500);
       }
     } else {
       const errorText = await response.text();
@@ -207,7 +243,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   };
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="w-full">
       <Card className="border-0 shadow-xl bg-zinc-900 text-white">
         <CardHeader className="pb-4 bg-zinc-900">
           {isLoading || isCollectionLoading ? (

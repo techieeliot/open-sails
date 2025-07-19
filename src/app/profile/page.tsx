@@ -2,6 +2,12 @@ import PageWrapper from '@/components/page-wrapper';
 
 import UserInfo from './components/user-info.client';
 import { UserRoundCog } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Profile - Open Sails',
+  description: 'User profile page for Open Sails',
+};
 
 export default function ProfilePage() {
   return (

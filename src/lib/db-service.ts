@@ -201,54 +201,50 @@ export class BidService {
           not(eq(bids.id, bidId)),
         ),
       );
-    const rejectedBids = await db
-      .select()
-      .from(bids)
-      .where(and(eq(bids.collectionId, collectionId), eq(bids.status, 'rejected')));
-    console.log('[acceptBid] Reject result:', rejectResult, 'Rejected bids:', rejectedBids);
+    // Accept the selected bid
+    await db
+      .update(bids)
+      .set({
+        status: 'accepted',
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(bids.id, bidId));
+
+    // Reject all other bids for this collection (regardless of their current status)
+    await db
+      .update(bids)
+      .set({
+        status: 'rejected',
+        updatedAt: new Date().toISOString(),
+      })
+      .where(and(eq(bids.collectionId, collectionId), not(eq(bids.id, bidId))));
 
     // Close the collection
-    const closeResult = await db
+    await db
       .update(collections)
       .set({
         status: 'closed',
         updatedAt: new Date().toISOString(),
       })
       .where(eq(collections.id, collectionId));
-    const closedCollection = await db
-      .select()
-      .from(collections)
-      .where(eq(collections.id, collectionId));
-    console.log(
-      '[acceptBid] Close collection result:',
-      closeResult,
-      'Closed collection:',
-      closedCollection,
-    );
-  }
 
-  // Get bids with user and collection information
-  static async findByCollectionIdWithDetails(collectionId: number) {
-    return await db
-      .select({
-        id: bids.id,
-        price: bids.price,
-        status: bids.status,
-        createdAt: bids.createdAt,
-        updatedAt: bids.updatedAt,
-        user: {
-          id: users.id,
-          name: users.name,
-          email: users.email,
-        },
-        collection: {
-          id: collections.id,
-          name: collections.name,
-        },
-      })
-      .from(bids)
-      .leftJoin(users, eq(bids.userId, users.id))
-      .leftJoin(collections, eq(bids.collectionId, collections.id))
-      .where(eq(bids.collectionId, collectionId));
+    // Invariant check: ensure only one accepted bid and all others rejected if collection is closed
+    const closed = await db.select().from(collections).where(eq(collections.id, collectionId));
+    if (closed[0]?.status === 'closed') {
+      const allBids = await db.select().from(bids).where(eq(bids.collectionId, collectionId));
+      const accepted = allBids.filter((b) => b.status === 'accepted');
+      const pending = allBids.filter((b) => b.status === 'pending');
+      if (accepted.length !== 1 || pending.length > 0) {
+        // Fix any invariant violation
+        await db
+          .update(bids)
+          .set({ status: 'rejected', updatedAt: new Date().toISOString() })
+          .where(and(eq(bids.collectionId, collectionId), not(eq(bids.id, bidId))));
+        await db
+          .update(bids)
+          .set({ status: 'accepted', updatedAt: new Date().toISOString() })
+          .where(eq(bids.id, bidId));
+      }
+    }
   }
 }

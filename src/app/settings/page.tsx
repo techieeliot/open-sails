@@ -1,5 +1,11 @@
 import PageWrapper from '@/components/page-wrapper';
 import { Settings as SettingsIcon, ToggleLeft } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Settings - Open Sails',
+  description: 'User settings page for Open Sails',
+};
 
 export default function SettingsPage() {
   return (
