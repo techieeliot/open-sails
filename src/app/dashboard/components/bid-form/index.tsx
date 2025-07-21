@@ -28,6 +28,7 @@ import type { Bid } from '@/types';
 import { BidFormSkeleton } from './bid-form-skeleton';
 import type { CollectionFormProps } from '../collection-form';
 import type { formSchema } from './schema';
+import { useRouter } from 'next/navigation';
 
 export interface BidFormProps extends CollectionFormProps {
   bidId?: number;
@@ -48,6 +49,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
   const collection = collections.find((c) => c.id === collectionId);
   const collectionPrice = collection ? parseNumeric(collection.price) : 0;
   const minBidPrice = collectionPrice + 0.01;
+  const router = useRouter();
 
   // Check if collection data is available
   useEffect(() => {
@@ -205,19 +207,11 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
         toast.success('Bid placed successfully!', {
           description: 'Your bid has been recorded and is awaiting review.',
           duration: 5000,
-          action: {
-            label: 'View Collections',
-            onClick: () => (window.location.href = `/collections/${collectionId}`),
-          },
         });
       } else {
         toast.success('Bid updated successfully!', {
           description: 'Your bid details have been updated.',
           duration: 3000,
-          action: {
-            label: 'View Bids',
-            onClick: () => (window.location.href = `/bids/${bidId}`),
-          },
         });
       }
 
