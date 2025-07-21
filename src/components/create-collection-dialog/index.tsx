@@ -1,6 +1,7 @@
 import { FolderPlus } from 'lucide-react';
 
 import { DynamicInputDialog } from '@/app/dashboard/components/dynamic-input-dialog';
+import { API_METHODS } from '@/lib/constants';
 
 export default function CreateCollectionDialog({ onSuccess }: { onSuccess?: () => void }) {
   return (
@@ -13,7 +14,7 @@ export default function CreateCollectionDialog({ onSuccess }: { onSuccess?: () =
       triggerAriaLabel="open dialog to create a new collection"
       dialogDescription="Fill out the form to create a new collection."
       modalCategory="collection"
-      method="POST"
+      method={API_METHODS.POST}
       onSuccess={onSuccess}
       fullWidthTrigger={false}
     />

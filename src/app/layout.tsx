@@ -43,7 +43,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  themeColor: '#ffee37',
   appleWebApp: {
     capable: true,
     title: 'Open Sails',
@@ -56,6 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  themeColor: '#ffee37',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,

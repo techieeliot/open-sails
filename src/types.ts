@@ -34,3 +34,14 @@ export type User = DbUser;
 export type NewUser = DbNewUser;
 export type NewCollection = DbNewCollection;
 export type NewBid = DbNewBid;
+
+export interface DataTableMeta<TData> {
+  userNames?: Record<number, string>;
+  fetchCollections?: () => void;
+  onRowClick?: (id: number) => void;
+  onEditCollection?: (id: number) => void;
+  onDeleteCollection?: (id: number) => void;
+  expandedCollectionId?: number | null;
+  expandedRowContent?: React.ReactNode;
+  [key: string]: unknown;
+}

@@ -9,16 +9,14 @@ import { ConfirmationDialog } from '@/components/confirmation-dialog';
 import { Button } from '@/components/ui/button';
 import { bidsAtom, collectionsAtom, userLoginStatusAtom, userSessionAtom } from '@/lib/atoms';
 import { Bid } from '@/types';
-
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
 import { DynamicInputDialog } from '../../dynamic-input-dialog';
-import TriggerIconButton from '@/components/trigger-icon-button';
+import { CONTENT_TYPE_JSON, PUT } from '@/lib/constants';
+import { getErrorMessage } from '@/lib/utils';
 
 export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
   const bid = row.original;
   const setBids = useSetAtom(bidsAtom);
-  const status = row.getValue('status') as string;
   const bidUserId = bid.userId;
   const isLoggedIn = useAtomValue(userLoginStatusAtom);
   const userSession = useAtomValue(userSessionAtom);
@@ -28,13 +26,14 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
   const collection = collections.find((c) => c.id === bid.collectionId);
   const isOwner = isLoggedIn && user?.id === collection?.ownerId;
   const router = useRouter();
+
   // if any bid is accepted, then reject all the others
   const handleAcceptBid = async () => {
     try {
       const response = await fetch(`/api/bids?bid_id=${bid.id}&collection_id=${bid.collectionId}`, {
-        method: 'PUT',
+        method: PUT,
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': CONTENT_TYPE_JSON,
         },
         body: JSON.stringify({
           status: 'accepted',
@@ -52,8 +51,10 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
         if (response.status !== 204) {
           try {
             updatedBids = await response.json();
-          } catch {
+          } catch (error) {
             // If JSON parsing fails, ignore and continue
+            const errorMessage = getErrorMessage(error);
+            console.warn('Failed to parse response JSON for accepted bid:', errorMessage);
           }
         }
 
@@ -74,7 +75,8 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
         throw new Error('Failed to accept bid');
       }
     } catch (error) {
-      console.error('Failed to accept bid:', error);
+      const errorMessage = getErrorMessage(error);
+      console.error('Failed to accept bid:', errorMessage);
       toast.error('Failed to accept bid. Please try again.');
     }
   };
@@ -102,8 +104,10 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
         if (response.status !== 204) {
           try {
             updatedBids = await response.json();
-          } catch {
+          } catch (error) {
             // If JSON parsing fails, ignore and continue
+            const errorMessage = getErrorMessage(error);
+            console.warn('Failed to parse response JSON for rejected bid:', errorMessage);
           }
         }
 
@@ -122,7 +126,8 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
         throw new Error('Failed to reject bid');
       }
     } catch (error) {
-      console.error('Failed to reject bid:', error);
+      const errorMessage = getErrorMessage(error);
+      console.error('Failed to reject bid:', errorMessage);
       toast.error('Failed to reject bid. Please try again.');
     }
   };
@@ -205,24 +210,7 @@ export const BidActionPanel = React.memo(({ row }: { row: Row<Bid> }) => {
             </>
           )}
         </>
-      ) : (
-        <Badge
-          variant={bid.status === 'accepted' ? 'secondary' : 'destructive'}
-          className="flex-1 h-12 md:h-8 md:max-w-xs font-medium text-base transition-all duration-200 active:scale-98 sm:active:scale-100"
-        >
-          {bid.status === 'accepted' ? (
-            <>
-              <ThumbsUp className="h-4 w-4 mr-2" />
-              Accepted
-            </>
-          ) : (
-            <>
-              <ThumbsDown className="h-4 w-4 mr-2" />
-              Rejected
-            </>
-          )}
-        </Badge>
-      )}
+      ) : null}
 
       {/* View details is always available */}
       <Button

@@ -123,7 +123,7 @@ export default function CollectionDetailsPage() {
           </div>
 
           {/* Info Cards Section */}
-          <div className="flex flex-col gap-6 sm:flex-row sm:gap-8 mb-8">
+          <div className="flex flex-col gap-6 md:flex-row md:gap-8 mb-8 w-full">
             {/* Collection Info Card */}
             <Card className="flex-1 bg-zinc-900/80 shadow-lg border-0">
               <CardHeader className="flex flex-row items-center gap-2 pb-2">
@@ -221,7 +221,7 @@ export default function CollectionDetailsPage() {
               </CardContent>
               {/* Management Panel (only for owner) */}
               {collection.status === 'open' && isOwnerOfCollection && (
-                <CardAction>
+                <CardAction className="w-full mt-4 sm:mt-0 sm:w-auto sm:self-end">
                   <CollectionAdminPanel
                     id={collection.id}
                     onCollectionUpdated={async () => {
@@ -237,33 +237,37 @@ export default function CollectionDetailsPage() {
           </div>
 
           {/* Bids Table Section */}
-          <Card className="mx-auto w-full max-w-4xl p-4 bg-zinc-900/80 shadow-lg border-0">
-            <h2 className="font-semibold text-lg sm:text-xl">Bids for this Collection</h2>
-            {collection ? (
-              <>
-                {Array.isArray(bids) && bids.length > 0 ? (
-                  <BidsTable
-                    collection={collection}
-                    showPlaceBidButtonAtTop={
-                      isLoggedIn && !isOwnerOfCollection && collection.status === 'open'
-                    }
-                  />
-                ) : (
-                  <div className="text-center text-muted-foreground mt-4">
-                    <p className="text-zinc-500 text-sm sm:text-base">
-                      No bids have been placed for this collection yet.
-                    </p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center text-muted-foreground mt-4">
-                <p className="text-zinc-500 text-sm sm:text-base">
-                  Unable to load bids for this collection.
-                </p>
-              </div>
-            )}
-          </Card>
+          <div className="w-full overflow-x-auto">
+            <Card className="mx-auto w-full min-w-[340px] max-w-4xl p-4 bg-zinc-900/80 shadow-lg border-0">
+              <h2 className="font-semibold text-lg sm:text-xl">Bids for this Collection</h2>
+              {collection ? (
+                <>
+                  {Array.isArray(bids) && bids.length > 0 ? (
+                    <div className="w-full overflow-x-auto">
+                      <BidsTable
+                        collection={collection}
+                        showPlaceBidButtonAtTop={
+                          isLoggedIn && !isOwnerOfCollection && collection.status === 'open'
+                        }
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground mt-4">
+                      <p className="text-zinc-500 text-sm sm:text-base">
+                        No bids have been placed for this collection yet.
+                      </p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center text-muted-foreground mt-4">
+                  <p className="text-zinc-500 text-sm sm:text-base">
+                    Unable to load bids for this collection.
+                  </p>
+                </div>
+              )}
+            </Card>
+          </div>
         </div>
       ) : (
         <Card className="flex min-h-[300px] flex-col items-center justify-center p-4 sm:p-8">

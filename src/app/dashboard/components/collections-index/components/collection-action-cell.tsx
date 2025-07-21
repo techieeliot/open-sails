@@ -10,14 +10,14 @@ import type { Table } from '@tanstack/react-table';
 import { useAtomValue } from 'jotai/react';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
-
 import EditCollectionDialog from '@/components/edit-collection-dialog';
 import { Button } from '@/components/ui/button';
 import { userSessionAtom } from '@/lib/atoms';
 import type { Collection } from '@/types';
-
 import DeleteCollectionDialog from '../../delete-collection-dialog';
 import PlaceBidDialog from '@/components/place-bid-dialog';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/utils';
 
 // Actions cell renderer as a component
 interface ActionsCellProps {
@@ -32,7 +32,6 @@ export default function CollectionActionCell({ row, table }: ActionsCellProps) {
   const userSession = useAtomValue(userSessionAtom);
   const currentUser = userSession.user;
   const isOwner = currentUser && currentUser.id === collection.ownerId;
-  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
   const meta = (table.options.meta || {}) as {
     onEditCollection?: (id: number) => void;
     onDeleteCollection?: (id: number) => void;
@@ -40,7 +39,7 @@ export default function CollectionActionCell({ row, table }: ActionsCellProps) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-end space-x-2">
+    <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-end">
       <Button variant="ghost" size="sm" asChild className="hidden items-center md:flex">
         <Link href={`/collections/${collection.id}`}>View</Link>
       </Button>
@@ -72,7 +71,16 @@ export default function CollectionActionCell({ row, table }: ActionsCellProps) {
         <DropdownMenuContent align="end" className="border bg-background bg-popover shadow-md">
           <DropdownMenuLabel className="bg-background">Actions</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(collection.id.toString())}
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(collection.id.toString());
+                toast.success('Collection ID copied!');
+              } catch (err) {
+                const errorMessage = getErrorMessage(err);
+                console.error('Failed to copy collection ID:', errorMessage);
+                toast.error(`Failed to copy. Please try manually. ${errorMessage}`);
+              }
+            }}
             className="bg-background hover:bg-accent"
           >
             Copy collection ID
@@ -81,7 +89,7 @@ export default function CollectionActionCell({ row, table }: ActionsCellProps) {
           <DropdownMenuItem asChild className="bg-background hover:bg-accent md:hidden">
             <Link href={`/collections/${collection.id}`}>View details</Link>
           </DropdownMenuItem>
-          {collection.status == 'open' && isOwner && !isDesktop && (
+          {collection.status == 'open' && isOwner && (
             <>
               <DropdownMenuSeparator className="md:hidden" />
               <DropdownMenuItem

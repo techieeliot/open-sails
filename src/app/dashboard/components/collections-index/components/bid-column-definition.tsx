@@ -1,10 +1,10 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowUpDown, Handshake, Ban, Hourglass } from 'lucide-react';
+import { ArrowUpDown, Handshake, Ban, Hourglass, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatPrice, parseNumeric } from '@/lib/utils';
+import { formatPrice, parseNumeric, toStartCase } from '@/lib/utils';
 import type { Bid } from '@/types';
 
 import { BidActionPanel } from './bid-action-panel';
@@ -73,14 +73,18 @@ export const bidColumnsDefinition: ColumnDef<Bid>[] = [
     ),
     cell: ({ row }) => {
       const status = row.getValue('status') as string;
+      const isBidAccepted = status === 'accepted';
       return (
         <Badge
-          variant={
-            status === 'accepted' ? 'secondary' : status === 'rejected' ? 'struckthrough' : 'info'
-          }
+          variant={isBidAccepted ? 'secondary' : status === 'rejected' ? 'struckthrough' : 'info'}
           className="inline-flex justify-center px-2 py-1 font-semibold text-base"
         >
-          {status}
+          {isBidAccepted ? (
+            <ThumbsUp className="mr-1 h-4 w-4" />
+          ) : (
+            <ThumbsDown className="mr-1 h-4 w-4" />
+          )}
+          {toStartCase(status)}
         </Badge>
       );
     },

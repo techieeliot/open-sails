@@ -14,22 +14,12 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  type Table as ReactTable,
   type Row,
   type Cell,
   type HeaderGroup,
 } from '@tanstack/react-table';
 import { Inbox } from 'lucide-react';
 import * as React from 'react';
-
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -38,125 +28,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-interface DataTableToolbarProps<TData> {
-  table: ReactTable<TData>;
-  filterColumn?: string;
-  filterPlaceholder?: string;
-}
-
-function DataTableToolbar<TData>({
-  table,
-  filterColumn,
-  filterPlaceholder,
-}: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
-
-  return (
-    <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between w-full">
-      <div className="flex flex-1 flex-col items-center gap-4 md:flex-row w-full">
-        {filterColumn && (
-          <div className="w-full md:w-72">
-            <Input
-              placeholder={filterPlaceholder || `Filter by ${filterColumn}...`}
-              value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ''}
-              onChange={(event) =>
-                table.getColumn(filterColumn)?.setFilterValue(event.target.value)
-              }
-              className="h-8 w-full border border-accent/60  focus:border-accent focus:ring-0 px-3"
-            />
-          </div>
-        )}
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-          </Button>
-        )}
-      </div>
-      <DataTableViewOptions table={table} />
-    </div>
-  );
-}
-
-interface DataTableViewOptionsProps<TData> {
-  table: ReactTable<TData>;
-}
-
-function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-auto h-8 w-full">
-          Columns
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px] border bg-popover shadow-md">
-        {table
-          .getAllColumns()
-          .filter((column) => column.getCanHide())
-          .map((column) => {
-            return (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="bg-background capitalize hover:bg-accent"
-                checked={column.getIsVisible()}
-                onCheckedChange={(value) => column.toggleVisibility(!!value)}
-              >
-                {column.id}
-              </DropdownMenuCheckboxItem>
-            );
-          })}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-function DataTablePagination<TData>({ table }: { table: ReactTable<TData> }) {
-  return (
-    <>
-      <div className="flex flex-col items-center justify-between gap-4 py-4 sm:flex-row"></div>
-      <div className="w-full text-center text-muted-foreground text-sm sm:flex-1 sm:text-left">
-        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
-      <div className="flex w-full flex-col justify-center gap-2 sm:w-auto md:flex-row">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          className="min-w-[100px]"
-        >
-          Previous
-        </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          className="min-w-[100px]"
-        >
-          Next
-        </Button>
-      </div>
-    </>
-  );
-}
-
-interface DataTableMeta<TData> {
-  userNames?: Record<number, string>;
-  fetchCollections?: () => void;
-  onRowClick?: (id: number) => void;
-  onEditCollection?: (id: number) => void;
-  onDeleteCollection?: (id: number) => void;
-  expandedCollectionId?: number | null;
-  expandedRowContent?: React.ReactNode;
-  [key: string]: unknown;
-}
+import { DataTableMeta } from '@/types';
+import { DataTableToolbar } from './data-table-toolbar';
+import { DataTablePagination } from './data-table-pagination';
 
 /**
  * Props interface for the DataTable component
@@ -164,7 +38,7 @@ interface DataTableMeta<TData> {
  * @template TData - The type of data being displayed in the table
  * @template TValue - The type of values in the table cells
  */
-interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterColumn?: string;
