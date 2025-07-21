@@ -207,7 +207,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
           duration: 5000,
           action: {
             label: 'View Collections',
-            onClick: () => (window.location.href = '/collections'),
+            onClick: () => (window.location.href = `/collections/${collectionId}`),
           },
         });
       } else {
@@ -216,7 +216,7 @@ export const BidForm = ({ method, collectionId, bidId, onSuccess, closeDialog }:
           duration: 3000,
           action: {
             label: 'View Bids',
-            onClick: () => (window.location.href = '/bids'),
+            onClick: () => (window.location.href = `/bids/${bidId}`),
           },
         });
       }
